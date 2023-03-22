@@ -1,3 +1,6 @@
+// TODO: how to make this work?
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import { createVanillaExtractPlugin } from "@vanilla-extract/next-plugin"
 
 /**
@@ -18,4 +21,4 @@ const config = {
   },
 }
 
-module.exports = withVanillaExtract(config)
+export default withVanillaExtract(config)
