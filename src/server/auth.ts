@@ -4,9 +4,11 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
 import DiscordProvider from "next-auth/providers/discord"
+import GoogleProvider from "next-auth/providers/google"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { env } from "~/env.mjs"
+import { prisma } from "~/server/db"
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -35,35 +37,7 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
-  callbacks: {
-    jwt(jwtProps) {
-      const { user, account, token, isNewUser } = jwtProps
-
-      if (isNewUser) {
-        // TODO: handle new user state
-      }
-
-      // Only triggers on initial user login
-      // Persist data here (https://next-auth.js.org/configuration/callbacks#jwt-callback)
-      if (account && user) {
-        return {
-          ...token,
-          id: user.id,
-        }
-      }
-
-      return jwtProps.token
-    },
-    session(sessionProps) {
-      const { session, token } = sessionProps
-      console.log("what is a session:", sessionProps)
-      if (session.user) {
-        session.user = { ...session.user, id: token.id as string }
-        // session.user.role = user.role; <-- put other properties on the session here
-      }
-      return session
-    },
-  },
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_OAUTH_CLIENT_ID,

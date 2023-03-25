@@ -21,7 +21,13 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "**/*.js"],
-  // TODO: how to get next.config.mjs to work with typescript?
+  "include": [
+    ".eslintrc.cjs",
+    "types",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs"
+  ],
   "exclude": ["node_modules"]
 }
