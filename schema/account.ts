@@ -1,7 +1,16 @@
-import { int, mysqlTable, serial, text, varchar } from "drizzle-orm/mysql-core"
+import {
+  datetime,
+  int,
+  mysqlTable,
+  serial,
+  text,
+  varchar,
+} from "drizzle-orm/mysql-core"
+
+// TODO: rip out all of these table and add non prisma dependent ones in
 
 export const account = mysqlTable("Account", {
-  id: serial("id").primaryKey(),
+  id: serial("id").primaryKey(), // TODO: @default(cuid())
   userId: varchar("userId", { length: 191 }),
   type: varchar("type", { length: 191 }),
   provider: varchar("provider", { length: 191 }),
@@ -15,11 +24,12 @@ export const account = mysqlTable("Account", {
   session_state: varchar("session_state", { length: 191 }),
 })
 
-// model Example {
-//   id        String   @id @default(cuid())
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
+// TODO: separate out sql table schema's?
+export const example = mysqlTable("Example", {
+  id: serial("id").primaryKey(), // TODO: @default(cuid())
+  createdAt: datetime("createdAt"), // TODO: @default(now())
+  updatedAt: datetime("updatedAt"), // TODO: @updatedAt
+})
 
 // model Account {
 // id                 String  @id @default(cuid())
