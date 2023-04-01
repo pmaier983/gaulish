@@ -36,11 +36,8 @@ export const account = mysqlTable(
 
 // TODO: separate out sql table schema's?
 export const example = mysqlTable("Example", {
-  id: varchar("id", { length: 191 })
-    .primaryKey()
-    .notNull()
-    .default(new Date().getTime().toString()),
-  createdAt: datetime("createdAt").notNull(),
+  id: varchar("id", { length: 191 }).primaryKey().notNull(),
+  createdAt: datetime("createdAt").default(new Date()).notNull(),
   updatedAt: datetime("updatedAt").notNull(),
 })
 
