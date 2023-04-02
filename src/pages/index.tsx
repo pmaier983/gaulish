@@ -29,8 +29,12 @@ const AuthShowcase: React.FC = () => {
     { enabled: sessionData?.user !== undefined },
   )
 
+  const { mutate } = api.example.setExample.useMutation()
+
+  const { data } = api.example.getAll.useQuery()
+
   return (
-    <div>
+    <div className="flex flex-col items-start">
       <p>
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
@@ -39,6 +43,20 @@ const AuthShowcase: React.FC = () => {
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
+      </button>
+      <button
+        onClick={() => {
+          mutate()
+        }}
+      >
+        Mutate Something
+      </button>
+      <button
+        onClick={() => {
+          mutate()
+        }}
+      >
+        Get all users
       </button>
     </div>
   )

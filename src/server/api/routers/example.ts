@@ -5,7 +5,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc"
-import { account } from "schema"
+import { account, example } from "schema"
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -22,5 +22,11 @@ export const exampleRouter = createTRPCRouter({
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!"
+  }),
+
+  setExample: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.db
+      .insert(example)
+      .values({ updatedAt: new Date(), id: new Date().getTime().toString() })
   }),
 })
