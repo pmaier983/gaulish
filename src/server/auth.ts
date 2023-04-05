@@ -7,7 +7,7 @@ import {
 import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
-import mysqlAdapter from "./mysqlAdapter"
+import { mysqlAdapter } from "./mysqlAdapter"
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -37,7 +37,7 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   // TODO: enable Adapter
-  // adapter: mysqlAdapter(),
+  adapter: mysqlAdapter(),
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_OAUTH_CLIENT_ID,
