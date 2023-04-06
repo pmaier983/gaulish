@@ -7,6 +7,7 @@ import {
 import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
+import { db } from "./db"
 import { mysqlAdapter } from "./mysqlAdapter"
 
 /**
@@ -37,7 +38,7 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   // TODO: enable Adapter
-  adapter: mysqlAdapter(),
+  adapter: mysqlAdapter(db),
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_OAUTH_CLIENT_ID,
