@@ -5,85 +5,84 @@ import {
   mysqlTable,
   text,
   uniqueIndex,
+  timestamp,
   varchar,
 } from "drizzle-orm/mysql-core"
 
-// TODO: rip out all of these table and add non prisma dependent ones in
+// TODO: possibly rip out the refresh token?
 
-export const account = mysqlTable(
-  "Account",
+export const accounts = mysqlTable(
+  "accounts",
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     userId: varchar("userId", { length: 191 }).notNull(),
     type: varchar("type", { length: 191 }).notNull(),
     provider: varchar("provider", { length: 191 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 191 }).notNull(),
-    refresh_token: text("refresh_token"),
     access_token: text("access_token"),
-    expires_at: int("expires_at"),
-    token_type: varchar("token_type", { length: 191 }),
-    scope: varchar("scope", { length: 191 }),
+    expires_in: int("expires_in"),
     id_token: text("id_token"),
-    session_state: varchar("session_state", { length: 191 }),
+    refresh_token: text("refresh_token"),
+    refresh_token_expires_in: int("refresh_token_expires_in"),
+    scope: varchar("scope", { length: 191 }),
+    token_type: varchar("token_type", { length: 191 }),
+    createdAt: timestamp("createdAt").defaultNow().onUpdateNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
   (account) => ({
-    Account_provider_providerAccountId_key: uniqueIndex(
-      "Account_provider_providerAccountId_key",
+    providerProviderAccountIdIndex: uniqueIndex(
+      "accounts__provider__providerAccountId__idx",
     ).on(account.provider, account.providerAccountId),
-    Account_userId_idx: index("Account_userId_idx").on(account.userId),
+    userIdIndex: index("accounts__userId__idx").on(account.userId),
   }),
 )
 
-// TODO: separate out sql table schema's?
-export const example = mysqlTable("Example", {
-  id: varchar("id", { length: 191 }).primaryKey().notNull(),
-  createdAt: datetime("createdAt").default(new Date()).notNull(),
-  updatedAt: datetime("updatedAt").notNull(),
-})
-
-export const session = mysqlTable(
-  "Session",
+export const sessions = mysqlTable(
+  "sessions",
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     sessionToken: varchar("sessionToken", { length: 191 }).notNull(),
     userId: varchar("userId", { length: 191 }).notNull(),
     expires: datetime("expires").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
   (session) => ({
-    Session_sessionToken_key: uniqueIndex("Session_sessionToken_key").on(
+    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(
       session.sessionToken,
     ),
-    Session_userId_idx: index("Session_userId_idx").on(session.userId),
+    userIdIndex: index("sessions__userId__idx").on(session.userId),
   }),
 )
 
-export const user = mysqlTable(
-  "User",
+export const users = mysqlTable(
+  "users",
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     name: varchar("name", { length: 191 }),
-    email: varchar("email", { length: 191 }),
-    emailVerified: datetime("emailVerified"),
-    image: text("image"),
+    email: varchar("email", { length: 191 }).notNull(),
+    emailVerified: timestamp("emailVerified"),
+    image: varchar("image", { length: 191 }),
+    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
   (user) => ({
-    User_email_key: uniqueIndex("User_email_key").on(user.email),
+    emailIndex: uniqueIndex("users__email__idx").on(user.email),
   }),
 )
 
-export const verificationToken = mysqlTable(
-  "VerificationToken",
+export const verificationTokens = mysqlTable(
+  "verification_tokens",
   {
-    identifier: varchar("identifier", { length: 191 }).notNull(),
+    identifier: varchar("identifier", { length: 191 }).primaryKey().notNull(),
     token: varchar("token", { length: 191 }).notNull(),
     expires: datetime("expires").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
   (verificationToken) => ({
-    VerificationToken_token_key: uniqueIndex("VerificationToken_token_key").on(
+    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(
       verificationToken.token,
     ),
-    VerificationToken_identifier_token_key: uniqueIndex(
-      "VerificationToken_identifier_token_key",
-    ).on(verificationToken.identifier, verificationToken.token),
   }),
 )

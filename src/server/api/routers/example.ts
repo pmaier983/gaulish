@@ -1,3 +1,4 @@
+import { accounts } from "schema"
 import { z } from "zod"
 
 import {
@@ -5,7 +6,6 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc"
-import { account, example } from "schema"
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -17,16 +17,10 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.db.select().from(account)
+    return ctx.db.select().from(accounts)
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!"
-  }),
-
-  setExample: protectedProcedure.mutation(({ ctx }) => {
-    return ctx.db
-      .insert(example)
-      .values({ updatedAt: new Date(), id: new Date().getTime().toString() })
   }),
 })

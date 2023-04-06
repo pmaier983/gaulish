@@ -6,9 +6,11 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint && npx prettier --write .",
-    "start": "next start"
+    "start": "next start",
+    "db": "npx drizzle-kit generate:mysql --out migrations-folder --schema schema"
   },
   "dependencies": {
+    "@paralleldrive/cuid2": "^2.2.0",
     "@planetscale/database": "^1.6.0",
     "@tanstack/react-query": "^4.28.0",
     "@trpc/client": "^10.18.0",
@@ -33,7 +35,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "autoprefixer": "^10.4.14",
-    "drizzle-kit": "^0.17.1",
+    "drizzle-kit": "^0.17.4",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.2.4",
     "eslint-config-prettier": "^8.8.0",
