@@ -3,6 +3,7 @@ import Head from "next/head"
 import { signIn, signOut, useSession } from "next-auth/react"
 
 import { api } from "~/utils/api"
+import Link from "next/link"
 
 const Home: NextPage = () => {
   return (
@@ -16,7 +17,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <AuthShowcase />
+        <LandingPage />
       </main>
     </>
   )
@@ -24,7 +25,8 @@ const Home: NextPage = () => {
 
 export default Home
 
-const AuthShowcase: React.FC = () => {
+// TODO: make a separate auth page and handle redirections.
+const LandingPage: React.FC = () => {
   const { data: sessionData } = useSession()
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
@@ -45,6 +47,7 @@ const AuthShowcase: React.FC = () => {
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
+      <Link href="/app">To App</Link>
     </div>
   )
 }

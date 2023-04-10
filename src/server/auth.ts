@@ -52,9 +52,7 @@ export const authOptions: NextAuthOptions = {
     signIn(message) {
       if (message.isNewUser) {
         // TODO: new user
-        console.log("new user", { message })
       } else {
-        console.log("OLD USER", { message })
       }
     },
   },
