@@ -25,7 +25,6 @@ const Home: NextPage = () => {
 
 export default Home
 
-// TODO: make a separate auth page and handle redirections.
 const LandingPage: React.FC = () => {
   const { data: sessionData } = useSession()
 
