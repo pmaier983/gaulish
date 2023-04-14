@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm/expressions"
 import { createId } from "@paralleldrive/cuid2"
 import { users, accounts, sessions, verificationTokens } from "~/../schema"
 
+// TODO turn this into a importable package
 /** @return { import("next-auth/adapters").Adapter } */
 export const mysqlAdapter = (db: PlanetScaleDatabase): Adapter => {
   return {
