@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <div className={sortsMillGoudy.className}>
+    <div className={`h-full ${sortsMillGoudy.className}`}>
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>

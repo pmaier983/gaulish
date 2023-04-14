@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="h-full">
         <LandingPage />
       </main>
     </>
@@ -38,7 +38,7 @@ const LandingPage: React.FC = () => {
   api.example.getAll.useQuery()
 
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex h-full items-center justify-center">
       <p>
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
