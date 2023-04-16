@@ -73,4 +73,5 @@ h6 {
 #__next {
   isolation: isolate;
   height: 100%;
+  font-family: Poppins, sans-serif;
 }

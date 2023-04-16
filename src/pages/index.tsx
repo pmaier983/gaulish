@@ -27,28 +27,21 @@ const Home: NextPage = () => {
 
 export default Home
 
+// Logged in message questioning?
 const LandingPage: React.FC = () => {
   const { data: sessionData } = useSession()
 
-  const { data: secretMessage } = api.example.getSecretMessage.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  )
-
-  api.example.getAll.useQuery()
+  const isLoggedIn = !!sessionData
 
   return (
     <div className="flex h-full items-center justify-center">
-      <p>
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
-        {secretMessage && <span> - {secretMessage}</span>}
-      </p>
-      <button
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
-      <Link href="/app">To App</Link>
+      {isLoggedIn ? (
+        <button onClick={() => void signIn(undefined, { callbackUrl: "/app" })}>
+          Sign in
+        </button>
+      ) : (
+        <Link href="/app">To App</Link>
+      )}
     </div>
   )
 }
