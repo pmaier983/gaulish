@@ -1,9 +1,9 @@
 import { type NextPage } from "next"
 import Head from "next/head"
-import { signIn, signOut, useSession } from "next-auth/react"
-
-import { api } from "~/utils/api"
 import Link from "next/link"
+import { signIn, useSession } from "next-auth/react"
+
+import styles from "./index.module.css"
 
 // Setup i18n
 // Setup Fonts
@@ -35,13 +35,30 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="flex h-full items-center justify-center">
-      {isLoggedIn ? (
-        <button onClick={() => void signIn(undefined, { callbackUrl: "/app" })}>
-          Sign in
-        </button>
-      ) : (
-        <Link href="/app">To App</Link>
-      )}
+      <div className={styles.signInCard}>
+        <div className={styles.signInBackground}>
+          {Array(9)
+            .fill(null)
+            .map((_, i) => (
+              <div key={i} className={styles.styledBox} />
+            ))}
+        </div>
+        {isLoggedIn ? (
+          <Link
+            href="/app"
+            className="padding self-center p-8 text-center text-3xl"
+          >
+            To App
+          </Link>
+        ) : (
+          <button
+            className="text-center text-3xl"
+            onClick={() => void signIn(undefined, { callbackUrl: "/app" })}
+          >
+            Sign in
+          </button>
+        )}
+      </div>
     </div>
   )
 }
