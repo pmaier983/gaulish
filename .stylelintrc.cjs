@@ -1,4 +1,4 @@
-const camelCaseRegex = "^[a-z][\\w-]*$" // Note: also allows `_` as part of BEM naming
+const camelCaseRegex = "^[a-z][\\w-]*$"
 
 /** @type {import("stylelint").Config} */
 const config = {
