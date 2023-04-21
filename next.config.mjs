@@ -10,13 +10,7 @@ import withRoutes from "nextjs-routes/config"
 const config = {
   reactStrictMode: true,
   swcMinify: true,
-
-  /**
-   * If you have the "experimental: { appDir: true }" setting enabled, then you
-   * must comment the below `i18n` config out.
-   *
-   * @see https://github.com/vercel/next.js/issues/41980
-   */
+  // TODO: setup i18n properly (ideally compile time to eventually work with /app)
   i18n: {
     locales: ["en"],
     defaultLocale: "en",
