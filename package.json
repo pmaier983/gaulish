@@ -23,6 +23,7 @@
     "nextjs-routes": "^2.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "socket.io-client": "^4.6.1",
     "superjson": "1.12.2",
     "zod": "^3.21.4"
   },
