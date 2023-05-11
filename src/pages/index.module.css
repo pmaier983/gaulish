@@ -26,6 +26,12 @@
   flex: 1;
 }
 
+@media (prefers-color-scheme: dark) {
+  .styledBox {
+    --border-color: white;
+  }
+}
+
 .styledBox:nth-child(3) {
   border-top-right-radius: var(--border-radius);
   border-top: var(--border-size) solid var(--border-color);
