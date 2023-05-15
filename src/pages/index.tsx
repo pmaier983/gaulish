@@ -14,7 +14,7 @@ const Home: NextPage = () => {
         <title>Gaulish.io</title>
         <meta
           name="description"
-          content="TODO: write a description for whatever this is"
+          content="Explore the seas and trade or travel your way to riches"
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
