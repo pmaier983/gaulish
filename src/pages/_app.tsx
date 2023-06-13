@@ -5,7 +5,7 @@ import { Poppins } from "next/font/google"
 
 import { api } from "~/utils/api"
 
-const sortsMillGoudy = Poppins({
+const poppins = Poppins({
   weight: ["400", "700"],
   subsets: ["latin"],
 })
@@ -17,7 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session, ...pageProps },
 }) => {
   return (
-    <div className={`h-full ${sortsMillGoudy.className}`}>
+    <div className={`h-full ${poppins.className}`}>
       <SessionProvider session={session}>
         <Component {...pageProps} />
       </SessionProvider>
