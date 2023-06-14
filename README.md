@@ -2,7 +2,19 @@
 
 one day it will be a great IO game with users!
 
-## TODO List:
+## ----------- Environments -----------
+
+### Dev
+
+- **URL**: [gaulish.vercel.app](https://gaulish.vercel.app/)
+- **Branch**: [dev](https://github.com/pmaier983/gaulish/tree/dev)
+
+### Prod
+
+- **URL**: [gaulish.io](https://gaulish.io/)
+- **Branch**: [main](https://github.com/pmaier983/gaulish/tree/main)
+
+## ------------- TODO List -------------
 
 ### High Priority
 
@@ -10,7 +22,6 @@ one day it will be a great IO game with users!
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
 - [ ] Setup Github Actions (Build on commit?)
-- [ ] Setup Dev vs. Prod Environment
 - [ ] Setup websockets (https://create.t3.gg/en/other-recs#pusher)
 
 - [ ] Plan MVP Visuals
