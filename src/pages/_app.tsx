@@ -12,17 +12,29 @@ const poppins = Poppins({
 
 import "~/styles/globals.css"
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
+const MyAppWrapper = ({
+  children,
+  session,
+}: {
+  children: React.ReactNode
+  session: Session | null
 }) => {
+  // TODO redirect if user is not logged in an trying to access /app
+
   return (
     <div className={`h-full ${poppins.className}`}>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <SessionProvider session={session}>{children}</SessionProvider>
     </div>
   )
 }
+
+const MyApp: AppType<{ session: Session | null }> = ({
+  Component,
+  ...rest
+}) => (
+  <MyAppWrapper session={rest.pageProps.session}>
+    <Component {...rest} />
+  </MyAppWrapper>
+)
 
 export default api.withTRPC(MyApp)
