@@ -4,7 +4,6 @@ import {
   type NextAuthOptions,
   type DefaultSession,
 } from "next-auth"
-import DiscordProvider from "next-auth/providers/discord"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
 import { db } from "./db"
@@ -43,10 +42,16 @@ export const authOptions: NextAuthOptions = {
       clientId: env.GOOGLE_OAUTH_CLIENT_ID,
       clientSecret: env.GOOGLE_OAUTH_CLIENT_SECRET,
     }),
-    DiscordProvider({
-      clientId: env.DISCORD_OAUTH_CLIENT_ID,
-      clientSecret: env.DISCORD_OAUTH_CLIENT_SECRET,
-    }),
+    /* 
+      POSSIBLE TODO: consider re-adding discord auth
+      To add discord auth you would need to make a nice alert if they 
+      had previously logged in with google. Or handle it otherwise, currently it breaks
+      with the following error: "Please try sining in with a different account."
+    */
+    // DiscordProvider({
+    //   clientId: env.DISCORD_OAUTH_CLIENT_ID,
+    //   clientSecret: env.DISCORD_OAUTH_CLIENT_SECRET,
+    // }),
   ],
   events: {
     signIn(message) {
