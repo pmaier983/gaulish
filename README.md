@@ -24,6 +24,16 @@ one day it will be a great IO game with users!
 - [ ] Setup websockets (https://create.t3.gg/en/other-recs#pusher)
 
 - [ ] Plan MVP Visuals
+  - [ ] How to do Infinite Canvas
+    - Playground (Semi close) -> https://www.pixiplayground.com/#/edit/B8R6ZZD8JROtw1c52LFnN
+    - Pure Canvas solution -> https://github.com/emilefokkema/infinite-canvas
+    - Pure React infinite Canvas -> https://betterprogramming.pub/how-to-create-a-figma-like-infinite-canvas-in-react-a2b0365b2a7
+  - [ ] Components an infinite canvas solution needs to have:
+    - P0 drag to move
+    - P0 scroll wheel zoom
+    - P1 drag and drop to path functionality
+    - P2 pinch to zoom
+    - P2 a nice interaction at the edges
 - [ ] Plan MVP Backend (SQL relationships)
 - [ ] Build MVP and deploy
 
