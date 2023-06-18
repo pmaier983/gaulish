@@ -29,7 +29,7 @@ export default Home
 
 // Logged in message questioning?
 const LandingPage: React.FC = () => {
-  const { data: sessionData } = useSession()
+  const { data: sessionData, status } = useSession()
 
   const isLoggedIn = !!sessionData
 
@@ -43,7 +43,7 @@ const LandingPage: React.FC = () => {
               <div key={i} className={styles.styledBox} />
             ))}
         </div>
-        {isLoggedIn ? (
+        {isLoggedIn || status === "loading" ? (
           <Link
             href="/app"
             className="padding self-center p-8 text-center text-3xl"
