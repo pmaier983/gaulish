@@ -22,7 +22,7 @@ one day it will be a great IO game with users!
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
 - [ ] Setup websockets (https://create.t3.gg/en/other-recs#pusher)
-
+  - [ ] Compare https://socket.io/ and https://partykit.io/
 - [ ] Plan MVP Visuals
   - [ ] How to do Infinite Canvas
     - Playground (Semi close) -> https://www.pixiplayground.com/#/edit/B8R6ZZD8JROtw1c52LFnN
@@ -36,6 +36,14 @@ one day it will be a great IO game with users!
     - P2 a nice interaction at the edges
 - [ ] Plan MVP Backend (SQL relationships)
 - [ ] Build MVP and deploy
+- [ ] Core User Journey
+  - [ ] Sailing
+    - [ ] Sketch it out in https://excalidraw.com/ (ONLY MVP)
+    - Ship Selection
+    - User plans a route
+      - P0 arrow keys to nav
+      - P2 drag and drop
+      - P2 Select city to auto nav (A* pathing https://en.wikipedia.org/wiki/A*\_search_algorithm)
 
 ### Low Priority
 
