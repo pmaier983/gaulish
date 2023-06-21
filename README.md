@@ -23,7 +23,7 @@ one day it will be a great IO game with users!
 - [ ] Setup Stripe
 - [ ] Setup websockets (https://create.t3.gg/en/other-recs#pusher)
   - [ ] Compare https://socket.io/ and https://partykit.io/
-- [ ] Plan MVP Visuals
+- [ ] Plan MVP Components
   - [ ] How to do Infinite Canvas
     - Playground (Semi close) -> https://www.pixiplayground.com/#/edit/B8R6ZZD8JROtw1c52LFnN
     - Pure Canvas solution -> https://github.com/emilefokkema/infinite-canvas
