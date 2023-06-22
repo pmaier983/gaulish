@@ -38,7 +38,9 @@ one day it will be a great IO game with users!
 - [ ] Build MVP and deploy
 - [ ] Core User Journey
   - [ ] Sailing
-    - [ ] Sketch it out in https://excalidraw.com/ (ONLY MVP)
+    - [x] Sketch MVP frontend https://excalidraw.com/
+      - [ ] Backend Requirements from MVP frontend
+        - TODO
     - Ship Selection
     - User plans a route
       - P0 arrow keys to nav
