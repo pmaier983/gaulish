@@ -39,8 +39,16 @@ one day it will be a great IO game with users!
 - [ ] Core User Journey
   - [ ] Sailing
     - [x] Sketch MVP frontend https://excalidraw.com/
-      - [ ] Backend Requirements from MVP frontend
-        - TODO
+      - [ ] Backend Requirements from MVP frontend (https://app.sqldbm.com/PostgreSQL/Edit/p157585#)
+        - API Calls:
+          - getMap
+          - getLeaderboard
+            - just fetch once every 1-5min
+          - getUserStats
+          - getUserShips
+          - getNpcPaths
+          - getUserShipPaths
+            - update this list constantly with websockets.
     - Ship Selection
     - User plans a route
       - P0 arrow keys to nav
