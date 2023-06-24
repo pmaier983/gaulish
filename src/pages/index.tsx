@@ -43,20 +43,20 @@ const LandingPage: React.FC = () => {
               <div key={i} className={styles.styledBox} />
             ))}
         </div>
-        {isLoggedIn || status === "loading" ? (
-          <Link
-            href="/app"
-            className="padding self-center p-8 text-center text-3xl"
-          >
-            To App
-          </Link>
-        ) : (
+        {!isLoggedIn || status === "loading" ? (
           <button
             className="text-center text-3xl"
             onClick={() => void signIn(undefined, { callbackUrl: "/app" })}
           >
             Sign in
           </button>
+        ) : (
+          <Link
+            href="/app"
+            className="padding self-center p-8 text-center text-3xl"
+          >
+            To App
+          </Link>
         )}
       </div>
     </div>
