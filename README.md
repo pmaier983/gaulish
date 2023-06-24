@@ -43,7 +43,7 @@ one day it will be a great IO game with users!
         - API Calls:
           - getMap
           - getLeaderboard
-            - just fetch once every 1-5min
+            - just fetch once every 1-5 min
           - getUserStats
           - getUserShips
           - getNpcPaths
