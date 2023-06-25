@@ -7,7 +7,9 @@
     "dev": "next dev",
     "lint": "next lint && npx prettier --write .",
     "start": "next start",
-    "db": "npx drizzle-kit generate:mysql --out migrations-folder --schema schema"
+    "postinstall": "drizzle-kit generate:mysql",
+    "db:push": "drizzle-kit push:mysql",
+    "db:introspect": "drizzle-kit introspect:mysql"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^2.2.1",
@@ -35,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.11",
     "@typescript-eslint/parser": "^5.59.11",
     "autoprefixer": "^10.4.14",
+    "dotenv": "^16.3.1",
     "drizzle-kit": "^0.19.1",
     "eslint": "^8.43.0",
     "eslint-config-next": "^13.4.6",
