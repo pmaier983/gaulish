@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm"
 import {
   datetime,
   index,
@@ -7,10 +8,14 @@ import {
   uniqueIndex,
   timestamp,
   varchar,
+  serial,
+  smallint,
+  json,
 } from "drizzle-orm/mysql-core"
 
 // TODO: possibly rip out the refresh token?
 
+/* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
   "accounts",
   {
@@ -55,22 +60,6 @@ export const sessions = mysqlTable(
   }),
 )
 
-export const users = mysqlTable(
-  "users",
-  {
-    id: varchar("id", { length: 191 }).primaryKey().notNull(),
-    name: varchar("name", { length: 191 }),
-    email: varchar("email", { length: 191 }).notNull(),
-    emailVerified: timestamp("emailVerified"),
-    image: varchar("image", { length: 191 }),
-    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
-    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
-  },
-  (user) => ({
-    emailIndex: uniqueIndex("users__email__idx").on(user.email),
-  }),
-)
-
 export const verificationTokens = mysqlTable(
   "verification_tokens",
   {
@@ -86,3 +75,62 @@ export const verificationTokens = mysqlTable(
     ),
   }),
 )
+
+/* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
+
+export const users = mysqlTable(
+  "users",
+  {
+    /* ********** START - DEFAULT DRIZZLE ITEMS DO NOT CHANGE ********** */
+    id: varchar("id", { length: 191 }).primaryKey().notNull(),
+    name: varchar("name", { length: 191 }),
+    email: varchar("email", { length: 191 }).notNull(),
+    emailVerified: timestamp("emailVerified"),
+    image: varchar("image", { length: 191 }),
+    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+    /* ********** END - DEFAULT DRIZZLE ITEMS DO NOT CHANGE ********** */
+    hoard_id: int("hoard_id"),
+    username: varchar("username", { length: 191 }),
+  },
+  (user) => ({
+    emailIndex: uniqueIndex("users__email__idx").on(user.email),
+  }),
+)
+
+export const ship = mysqlTable("ship", {
+  id: serial("ship_id").primaryKey().notNull(),
+  ship_type_id: smallint("ship_type_id").notNull(),
+  cargo: json("cargo"),
+})
+
+// TODO: continue work on relationships
+// export const shipRelations = relations(users, ({ one }) => ({
+// 	profileInfo: one(profileInfo, {
+// 		fields: [user.id],
+// 		references: [profileInfo.userId],
+// 	}),
+// }));
+
+export const path = mysqlTable("path", {
+  id: serial("path_id").primaryKey().notNull(),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  path: text("path"),
+})
+
+export const tile = mysqlTable("tile", {
+  id: serial("tile_id").primaryKey().notNull(),
+  x: int("x").notNull(),
+  y: int("y").notNull(),
+})
+
+export const city = mysqlTable("city", {
+  id: serial("city_id").primaryKey().notNull(),
+  name: varchar("name", { length: 191 }).notNull(),
+  level: json("level"),
+})
+
+export const npc = mysqlTable("npc", {
+  id: serial("npc_id").primaryKey().notNull(),
+  npc_type_id: int("npc_type_id").notNull(),
+})
