@@ -1,6 +1,5 @@
 import { signOut, useSession } from "next-auth/react"
 
-// protected by the next auth middleware
 const App = () => {
   const { data } = useSession()
 

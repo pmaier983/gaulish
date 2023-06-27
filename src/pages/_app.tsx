@@ -13,6 +13,7 @@ const poppins = Poppins({
 
 import "~/styles/globals.css"
 import { AUTH_FREE_PAGES } from "~/components/constants"
+import { FullPageRedirect } from "~/components/FullPageRedirect"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
@@ -22,19 +23,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
     status === "unauthenticated" &&
     !AUTH_FREE_PAGES.includes(router.pathname)
   ) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center gap-2">
-        <h1>You must sign in to view this page</h1>
-        <button
-          className="text-center text-2xl"
-          onClick={() =>
-            void signIn(undefined, { callbackUrl: router.pathname })
-          }
-        >
-          Sign in
-        </button>
-      </div>
-    )
+    return <FullPageRedirect />
   }
 
   return children
