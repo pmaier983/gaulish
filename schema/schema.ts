@@ -13,8 +13,6 @@ import {
   json,
 } from "drizzle-orm/mysql-core"
 
-// TODO: possibly rip out the refresh token?
-
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
   "accounts",
@@ -24,22 +22,30 @@ export const accounts = mysqlTable(
     type: varchar("type", { length: 191 }).notNull(),
     provider: varchar("provider", { length: 191 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 191 }).notNull(),
-    access_token: text("access_token"),
-    expires_in: int("expires_in"),
-    id_token: text("id_token"),
-    refresh_token: text("refresh_token"),
-    refresh_token_expires_in: int("refresh_token_expires_in"),
+    accessToken: text("access_token"),
+    expiresIn: int("expires_in"),
+    idToken: text("id_token"),
+    refreshToken: text("refresh_token"),
+    refreshTokenExpiresIn: int("refresh_token_expires_in"),
     scope: varchar("scope", { length: 191 }),
-    token_type: varchar("token_type", { length: 191 }),
-    createdAt: timestamp("createdAt").defaultNow().onUpdateNow().notNull(),
-    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+    tokenType: varchar("token_type", { length: 191 }),
+    createdAt: timestamp("createdAt", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
   },
-  (account) => ({
-    providerProviderAccountIdIndex: uniqueIndex(
-      "accounts__provider__providerAccountId__idx",
-    ).on(account.provider, account.providerAccountId),
-    userIdIndex: index("accounts__userId__idx").on(account.userId),
-  }),
+  (table) => {
+    return {
+      providerProviderAccountIdIdx: uniqueIndex(
+        "accounts__provider__providerAccountId__idx",
+      ).on(table.provider, table.providerAccountId),
+      userIdIdx: index("accounts__userId__idx").on(table.userId),
+    }
+  },
 )
 
 export const sessions = mysqlTable(
@@ -48,16 +54,24 @@ export const sessions = mysqlTable(
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     sessionToken: varchar("sessionToken", { length: 191 }).notNull(),
     userId: varchar("userId", { length: 191 }).notNull(),
-    expires: datetime("expires").notNull(),
-    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
-    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+    expires: datetime("expires", { mode: "string" }).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
   },
-  (session) => ({
-    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(
-      session.sessionToken,
-    ),
-    userIdIndex: index("sessions__userId__idx").on(session.userId),
-  }),
+  (table) => {
+    return {
+      sessionTokenIdx: uniqueIndex("sessions__sessionToken__idx").on(
+        table.sessionToken,
+      ),
+      userIdIdx: index("sessions__userId__idx").on(table.userId),
+    }
+  },
 )
 
 export const verificationTokens = mysqlTable(
@@ -65,72 +79,123 @@ export const verificationTokens = mysqlTable(
   {
     identifier: varchar("identifier", { length: 191 }).primaryKey().notNull(),
     token: varchar("token", { length: 191 }).notNull(),
-    expires: datetime("expires").notNull(),
-    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
-    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+    expires: datetime("expires", { mode: "string" }).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
   },
-  (verificationToken) => ({
-    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(
-      verificationToken.token,
-    ),
-  }),
+  (table) => {
+    return {
+      tokenIdx: uniqueIndex("verification_tokens__token__idx").on(table.token),
+    }
+  },
 )
-
-/* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
 
 export const users = mysqlTable(
   "users",
   {
-    /* ********** START - DEFAULT DRIZZLE ITEMS DO NOT CHANGE ********** */
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     name: varchar("name", { length: 191 }),
     email: varchar("email", { length: 191 }).notNull(),
-    emailVerified: timestamp("emailVerified"),
+    emailVerified: timestamp("emailVerified", { mode: "string" }),
     image: varchar("image", { length: 191 }),
-    created_at: timestamp("created_at").notNull().defaultNow().onUpdateNow(),
-    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
-    /* ********** END - DEFAULT DRIZZLE ITEMS DO NOT CHANGE ********** */
+    createdAt: timestamp("created_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .defaultNow()
+      .onUpdateNow()
+      .notNull(),
+    /* ********** START - CUSTOM USER COLUMNS ********** */
     hoard_id: int("hoard_id"),
     username: varchar("username", { length: 191 }),
+    /* ********** END - CUSTOM USER COLUMNS ********** */
   },
-  (user) => ({
-    emailIndex: uniqueIndex("users__email__idx").on(user.email),
-  }),
+  (table) => {
+    return {
+      emailIdx: uniqueIndex("users__email__idx").on(table.email),
+    }
+  },
 )
 
+/* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
+
+export const usersRelations = relations(users, ({ one }) => ({
+  ship: one(ship, {
+    fields: [users.id],
+    references: [ship.userId],
+  }),
+  sessions: one(sessions, {
+    fields: [users.id],
+    references: [sessions.userId],
+  }),
+  accounts: one(accounts, {
+    fields: [users.id],
+    references: [accounts.userId],
+  }),
+}))
+
 export const ship = mysqlTable("ship", {
-  id: serial("ship_id").primaryKey().notNull(),
-  ship_type_id: smallint("ship_type_id").notNull(),
+  id: serial("id").primaryKey().notNull(),
+  shipTypeId: smallint("ship_type_id").notNull(),
+  userId: varchar("user_id", { length: 191 }).notNull(),
+  cityId: int("city_id").notNull(),
+  pathId: int("path_id"),
   cargo: json("cargo"),
 })
 
-// TODO: continue work on relationships
-// export const shipRelations = relations(users, ({ one }) => ({
-// 	profileInfo: one(profileInfo, {
-// 		fields: [user.id],
-// 		references: [profileInfo.userId],
-// 	}),
-// }));
-
 export const path = mysqlTable("path", {
-  id: serial("path_id").primaryKey().notNull(),
-  created_at: timestamp("created_at").notNull().defaultNow(),
+  id: serial("id").primaryKey().notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
   path: text("path"),
 })
 
+export const pathRelations = relations(path, ({ one }) => ({
+  npc: one(npc, {
+    fields: [path.id],
+    references: [npc.pathId],
+  }),
+  ship: one(ship, {
+    fields: [path.id],
+    references: [ship.pathId],
+  }),
+}))
+
 export const tile = mysqlTable("tile", {
-  id: serial("tile_id").primaryKey().notNull(),
+  id: serial("id").primaryKey().notNull(),
   x: int("x").notNull(),
   y: int("y").notNull(),
 })
 
+export const tileRelations = relations(tile, ({ one }) => ({
+  city: one(city, {
+    fields: [tile.id],
+    references: [city.tileId],
+  }),
+}))
+
 export const city = mysqlTable("city", {
-  id: serial("city_id").primaryKey().notNull(),
+  id: serial("id").primaryKey().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
+  tileId: int("tile_id").notNull(),
   level: json("level"),
 })
 
+export const cityRelations = relations(city, ({ one }) => ({
+  ship: one(ship, {
+    fields: [city.id],
+    references: [ship.cityId],
+  }),
+}))
+
 export const npc = mysqlTable("npc", {
-  id: serial("npc_id").primaryKey().notNull(),
-  npc_type_id: int("npc_type_id").notNull(),
+  id: serial("id").primaryKey().notNull(),
+  npcTypeId: int("npc_type_id").notNull(),
+  pathId: int("path_id"),
 })
