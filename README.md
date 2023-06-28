@@ -36,6 +36,7 @@ one day it will be a great IO game with users!
     - P2 a nice interaction at the edges
 - [ ] Plan MVP Backend (SQL relationships)
 - [ ] Build MVP and deploy
+- [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Core User Journey
   - [ ] Sailing
     - [x] Sketch MVP frontend https://excalidraw.com/

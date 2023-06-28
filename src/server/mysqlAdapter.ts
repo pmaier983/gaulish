@@ -4,17 +4,13 @@ import { and, eq } from "drizzle-orm"
 import { createId } from "@paralleldrive/cuid2"
 import { users, accounts, sessions, verificationTokens } from "~/../schema"
 
-// TODO turn this into a importable package
 /** @return { import("next-auth/adapters").Adapter } */
 export const mysqlAdapter = (db: PlanetScaleDatabase): Adapter => {
   return {
     async createUser(userData) {
       await db.insert(users).values({
+        ...userData,
         id: createId(),
-        email: userData.email,
-        emailVerified: userData.emailVerified,
-        name: userData.name,
-        image: userData.image,
       })
       const rows = await db
         .select()
@@ -80,12 +76,12 @@ export const mysqlAdapter = (db: PlanetScaleDatabase): Adapter => {
         providerAccountId: account.providerAccountId,
         type: account.type,
         userId: account.userId,
-        access_token: account.access_token,
-        expires_in: account.expires_at,
-        id_token: account.id_token,
-        refresh_token: account.refresh_token,
+        accessToken: account.access_token,
+        expiresIn: account.expires_at,
+        idToken: account.id_token,
+        refreshToken: account.refresh_token,
         scope: account.scope,
-        token_type: account.token_type,
+        tokenType: account.token_type,
       })
     },
     async unlinkAccount({ providerAccountId, provider }) {

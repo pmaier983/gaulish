@@ -12,6 +12,7 @@ import {
   smallint,
   json,
 } from "drizzle-orm/mysql-core"
+import { type AdapterAccount } from "next-auth/adapters"
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
@@ -19,7 +20,9 @@ export const accounts = mysqlTable(
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     userId: varchar("userId", { length: 191 }).notNull(),
-    type: varchar("type", { length: 191 }).notNull(),
+    type: varchar("type", { length: 191 })
+      .$type<AdapterAccount["type"]>()
+      .notNull(),
     provider: varchar("provider", { length: 191 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 191 }).notNull(),
     accessToken: text("access_token"),
@@ -54,7 +57,7 @@ export const sessions = mysqlTable(
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     sessionToken: varchar("sessionToken", { length: 191 }).notNull(),
     userId: varchar("userId", { length: 191 }).notNull(),
-    expires: datetime("expires", { mode: "string" }).notNull(),
+    expires: datetime("expires", { mode: "date" }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow()
@@ -79,7 +82,7 @@ export const verificationTokens = mysqlTable(
   {
     identifier: varchar("identifier", { length: 191 }).primaryKey().notNull(),
     token: varchar("token", { length: 191 }).notNull(),
-    expires: datetime("expires", { mode: "string" }).notNull(),
+    expires: datetime("expires", { mode: "date" }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow()
@@ -102,7 +105,7 @@ export const users = mysqlTable(
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     name: varchar("name", { length: 191 }),
     email: varchar("email", { length: 191 }).notNull(),
-    emailVerified: timestamp("emailVerified", { mode: "string" }),
+    emailVerified: timestamp("emailVerified", { mode: "date" }),
     image: varchar("image", { length: 191 }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()

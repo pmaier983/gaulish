@@ -7,7 +7,7 @@ import {
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
 import { db } from "./db"
-import { mysqlAdapter } from "./mysqlAdapter"
+import { mysqlAdapter } from "~/server/mysqlAdapter"
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
