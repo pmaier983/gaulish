@@ -8,7 +8,7 @@ const Dev = () => {
     return <FullPageRedirect />
   }
 
-  return <div>TODO: fill with dev tools</div>
+  return <div>TODO: fill with dev tools soon please!</div>
 }
 
 export default Dev
