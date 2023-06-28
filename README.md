@@ -35,6 +35,7 @@ one day it will be a great IO game with users!
     - P2 pinch to zoom
     - P2 a nice interaction at the edges
 - [ ] Plan MVP Backend (SQL relationships)
+- [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Build MVP and deploy
 - [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Core User Journey

@@ -1,6 +1,6 @@
 import { type AppType } from "next/app"
 import { type Session } from "next-auth"
-import { SessionProvider, signIn, useSession } from "next-auth/react"
+import { SessionProvider, useSession } from "next-auth/react"
 import { Poppins } from "next/font/google"
 import { useRouter } from "next/router"
 
