@@ -170,11 +170,17 @@ export const pathRelations = relations(path, ({ one }) => ({
   }),
 }))
 
-export const tile = mysqlTable("tile", {
-  id: serial("id").primaryKey().notNull(),
-  x: int("x").notNull(),
-  y: int("y").notNull(),
-})
+export const tile = mysqlTable(
+  "tile",
+  {
+    id: serial("id").primaryKey().notNull(),
+    x: int("x").notNull(),
+    y: int("y").notNull(),
+  },
+  (tile) => ({
+    xyIndex: uniqueIndex("xy_index").on(tile.x, tile.y),
+  }),
+)
 
 export const tileRelations = relations(tile, ({ one }) => ({
   city: one(city, {
