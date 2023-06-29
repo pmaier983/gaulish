@@ -44,8 +44,6 @@ one day it will be a great IO game with users!
       - [ ] Backend Requirements from MVP frontend (https://app.sqldbm.com/PostgreSQL/Edit/p157585#)
         - API Calls:
           - getMap
-          - getLeaderboard
-            - just fetch once every 1-5 min
           - getUserStats
           - getUserShips
           - getNpcPaths
@@ -65,3 +63,4 @@ one day it will be a great IO game with users!
 - [ ] Setup Ad Sense
 - [ ] Look into feature flags
 - [ ] Setup Component library (https://www.radix-ui.com/)
+- [ ] make Admin a role permission and not just my email...
