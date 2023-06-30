@@ -14,6 +14,7 @@ const poppins = Poppins({
 import "~/styles/globals.css"
 import { AUTH_FREE_PAGES } from "~/components/constants"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
+import { DevNavBar } from "~/components/DevNavBar"
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
@@ -37,6 +38,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   <SessionProvider session={session}>
     <div className={`h-full ${poppins.className}`}>
       <AuthWrapper>
+        <DevNavBar />
         <Component {...rest} />
       </AuthWrapper>
     </div>
