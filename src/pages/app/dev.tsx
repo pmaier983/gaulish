@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
+import { MapCreation } from "~/components/MapCreation"
 
 const Dev = () => {
   const { data } = useSession()
@@ -8,7 +9,11 @@ const Dev = () => {
     return <FullPageRedirect />
   }
 
-  return <div>TODO: fill with dev tools soon please!</div>
+  return (
+    <>
+      <MapCreation />
+    </>
+  )
 }
 
 export default Dev
