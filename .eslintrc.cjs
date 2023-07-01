@@ -25,6 +25,7 @@ const config = {
     "prettier",
   ],
   rules: {
+    "import/no-default-export": "warn",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
