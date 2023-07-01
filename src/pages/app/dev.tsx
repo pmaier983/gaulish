@@ -1,6 +1,10 @@
 import { useSession } from "next-auth/react"
+import dynamic from "next/dynamic"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
-import { MapCreation } from "~/components/MapCreation"
+
+const MapCreation = dynamic(() => import("~/components/MapCreation"), {
+  ssr: false,
+})
 
 const Dev = () => {
   const { data } = useSession()
