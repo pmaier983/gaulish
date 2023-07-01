@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react"
 import dynamic from "next/dynamic"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 
-const MapCreation = dynamic(() => import("~/components/MapCreation"), {
+const MapCreation = dynamic(() => import("~/components/pixi/MapCreation"), {
   ssr: false,
 })
 
@@ -20,4 +20,6 @@ const Dev = () => {
   )
 }
 
+// page export
+// eslint-disable-next-line import/no-default-export
 export default Dev
