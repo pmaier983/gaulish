@@ -1,4 +1,5 @@
 import { Sprite, Stage } from "@pixi/react"
+import { PixiCell } from "~/components/pixi/PixiCell"
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 
 /**
@@ -23,6 +24,7 @@ const MapCreation = () => {
           interactive={true}
           onclick={(e) => console.log("click", e)}
         />
+        <PixiCell fill="#fff" x={10} y={10} width={10} height={10} />
       </PixiViewport>
     </Stage>
   )
