@@ -17,11 +17,8 @@ export const PixiStage = ({ children, ...rest }: PixiStage) => {
 export const EventsProvider = ({ children }: { children: React.ReactNode }) => {
   const app = useApp()
 
-  useEffect(() => {
-    console.log(
-      "***** events provided to PIXI - should only happen once? *****",
-    )
 
+  useEffect(() => {
     // Install EventSystem, if not already
     // (PixiJS 6 doesn't add it by default)
     if (app && !app.renderer.events) {
