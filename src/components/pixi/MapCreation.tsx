@@ -1,8 +1,24 @@
-import { Graphics, Sprite } from "@pixi/react"
-import { useState } from "react"
-
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 import { PixiStage } from "~/components/pixi/PixiStage"
+import { PixiEmptyCell } from "~/components/pixi/PixiEmptyCell"
+import { createArraySquare } from "~/utils/utils"
+
+const CELL_TYPES = {
+  EMPTY: "EMPTY",
+  FOREST: "FOREST",
+  GRASSLAND: "GRASSLAND",
+  MOUNTAIN: "MOUNTAIN",
+  OCEAN: "OCEAN",
+} as const
+
+export type CELL_TYPE = keyof typeof CELL_TYPES
+
+interface PixiCell {
+  x: number
+  y: number
+  percentSize: number
+  type: CELL_TYPE
+}
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -12,28 +28,37 @@ import { PixiStage } from "~/components/pixi/PixiStage"
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreation = () => {
-  const [mapSize, setMapSize] = useState(500)
+  const mapWidth = 500
+
+  const cellMap = createArraySquare<Omit<PixiCell, "x" | "y">>({
+    size: 20,
+    cell: { type: CELL_TYPES.EMPTY, percentSize: 1 },
+  })
 
   return (
-    <PixiStage width={mapSize} height={mapSize}>
-      <PixiViewport width={mapSize} height={mapSize}>
-        <Sprite
-          x={0}
-          y={0}
-          height={10}
-          width={10}
-          image="/grass.webp"
-          interactive={true}
-          onclick={(e) => console.log("click", e)}
-        />
-        <Graphics
-          draw={(g) => {
-            g.clear()
-            g.beginFill("#fff")
-            g.drawRect(10, 10, 10, 10)
-            g.endFill()
-          }}
-        />
+    <PixiStage
+      width={mapWidth}
+      height={mapWidth}
+      options={{ backgroundColor: 0xaaaaaa }}
+    >
+      <PixiViewport width={mapWidth} height={mapWidth}>
+        {cellMap.map((row, y) =>
+          row.map((cell, x) => {
+            const cellXPosition = mapWidth * x * cell.percentSize
+            const cellYPosition = mapWidth * y * cell.percentSize
+
+            return (
+              <PixiEmptyCell
+                key={`${x}:${y}`}
+                fill="#fff"
+                x={cellXPosition}
+                y={cellYPosition}
+                percentSize={cell.percentSize}
+                interactive={true}
+              />
+            )
+          }),
+        )}
       </PixiViewport>
     </PixiStage>
   )
