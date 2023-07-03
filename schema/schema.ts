@@ -176,6 +176,7 @@ export const tile = mysqlTable(
     id: serial("id").primaryKey().notNull(),
     x: int("x").notNull(),
     y: int("y").notNull(),
+    type_id: smallint("type_id").notNull(),
   },
   (tile) => ({
     xyIndex: uniqueIndex("xy_index").on(tile.x, tile.y),
