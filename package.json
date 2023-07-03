@@ -20,6 +20,7 @@
     "@trpc/react-query": "^10.30.0",
     "@trpc/server": "^10.30.0",
     "drizzle-orm": "^0.27.0",
+    "immer": "^10.0.2",
     "next": "^13.4.6",
     "next-auth": "^4.22.1",
     "nextjs-routes": "^2.0.1",
