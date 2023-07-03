@@ -14,10 +14,9 @@ export const PixiEmptyCell = ({
   x,
   y,
   percentSize,
+  ...rest
 }: PixiEmptyCellProps) => {
   const app = useApp()
-
-  console.log(app)
 
   const cellWidth = (app.renderer.options.width ?? 0) * percentSize
   const cellHeight = (app.renderer.options.height ?? 0) * percentSize
@@ -43,5 +42,5 @@ export const PixiEmptyCell = ({
       y,
     ],
   )
-  return <Graphics draw={draw} />
+  return <Graphics draw={draw} {...rest} />
 }
