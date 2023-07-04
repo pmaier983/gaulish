@@ -1,0 +1,18 @@
+.container {
+  display: grid;
+  flex-grow: 1;
+  grid-template-rows:
+    [details] minmax(50px, 15%)
+    [main-content] 1fr
+    [chat-log] minmax(50px, 25%);
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: row;
+}
+
+.mainContentSidebar {
+  width: clamp(100px, 20%, 500px);
+  background-color: red;
+}

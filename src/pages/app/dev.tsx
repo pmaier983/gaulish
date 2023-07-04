@@ -3,7 +3,7 @@ import dynamic from "next/dynamic"
 import { useState } from "react"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 
-const MapCreation = dynamic(() => import("~/components/pixi/MapCreation"), {
+const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
 })
 
