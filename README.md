@@ -57,7 +57,7 @@ one day it will be a great IO game with users!
 
 ### Low Priority
 
-- [ ] Setup i18n? (try again :cry:) (look into https://crowdin.com/)
+- [ ] Setup i18n? (try again :cry:) (try: https://twitter.com/tomlienard/status/1675512683007705090?s=46&t=AvxOErBZQssdPziieqzO9w - it works in app directory!)(look into https://crowdin.com/)
 - [ ] Setup Github Actions (Build on commit?)
   - we get this automatically with Vercel. Shift to github only when we want something more verbose.
 - [ ] Setup Ad Sense
