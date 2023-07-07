@@ -5,6 +5,7 @@ import { createTRPCContext } from "~/server/api/trpc"
 import { appRouter } from "~/server/api/root"
 
 // export API handler
+// eslint-disable-next-line import/no-default-export
 export default createNextApiHandler({
   router: appRouter,
   createContext: createTRPCContext,
