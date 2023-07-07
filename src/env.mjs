@@ -8,7 +8,6 @@ const server = z.object({
   DATABASE_URL: z.string().url(),
   NEXT_PUBLIC_BASE_URL: z.string().url(),
   ABLY_API_KEY: z.string().min(1),
-  DEFAULT_CLIENT_ID: z.string().min(1),
   NODE_ENV: z.enum(["development", "test", "production"]),
   NEXTAUTH_SECRET:
     process.env.NODE_ENV === "production"
@@ -44,7 +43,6 @@ const processEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
   ABLY_API_KEY: process.env.ABLY_API_KEY,
-  DEFAULT_CLIENT_ID: process.env.DEFAULT_CLIENT_ID,
   NODE_ENV: process.env.NODE_ENV,
   NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
   NEXTAUTH_URL: process.env.NEXTAUTH_URL,
