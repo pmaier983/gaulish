@@ -25,6 +25,8 @@ const Home: NextPage = () => {
   )
 }
 
+// Need to export pages
+// eslint-disable-next-line import/no-default-export
 export default Home
 
 // Logged in message questioning?

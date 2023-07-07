@@ -2,11 +2,11 @@ import { Stage, type _ReactPixi, useApp } from "@pixi/react"
 import { useEffect } from "react"
 import * as PIXI from "pixi.js"
 
-interface PixiStage extends _ReactPixi.IStage {
+interface PixiStageProps extends _ReactPixi.IStage {
   children?: React.ReactNode
 }
 
-export const PixiStage = ({ children, ...rest }: PixiStage) => {
+export const PixiStage = ({ children, ...rest }: PixiStageProps) => {
   return (
     <Stage {...rest}>
       <EventsProvider>{children}</EventsProvider>
@@ -16,7 +16,6 @@ export const PixiStage = ({ children, ...rest }: PixiStage) => {
 
 export const EventsProvider = ({ children }: { children: React.ReactNode }) => {
   const app = useApp()
-
 
   useEffect(() => {
     // Install EventSystem, if not already

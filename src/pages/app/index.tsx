@@ -1,10 +1,6 @@
-import { signOut, useSession } from "next-auth/react"
-
 import styles from "./index.module.css"
 
 const App = () => {
-  const { data } = useSession()
-
   return (
     <div className={styles.container}>
       <div className="bg-red-100">Details</div>
