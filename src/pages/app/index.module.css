@@ -1,30 +1,71 @@
 .container {
   display: grid;
   flex-grow: 1;
-  grid-template-rows:
-    [details] minmax(50px, 14%)
-    [main-content] 1fr
-    [chat-log] minmax(50px, 20%);
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: minmax(150px, 15%) 1fr minmax(150px, 20%);
+  grid-template-areas:
+    "header header"
+    "sidebar main"
+    "footer footer";
+
+  @media (min-width: theme(screens.md)) {
+    grid-template-columns: 1fr 3fr;
+    grid-template-rows: minmax(100px, 15%) 1fr minmax(100px, 20%);
+    grid-template-areas:
+      "header main"
+      "sidebar main"
+      "footer footer";
+  }
+
+  @media (min-width: theme(screens.lg)) {
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: minmax(100px, 15%) 1fr minmax(100px, 20%);
+    grid-template-areas:
+      "header main"
+      "sidebar main"
+      "footer main";
+  }
+}
+
+.header {
+  grid-area: header;
+  background-color: theme(colors.red.200);
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: theme(colors.blue.200);
+}
+
+.main {
+  grid-area: main;
+  display: flex;
+  align-self: center;
+  aspect-ratio: 1/1;
+  background-color: theme(colors.green.200);
+
+  /* make the 350 a calculated number */
+  max-height: calc(100vh - 350px);
+
+  @media (min-width: theme(screens.md)) {
+    max-height: calc(100vh - 200px);
+    align-self: end;
+  }
+
+  @media (min-width: theme(screens.lg)) {
+    max-height: calc(100vh - 32px);
+    align-self: center;
+  }
+
+  background-color: theme(colors.green.400);
 }
 
 .mainContent {
-  display: flex;
-  flex-direction: row;
-}
-
-.mainContentSidebar {
-  flex: 1;
-  min-width: 125px;
-  background-color: theme(colors.red.500);
-}
-
-.mapContainer {
-  background-color: theme(colors.green.200);
-  /* object-fit: contain; */
   aspect-ratio: 1/1;
-  max-height: 70vh;
+  background-color: theme(colors.green.400);
+}
 
-  /* @media screen(sm) {
-    aspect-ratio: 1/1;
-  } */
+.footer {
+  grid-area: footer;
+  background-color: theme(colors.yellow.200);
 }

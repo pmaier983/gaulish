@@ -15,14 +15,10 @@ const App = () => {
 
   return (
     <div className={styles.container}>
-      <div className="bg-red-100">Details</div>
-      <div className={styles.mainContent}>
-        <div className={styles.mainContentSidebar}>Small Stuff</div>
-        <div className={styles.mapContainer} ref={sizeRef}>
-          {/* <Map width={size.height} height={size.height} /> */}
-        </div>
-      </div>
-      <div className="bg-blue-100">Chat & Log</div>
+      <div className={styles.header}>Details</div>
+      <div className={styles.sidebar}>Sidebar</div>
+      <div className={styles.main}>main</div>
+      <div className={styles.footer}>Chat & Log</div>
     </div>
   )
 }
