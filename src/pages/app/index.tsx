@@ -1,7 +1,8 @@
 import dynamic from "next/dynamic"
 
-import styles from "./index.module.css"
 import { useElementSize } from "~/hooks/useElementSize"
+
+import styles from "./index.module.css"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -17,8 +18,8 @@ const App = () => {
       <div className="bg-red-100">Details</div>
       <div className={styles.mainContent}>
         <div className={styles.mainContentSidebar}>Small Stuff</div>
-        <div className="flex-1 bg-slate-500" ref={sizeRef}>
-          <Map width={size.height} height={size.height} />
+        <div className={styles.mapContainer} ref={sizeRef}>
+          {/* <Map width={size.height} height={size.height} /> */}
         </div>
       </div>
       <div className="bg-blue-100">Chat & Log</div>

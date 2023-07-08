@@ -2,9 +2,9 @@
   display: grid;
   flex-grow: 1;
   grid-template-rows:
-    [details] minmax(50px, 15%)
+    [details] minmax(50px, 14%)
     [main-content] 1fr
-    [chat-log] minmax(50px, 25%);
+    [chat-log] minmax(50px, 20%);
 }
 
 .mainContent {
@@ -13,6 +13,18 @@
 }
 
 .mainContentSidebar {
-  width: clamp(100px, 20%, 500px);
-  background-color: red;
+  flex: 1;
+  min-width: 125px;
+  background-color: theme(colors.red.500);
+}
+
+.mapContainer {
+  background-color: theme(colors.green.200);
+  /* object-fit: contain; */
+  aspect-ratio: 1/1;
+  max-height: 70vh;
+
+  /* @media screen(sm) {
+    aspect-ratio: 1/1;
+  } */
 }

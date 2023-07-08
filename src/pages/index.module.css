@@ -28,7 +28,7 @@
 
 @media (prefers-color-scheme: dark) {
   .styledBox {
-    --border-color: white;
+    --border-color: theme(colors.white);
   }
 }
 
