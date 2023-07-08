@@ -17,6 +17,7 @@ import {
 //   - update this list constantly with websockets.
 
 export const generalRouter = createTRPCRouter({
+  // TODO: implement map rendering on the client
   getAllTiles: protectedProcedure.query(({ ctx }) => {
     return ctx.db.select().from(tile)
   }),
