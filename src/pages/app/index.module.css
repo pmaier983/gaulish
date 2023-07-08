@@ -2,7 +2,12 @@
   display: grid;
   flex-grow: 1;
   grid-template-columns: 1fr 3fr;
-  grid-template-rows: minmax(150px, 15%) 1fr minmax(150px, 20%);
+  --row-size: 150px;
+
+  grid-template-rows:
+    minmax(var(--row-size), 15%)
+    1fr
+    minmax(var(--row-size), 20%);
   grid-template-areas:
     "header header"
     "sidebar main"
@@ -10,7 +15,10 @@
 
   @media (min-width: theme(screens.md)) {
     grid-template-columns: 1fr 3fr;
-    grid-template-rows: minmax(100px, 15%) 1fr minmax(100px, 20%);
+    grid-template-rows:
+      minmax(var(--row-size), 15%)
+      1fr
+      minmax(var(--row-size), 20%);
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -19,7 +27,10 @@
 
   @media (min-width: theme(screens.lg)) {
     grid-template-columns: 2fr 3fr;
-    grid-template-rows: minmax(100px, 15%) 1fr minmax(100px, 20%);
+    grid-template-rows:
+      minmax(var(--row-size), 15%)
+      1fr
+      minmax(var(--row-size), 20%);
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -44,16 +55,16 @@
   aspect-ratio: 1/1;
   background-color: theme(colors.green.200);
 
-  /* make the 350 a calculated number */
-  max-height: calc(100vh - 350px);
+  /* TODO Account for Dev Nav Bar Here */
+  max-height: calc(100vh - (var(--row-size) * 2));
 
   @media (min-width: theme(screens.md)) {
-    max-height: calc(100vh - 200px);
     align-self: end;
   }
 
   @media (min-width: theme(screens.lg)) {
-    max-height: calc(100vh - 32px);
+    /* TODO Account for Dev Nav Bar Here */
+    max-height: 100vh;
     align-self: center;
   }
 

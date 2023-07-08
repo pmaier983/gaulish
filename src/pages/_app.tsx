@@ -47,7 +47,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <div className={`flex h-full flex-col ${poppins.className}`}>
+      <div className={`flex h-full flex-col bg-blue-300 ${poppins.className}`}>
         <AuthWrapper>
           <DevNavBar />
           <Component {...rest} />
