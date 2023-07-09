@@ -1,20 +1,16 @@
 .container {
   flex-grow: 1;
+  max-height: 100%;
 
   display: grid;
-  --row-size: 150px;
-  --column-size: 175px;
+  --row-size: 125px;
+  --column-size: 125px;
 
-  grid-template-columns:
-    minmax(var(--column-size), 25%)
-    minmax(
-      calc(100vw - var(--column-size)),
-      calc(100vh - (var(--row-size) * 2))
-    );
+  grid-template-columns: minmax(var(--column-size), 1fr) 2fr;
   grid-template-rows:
-    minmax(var(--row-size), 15%)
-    1fr
-    minmax(var(--row-size), 25%);
+    minmax(var(--row-size), 1fr)
+    6fr
+    minmax(calc(var(--row-size) + 25px), 2fr);
 
   grid-template-areas:
     "header header"
@@ -22,15 +18,15 @@
     "footer footer";
 
   @media (min-width: theme(screens.md)) {
-    --column-size: 300px;
-    --row-size: 175px;
-    grid-template-columns:
-      minmax(var(--column-size), 1fr)
-      minmax(calc(100vw - var(--column-size)), calc(100vh - (var(--row-size))));
+    --column-size: 250px;
+    --row-size: 150px;
+
+    grid-template-columns: minmax(var(--column-size), 1fr) 2fr;
     grid-template-rows:
-      var(--row-size)
-      1fr
-      var(--row-size);
+      minmax(var(--row-size), 1fr)
+      5fr
+      minmax(var(--row-size), 2fr);
+
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -40,13 +36,13 @@
   @media (min-width: theme(screens.lg)) {
     --column-size: 40vw;
     --row-size: 250px;
-    grid-template-columns:
-      minmax(var(--column-size), 500px)
-      minmax(calc(100vw - var(--column-size)), calc(100vh - (var(--row-size))));
+
+    grid-template-columns: minmax(var(--column-size), 1fr) 2fr;
     grid-template-rows:
-      var(--row-size)
-      1fr
-      var(--row-size);
+      minmax(var(--row-size), 1fr)
+      5fr
+      minmax(var(--row-size), 2fr);
+
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -70,26 +66,6 @@
   align-self: center;
   height: 100%;
   background-color: theme(colors.green.200);
-
-  /* TODO Account for Dev Nav Bar Here */
-  max-height: calc(100vh - (var(--row-size) * 2));
-
-  @media (min-width: theme(screens.md)) {
-    /* TODO Account for Dev Nav Bar Here */
-    max-height: calc(100vh - (var(--row-size)));
-  }
-
-  @media (min-width: theme(screens.lg)) {
-    /* TODO Account for Dev Nav Bar Here */
-    max-height: 100vh;
-  }
-
-  background-color: theme(colors.green.400);
-}
-
-.mainContent {
-  aspect-ratio: 1/1;
-  background-color: theme(colors.green.400);
 }
 
 .footer {
