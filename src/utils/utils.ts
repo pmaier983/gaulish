@@ -1,11 +1,11 @@
 export const createArraySquare = <T>({
   size,
-  cell,
+  tile,
 }: {
   size: number
-  cell: T
+  tile: T
 }) => {
   const row = Array(size).fill(null)
-  const squareArray = row.map((_, y) => row.map((_, x) => ({ x, y, ...cell })))
+  const squareArray = row.map((_, y) => row.map((_, x) => ({ x, y, ...tile })))
   return squareArray
 }

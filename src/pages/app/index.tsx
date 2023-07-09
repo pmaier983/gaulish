@@ -3,6 +3,7 @@ import dynamic from "next/dynamic"
 import { useElementSize } from "~/hooks/useElementSize"
 
 import styles from "./index.module.css"
+import { api } from "~/utils/api"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -11,14 +12,21 @@ const Map = dynamic(() => import("~/components/Map"), {
 const App = () => {
   const { sizeRef, size } = useElementSize()
 
-  console.log(size)
+  /* 
+    To populate the map we need the following:
+    - all tiles
+    - all enemy routes
+    - all cities
+  */
+  // TODO: consider moving this to a zustand state
+  const { data } = api.general.getAllTiles.useQuery()
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>Details</div>
       <div className={styles.sidebar}>Sidebar</div>
       <div className={styles.main} ref={sizeRef}>
-        <Map width={size.width} height={size.height} />
+        <Map mapWidth={size.width} mapHeight={size.height} map={data} />
       </div>
       <div className={styles.footer}>Chat & Log</div>
     </div>

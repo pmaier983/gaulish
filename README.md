@@ -37,6 +37,7 @@ one day it will be a great IO game with users!
 - [ ] Plan MVP Backend (SQL relationships)
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Build MVP and deploy
+- [ ] Collect Data on what size screen users are using
 - [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Core User Journey
   - [ ] Sailing

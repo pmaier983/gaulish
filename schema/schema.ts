@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm"
+import { type InferModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
@@ -126,6 +126,7 @@ export const users = mysqlTable(
     }
   },
 )
+export type User = InferModel<typeof users>
 
 /* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
 
@@ -152,12 +153,14 @@ export const ship = mysqlTable("ship", {
   pathId: int("path_id"),
   cargo: json("cargo"),
 })
+export type Ship = InferModel<typeof ship>
 
 export const path = mysqlTable("path", {
   id: serial("id").primaryKey().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   path: text("path"),
 })
+export type Path = InferModel<typeof path>
 
 export const pathRelations = relations(path, ({ one }) => ({
   npc: one(npc, {
@@ -182,6 +185,7 @@ export const tile = mysqlTable(
     xyIndex: uniqueIndex("xy_index").on(tile.x, tile.y),
   }),
 )
+export type Tile = InferModel<typeof tile>
 
 export const tileRelations = relations(tile, ({ one }) => ({
   city: one(city, {
@@ -196,6 +200,7 @@ export const city = mysqlTable("city", {
   tileId: int("tile_id").notNull(),
   level: json("level"),
 })
+export type City = InferModel<typeof city>
 
 export const cityRelations = relations(city, ({ one }) => ({
   ship: one(ship, {
@@ -209,3 +214,4 @@ export const npc = mysqlTable("npc", {
   npcTypeId: int("npc_type_id").notNull(),
   pathId: int("path_id"),
 })
+export type Npc = InferModel<typeof npc>

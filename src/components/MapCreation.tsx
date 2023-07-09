@@ -1,29 +1,29 @@
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 import { PixiStage } from "~/components/pixi/PixiStage"
-import { PixiEmptyCell } from "~/components/pixi/PixiEmptyCell"
+import { PixiEmptyTile } from "~/components/pixi/PixiEmptyTile"
 import { createArraySquare } from "~/utils/utils"
 import { useState } from "react"
 import Image from "next/image"
 import { Sprite } from "@pixi/react"
 import { produce } from "immer"
 import {
-  type CELL_TYPE,
-  CELL_TYPES,
-  CELL_TYPE_TO_TYPE_ID,
+  type TILE_TYPE,
+  TILE_TYPES,
+  TILE_TYPE_TO_TYPE_ID,
 } from "~/components/constants"
 
 interface PixiCell {
   x: number
   y: number
   percentSize: number
-  type: CELL_TYPE
+  type: TILE_TYPE
 }
 
 type CellMap = PixiCell[][]
 
 const initialCellMap = createArraySquare<Omit<PixiCell, "x" | "y">>({
   size: 7,
-  cell: { type: CELL_TYPES.EMPTY, percentSize: 0.04 },
+  tile: { type: TILE_TYPES.EMPTY, percentSize: 0.04 },
 })
 
 const modifyCellInMap = (
@@ -51,8 +51,8 @@ const modifyCellInMap = (
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreation = () => {
-  const [cellSelectionType, setCellSelectionType] = useState<CELL_TYPE>(
-    CELL_TYPES.EMPTY,
+  const [cellSelectionType, setCellSelectionType] = useState<TILE_TYPE>(
+    TILE_TYPES.EMPTY,
   )
   const [cellMap, setCellMap] = useState<CellMap>(initialCellMap)
 
@@ -73,9 +73,9 @@ const MapCreation = () => {
                 const cellXPosition = mapWidth * x * cell.percentSize
                 const cellYPosition = mapWidth * y * cell.percentSize
 
-                if (cell.type === CELL_TYPES.EMPTY) {
+                if (cell.type === TILE_TYPES.EMPTY) {
                   return (
-                    <PixiEmptyCell
+                    <PixiEmptyTile
                       key={`${x}:${y}`}
                       fill="#fff"
                       x={cellXPosition}
@@ -116,15 +116,15 @@ const MapCreation = () => {
           </PixiViewport>
         </PixiStage>
         <div className="flex-col">
-          {Object.values(CELL_TYPES).map((type) => (
+          {Object.values(TILE_TYPES).map((type) => (
             <Image
               key={type}
               className={
                 type === cellSelectionType ? "border-2 border-red-700" : ""
               }
               src={`/${type.toLocaleLowerCase()}.webp`}
-              width={mapWidth / Object.values(CELL_TYPES).length}
-              height={mapWidth / Object.values(CELL_TYPES).length}
+              width={mapWidth / Object.values(TILE_TYPES).length}
+              height={mapWidth / Object.values(TILE_TYPES).length}
               alt={`${type} pixi cell type`}
               onClick={() => setCellSelectionType(type)}
             />
@@ -136,7 +136,7 @@ const MapCreation = () => {
           const allCells = cellMap.reduce<string[]>((acc, row) => {
             const sqlROW = row.map((cell) => {
               return `(${cell.x}, ${cell.y}, ${
-                CELL_TYPE_TO_TYPE_ID[cell.type]
+                TILE_TYPE_TO_TYPE_ID[cell.type]
               })`
             })
             return acc.concat(sqlROW)
