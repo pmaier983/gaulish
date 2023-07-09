@@ -1,10 +1,11 @@
-import { signOut, useSession } from "next-auth/react"
+import { signOut } from "next-auth/react"
 import Link from "next/link"
+import { api } from "~/utils/api"
 
 export const DevNavBar = () => {
-  const { data } = useSession()
+  const { data: isUserAdmin } = api.general.isUserAdmin.useQuery()
 
-  if (data?.user.email !== "pmaier983@gmail.com") {
+  if (!isUserAdmin) {
     return null
   }
 

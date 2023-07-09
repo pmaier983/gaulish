@@ -1,3 +1,4 @@
+import { ADMINS } from "./../auth"
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -135,7 +136,7 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
   if (
     !ctx.session ||
     !ctx.session.user ||
-    ctx.session.user.email !== "pmaier983@gmail.com"
+    ADMINS.includes(ctx.session.user.email ?? "")
   ) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }

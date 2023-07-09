@@ -10,6 +10,12 @@ import { db } from "./db"
 import { mysqlAdapter } from "~/server/mysqlAdapter"
 
 /**
+ * List of admin emails
+ */
+// Consider moving this to a database table or env?
+export const ADMINS = ["pmaier983@gmail.com"]
+
+/**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
  * object and keep type safety.
  *

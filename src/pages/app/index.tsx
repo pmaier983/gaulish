@@ -4,13 +4,17 @@ import { useElementSize } from "~/hooks/useElementSize"
 
 import styles from "./index.module.css"
 import { api } from "~/utils/api"
+import { useSession } from "next-auth/react"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
 })
 
 const App = () => {
+  const a = useSession()
   const { sizeRef, size } = useElementSize()
+
+  // console.log(a)
 
   /* 
     To populate the map we need the following:
@@ -18,7 +22,7 @@ const App = () => {
     - all enemy routes
     - all cities
   */
-  // TODO: consider moving this to a zustand state
+  // TODO: consider moving this to a zustand state?
   const { data } = api.general.getAllTiles.useQuery()
 
   return (

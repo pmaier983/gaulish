@@ -3,6 +3,7 @@ import { PixiViewport } from "~/components/pixi/PixiViewport"
 
 import type { Tile } from "schema"
 import { PixiTile } from "~/components/pixi/PixiTile"
+import { api } from "~/utils/api"
 
 interface MapProps {
   mapWidth: number
