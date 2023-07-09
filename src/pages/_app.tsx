@@ -12,6 +12,9 @@ import { DevNavBar } from "~/components/DevNavBar"
 import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
+import { useEffect } from "react"
+import { useAtom } from "jotai"
+import { isUserAdminAtom } from "~/utils/atoms"
 
 const poppins = Poppins({
   weight: ["400", "700"],
@@ -29,6 +32,15 @@ configureAbly({
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const { status } = useSession()
+  const [, setIsUserAdmin] = useAtom(isUserAdminAtom)
+
+  const { data: isUserAdmin } = api.general.isUserAdmin.useQuery(undefined, {
+    staleTime: Infinity,
+  })
+
+  useEffect(() => {
+    setIsUserAdmin(isUserAdmin ?? false)
+  }, [isUserAdmin, setIsUserAdmin])
 
   if (
     status === "unauthenticated" &&
