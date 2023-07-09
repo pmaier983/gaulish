@@ -17,7 +17,9 @@ const App = () => {
     <div className={styles.container}>
       <div className={styles.header}>Details</div>
       <div className={styles.sidebar}>Sidebar</div>
-      <div className={styles.main}>main</div>
+      <div className={styles.main} ref={sizeRef}>
+        <Map width={size.width} height={size.height} />
+      </div>
       <div className={styles.footer}>Chat & Log</div>
     </div>
   )

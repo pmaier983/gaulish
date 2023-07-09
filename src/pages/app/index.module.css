@@ -1,24 +1,36 @@
 .container {
-  display: grid;
   flex-grow: 1;
-  grid-template-columns: 1fr 3fr;
-  --row-size: 150px;
 
+  display: grid;
+  --row-size: 150px;
+  --column-size: 175px;
+
+  grid-template-columns:
+    minmax(var(--column-size), 25%)
+    minmax(
+      calc(100vw - var(--column-size)),
+      calc(100vh - (var(--row-size) * 2))
+    );
   grid-template-rows:
     minmax(var(--row-size), 15%)
     1fr
-    minmax(var(--row-size), 20%);
+    minmax(var(--row-size), 25%);
+
   grid-template-areas:
     "header header"
     "sidebar main"
     "footer footer";
 
   @media (min-width: theme(screens.md)) {
-    grid-template-columns: 1fr 3fr;
+    --column-size: 300px;
+    --row-size: 175px;
+    grid-template-columns:
+      minmax(var(--column-size), 1fr)
+      minmax(calc(100vw - var(--column-size)), calc(100vh - (var(--row-size))));
     grid-template-rows:
-      minmax(var(--row-size), 15%)
+      var(--row-size)
       1fr
-      minmax(var(--row-size), 20%);
+      var(--row-size);
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -26,11 +38,15 @@
   }
 
   @media (min-width: theme(screens.lg)) {
-    grid-template-columns: 2fr 3fr;
+    --column-size: 40vw;
+    --row-size: 250px;
+    grid-template-columns:
+      minmax(var(--column-size), 500px)
+      minmax(calc(100vw - var(--column-size)), calc(100vh - (var(--row-size))));
     grid-template-rows:
-      minmax(var(--row-size), 15%)
+      var(--row-size)
       1fr
-      minmax(var(--row-size), 20%);
+      var(--row-size);
     grid-template-areas:
       "header main"
       "sidebar main"
@@ -52,20 +68,20 @@
   grid-area: main;
   display: flex;
   align-self: center;
-  aspect-ratio: 1/1;
+  height: 100%;
   background-color: theme(colors.green.200);
 
   /* TODO Account for Dev Nav Bar Here */
   max-height: calc(100vh - (var(--row-size) * 2));
 
   @media (min-width: theme(screens.md)) {
-    align-self: end;
+    /* TODO Account for Dev Nav Bar Here */
+    max-height: calc(100vh - (var(--row-size)));
   }
 
   @media (min-width: theme(screens.lg)) {
     /* TODO Account for Dev Nav Bar Here */
     max-height: 100vh;
-    align-self: center;
   }
 
   background-color: theme(colors.green.400);
