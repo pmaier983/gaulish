@@ -3,19 +3,19 @@ import { useState } from "react"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useChannel } from "@ably-labs/react-hooks"
 import { type Types } from "ably/promises"
-import { api } from "~/utils/api"
+import { useAtom } from "jotai"
+import { isUserAdminAtom } from "~/utils/atoms"
 
 const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
 })
 
 const Dev = () => {
+  const [isUserAdmin] = useAtom(isUserAdminAtom)
   const [isDevMapCreationVisible, setDevMapCreationVisibility] = useState(false)
   const [channel] = useChannel("some-channel-name", (message: Types.Message) =>
     console.log("Received Ably message", message),
   )
-
-  const { data: isUserAdmin } = api.general.isUserAdmin.useQuery()
 
   if (!isUserAdmin) {
     return <FullPageRedirect />

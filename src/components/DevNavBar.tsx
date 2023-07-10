@@ -1,9 +1,10 @@
+import { useAtom } from "jotai"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
-import { api } from "~/utils/api"
+import { isUserAdminAtom } from "~/utils/atoms"
 
 export const DevNavBar = () => {
-  const { data: isUserAdmin } = api.general.isUserAdmin.useQuery()
+  const [isUserAdmin] = useAtom(isUserAdminAtom)
 
   if (!isUserAdmin) {
     return null
