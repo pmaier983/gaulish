@@ -211,7 +211,15 @@ export const cityRelations = relations(city, ({ one }) => ({
 
 export const npc = mysqlTable("npc", {
   id: serial("id").primaryKey().notNull(),
-  npcTypeId: int("npc_type_id").notNull(),
+  shipTypeId: int("ship_type_id").notNull(),
   pathId: int("path_id"),
 })
 export type Npc = InferModel<typeof npc>
+
+/* CUSTOM TYPES WITH NO DB PARALLEL... YET */
+export type ShipType = {
+  shipTypeId: number
+  name: string
+  cargo_capacity: number
+  speed: number
+}

@@ -1,0 +1,1 @@
+ALTER TABLE `npc` RENAME COLUMN `npc_type_id` TO `ship_type_id`;

@@ -1,4 +1,5 @@
 import { type NextRouter } from "next/router"
+import { type ShipType } from "schema"
 
 export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
@@ -38,3 +39,18 @@ export const getTileImageString = (typeId: number) => {
 }
 
 export type TILE_TYPE = keyof typeof TILE_TYPES
+
+export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
+  0: {
+    shipTypeId: 0,
+    name: "Plank",
+    cargo_capacity: 1,
+    speed: 1,
+  },
+  1: {
+    shipTypeId: 1,
+    name: "Raft",
+    cargo_capacity: 10,
+    speed: 2,
+  },
+}
