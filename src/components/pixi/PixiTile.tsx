@@ -1,6 +1,8 @@
 import { Sprite, Text, useApp } from "@pixi/react"
 import { useAtom } from "jotai"
 import { type Tile } from "schema"
+import * as PIXI from "pixi.js"
+
 import { TILE_PERCENT_SIZE, getTileImageString } from "~/components/constants"
 import { isUserAdminAtom } from "~/utils/atoms"
 
@@ -12,6 +14,8 @@ export const PixiTile = ({ x, y, type_id }: Tile) => {
 
   const tileXPosition = mapWidth * x * TILE_PERCENT_SIZE
   const tileYPosition = mapWidth * y * TILE_PERCENT_SIZE
+
+  const textSize = (mapWidth * TILE_PERCENT_SIZE) / 5
 
   return (
     <>
@@ -25,9 +29,15 @@ export const PixiTile = ({ x, y, type_id }: Tile) => {
       {isUserAdmin && (
         <Text
           text={`${x}:${y}`}
-          x={tileXPosition}
-          y={tileYPosition}
-          anchor={0.5}
+          x={tileXPosition + textSize / 2}
+          y={tileYPosition + textSize / 2}
+          width={textSize}
+          height={textSize}
+          style={
+            new PIXI.TextStyle({
+              fill: "#ffffff",
+            })
+          }
         />
       )}
     </>
