@@ -18,38 +18,16 @@ one day it will be a great IO game with users!
 
 ### High Priority
 
+- [ ] Build MVP and deploy
 - [ ] Setup Monitoring & error logging
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
-- [ ] Setup websockets (https://create.t3.gg/en/other-recs#pusher)
-  - [ ] Compare https://socket.io/ and https://partykit.io/
 - [ ] Plan MVP Components
-  - [ ] How to do Infinite Canvas
-    - Playground (Semi close) -> https://www.pixiplayground.com/#/edit/B8R6ZZD8JROtw1c52LFnN
-    - Pure Canvas solution -> https://github.com/emilefokkema/infinite-canvas
-    - Pure React infinite Canvas -> https://betterprogramming.pub/how-to-create-a-figma-like-infinite-canvas-in-react-a2b0365b2a7
-  - [ ] Components an infinite canvas solution needs to have:
-    - P0 drag to move
-    - P0 scroll wheel zoom
-    - P1 drag and drop to path functionality
-    - P2 pinch to zoom
-    - P2 a nice interaction at the edges
-- [ ] Plan MVP Backend (SQL relationships)
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
-- [ ] Build MVP and deploy
 - [ ] Collect Data on what size screen users are using
 - [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Core User Journey
   - [ ] Sailing
-    - [x] Sketch MVP frontend https://excalidraw.com/
-      - [ ] Backend Requirements from MVP frontend (https://app.sqldbm.com/PostgreSQL/Edit/p157585#)
-        - API Calls:
-          - getMap
-          - getUserStats
-          - getUserShips
-          - getNpcPaths
-          - getUserShipPaths
-            - update this list constantly with websockets.
     - Ship Selection
     - User plans a route
       - P0 arrow keys to nav
