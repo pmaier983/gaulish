@@ -1,4 +1,5 @@
-import { tile } from "schema"
+import { eq } from "drizzle-orm"
+import { npc, path, tile } from "schema"
 import { TILE_TYPES, TILE_TYPE_TO_TYPE_ID } from "~/components/constants"
 
 import {
@@ -32,5 +33,8 @@ export const generalRouter = createTRPCRouter({
       y: 1,
       type_id: TILE_TYPE_TO_TYPE_ID[TILE_TYPES.OCEAN],
     })
+  }),
+  getNpcs: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.select().from(npc).leftJoin(path, eq(path.id, npc.pathId))
   }),
 })

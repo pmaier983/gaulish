@@ -14,20 +14,25 @@ const App = () => {
 
   /* 
     To populate the map we need the following:
-    - all tiles
-    - all enemy routes
+    - all npc routes
     - all cities
   */
-  const { data } = api.general.getAllTiles.useQuery(undefined, {
+  const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,
   })
+
+  const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
+    staleTime: Infinity,
+  })
+
+  console.log(npcData)
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>Details</div>
       <div className={styles.sidebar}>Sidebar</div>
       <div className={styles.main} ref={sizeRef}>
-        <Map mapWidth={size.width} mapHeight={size.height} map={data} />
+        <Map mapWidth={size.width} mapHeight={size.height} map={mapData} />
       </div>
       <div className={styles.footer}>Chat & Log</div>
     </div>
