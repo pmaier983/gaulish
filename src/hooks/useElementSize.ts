@@ -1,9 +1,18 @@
-import { useCallback, useLayoutEffect, useRef, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
 
 interface Size {
   width: number
   height: number
 }
+
+const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect
 
 /**
  * Returns the size of the element and a ref to attach to the element.
@@ -26,7 +35,7 @@ export const useElementSize = <T extends HTMLElement = HTMLDivElement>() => {
     })
   }, [])
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (!isInitialSizeSet) {
       handleSize()
       setInitialFlag(true)
