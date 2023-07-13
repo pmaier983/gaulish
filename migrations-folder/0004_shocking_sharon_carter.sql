@@ -1,0 +1,1 @@
+ALTER TABLE `path` MODIFY COLUMN `path` longtext;

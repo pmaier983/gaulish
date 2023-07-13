@@ -11,6 +11,7 @@ import {
   serial,
   smallint,
   json,
+  longtext,
 } from "drizzle-orm/mysql-core"
 import { type AdapterAccount } from "next-auth/adapters"
 
@@ -158,7 +159,7 @@ export type Ship = InferModel<typeof ship>
 export const path = mysqlTable("path", {
   id: serial("id").primaryKey().notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
-  path: text("path"),
+  path: longtext("path"),
 })
 export type Path = InferModel<typeof path>
 
