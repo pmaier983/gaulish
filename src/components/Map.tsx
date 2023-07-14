@@ -10,6 +10,8 @@ interface MapProps {
   map?: Tile[]
 }
 
+let count = 0
+
 /**
   Generic Map Component. Mainly to render the main game map
 
@@ -17,6 +19,7 @@ interface MapProps {
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const Map = ({ mapWidth, mapHeight, map }: MapProps) => {
+  console.log("Map Render Count:", count++)
   return (
     <PixiStage
       width={mapWidth}
