@@ -1,17 +1,23 @@
 import dynamic from "next/dynamic"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useChannel } from "@ably-labs/react-hooks"
 import { type Types } from "ably/promises"
-import { useAtom } from "jotai"
-import { isUserAdminAtom } from "~/utils/atoms"
+import { useGlobalStore } from "~/state/globalStore"
 
 const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
 })
 
 const Dev = () => {
-  const [isUserAdmin] = useAtom(isUserAdminAtom)
+  const { isUserAdmin } = useGlobalStore(
+    useCallback(
+      (state) => ({
+        isUserAdmin: state.isUserAdmin
+      }),
+      [],
+    ),
+  )
   const [isDevMapCreationVisible, setDevMapCreationVisibility] = useState(false)
   const [channel] = useChannel("some-channel-name", (message: Types.Message) =>
     console.log("Received Ably message", message),

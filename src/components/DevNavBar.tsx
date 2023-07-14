@@ -1,10 +1,17 @@
-import { useAtom } from "jotai"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
-import { isUserAdminAtom } from "~/utils/atoms"
+import { useCallback } from "react"
+import { useGlobalStore } from "~/state/globalStore"
 
 export const DevNavBar = () => {
-  const [isUserAdmin] = useAtom(isUserAdminAtom)
+  const { isUserAdmin } = useGlobalStore(
+    useCallback(
+      (state) => ({
+        isUserAdmin: state.isUserAdmin,
+      }),
+      [],
+    ),
+  )
 
   if (!isUserAdmin) {
     return null

@@ -1,13 +1,20 @@
 import { Sprite, Text, useApp } from "@pixi/react"
-import { useAtom } from "jotai"
 import { type Tile } from "schema"
 import * as PIXI from "pixi.js"
 
 import { TILE_PERCENT_SIZE, getTileImageString } from "~/components/constants"
-import { isUserAdminAtom } from "~/utils/atoms"
+import { useGlobalStore } from "~/state/globalStore"
+import { useCallback } from "react"
 
 export const PixiTile = ({ x, y, type_id }: Tile) => {
-  const [isUserAdmin] = useAtom(isUserAdminAtom)
+  const { isUserAdmin } = useGlobalStore(
+    useCallback(
+      (state) => ({
+        isUserAdmin: state.isUserAdmin,
+      }),
+      [],
+    ),
+  )
   const app = useApp()
 
   const mapWidth = app.renderer.options.width ?? 0

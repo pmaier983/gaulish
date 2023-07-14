@@ -131,7 +131,7 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed)
 
 /** Reusable middleware that enforces that an admin is running the procedure */
-const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
+const enforceUserIsUserAdmin = t.middleware(({ ctx, next }) => {
   // Also enforce user is authorized
   if (
     !ctx.session ||
@@ -156,4 +156,4 @@ const enforceUserIsAdmin = t.middleware(({ ctx, next }) => {
  *
  * @see https://trpc.io/docs/procedures
  */
-export const adminProcedure = t.procedure.use(enforceUserIsAdmin)
+export const adminProcedure = t.procedure.use(enforceUserIsUserAdmin)

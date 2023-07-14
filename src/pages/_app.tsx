@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react"
 import { type AppType } from "next/app"
 import { type Session } from "next-auth"
 import { SessionProvider, useSession } from "next-auth/react"
@@ -9,12 +10,10 @@ import { configureAbly } from "@ably-labs/react-hooks"
 import { AUTH_FREE_PAGES } from "~/components/constants"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { DevNavBar } from "~/components/DevNavBar"
+import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
-import { useEffect } from "react"
-import { useAtom } from "jotai"
-import { isUserAdminAtom } from "~/utils/atoms"
 
 const poppins = Poppins({
   weight: ["400", "700"],
@@ -32,7 +31,14 @@ configureAbly({
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const { status } = useSession()
-  const [, setIsUserAdmin] = useAtom(isUserAdminAtom)
+  const { setIsUserAdmin } = useGlobalStore(
+    useCallback(
+      (state) => ({
+        setIsUserAdmin: state.setIsUserAdmin
+      }),
+      [],
+    ),
+  )
 
   const { data: isUserAdmin } = api.general.isUserAdmin.useQuery(undefined, {
     staleTime: Infinity,
