@@ -2,25 +2,25 @@ import { type Tile } from "schema"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
-export interface CityStateContent {
-  map: Tile[][]
+export interface GamestateStore {
+  map: Tile[]
 }
 
-interface CityStateActions {
-  setMap: (map: Tile[][]) => void
+interface GamestateStoreActions {
+  setMap: (map: GamestateStore["map"]) => void
   restart: () => void
 }
 
-export type CityState = CityStateContent & CityStateActions
+export type Gamestate = GamestateStore & GamestateStoreActions
 
-const initialCityState: CityStateContent = {
+const initialGamestate: GamestateStore = {
   map: [],
 }
 
-export const useCityStore = create<CityState>()(
+export const useGamestateStore = create<Gamestate>()(
   devtools((set) => ({
-    ...initialCityState,
-    restart: () => set(initialCityState),
+    ...initialGamestate,
     setMap: (map) => set((state) => ({ ...state, map })),
+    restart: () => set(initialGamestate),
   })),
 )

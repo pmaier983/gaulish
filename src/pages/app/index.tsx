@@ -3,7 +3,9 @@ import dynamic from "next/dynamic"
 import { useElementSize } from "~/hooks/useElementSize"
 
 import styles from "./index.module.css"
-import { api } from "~/utils/api"
+import { useGamestate } from "~/hooks/useGamestate"
+import { useGamestateStore } from "~/state/gamestateStore"
+import { useCallback } from "react"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -11,28 +13,18 @@ const Map = dynamic(() => import("~/components/Map"), {
 
 const App = () => {
   const { sizeRef, size } = useElementSize()
+  const { map } = useGamestateStore(
+    useCallback((state) => ({ map: state.map }), []),
+  )
 
-  /* 
-    To populate the map we need the following:
-    - all npc routes
-    - all cities
-  */
-  const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
-    staleTime: Infinity,
-  })
-
-  const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
-    staleTime: Infinity,
-  })
-
-  console.log(npcData)
+  useGamestate()
 
   return (
     <div className={styles.container}>
       <div className={styles.header}>Details</div>
       <div className={styles.sidebar}>Sidebar</div>
       <div className={styles.main} ref={sizeRef}>
-        <Map mapWidth={size.width} mapHeight={size.height} map={mapData} />
+        <Map mapWidth={size.width} mapHeight={size.height} map={map} />
       </div>
       <div className={styles.footer}>Chat & Log</div>
     </div>
