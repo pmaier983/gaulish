@@ -3,8 +3,11 @@ import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 export const useGamestate = () => {
-  const { setMap } = useGamestateStore(
-    useCallback((state) => ({ map: state.map, setMap: state.setMap }), []),
+  const { setMap, setNpcs } = useGamestateStore(
+    useCallback(
+      (state) => ({ setMap: state.setMap, setNpcs: state.setNpcs }),
+      [],
+    ),
   )
 
   const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
@@ -42,6 +45,16 @@ export const useGamestate = () => {
   //   return () => clearInterval(intervalId)
   // })
 
+  /**
+   * Instantiate the npcs (Should only happen once)
+   */
+  useEffect(() => {
+    setNpcs(npcData ?? [])
+  }, [npcData, setNpcs])
+
+  /**
+   * Instantiate the map (Should only happen once)
+   */
   useEffect(() => {
     setMap(mapData ?? [])
   }, [mapData, setMap])

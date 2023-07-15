@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm"
-import { npc, path, tile } from "schema"
+import { type Npc, type Path, npc, path, tile } from "schema"
 import { TILE_TYPES, TILE_TYPE_TO_TYPE_ID } from "~/components/constants"
 
 import {
@@ -35,6 +35,16 @@ export const generalRouter = createTRPCRouter({
     })
   }),
   getNpcs: protectedProcedure.query(({ ctx }) => {
-    return ctx.db.select().from(npc).leftJoin(path, eq(path.id, npc.pathId))
+    return ctx.db
+      .select()
+      .from(npc)
+      .leftJoin(path, eq(path.id, npc.pathId))
+      .then((npcs) =>
+        npcs.filter(
+          // Type Guards (https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
+          (npcAndPath): npcAndPath is { npc: Npc; path: Path } =>
+            !!npcAndPath.path && !!npcAndPath.npc,
+        ),
+      )
   }),
 })
