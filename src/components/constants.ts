@@ -29,15 +29,6 @@ export const TILE_TYPE_TO_TYPE_ID = {
   [TILE_TYPES.OCEAN]: 4,
 }
 
-export const getTileImageString = (typeId: number) => {
-  if (typeId === 1 || typeId === 2 || typeId === 3 || typeId === 4) {
-    const TileType = TILE_TYPE_ID_TO_TYPE[typeId]
-    return `/${TileType.toLocaleLowerCase()}.webp`
-  } else {
-    throw new Error("Invalid Tile type_id passed into Tile")
-  }
-}
-
 export type TILE_TYPE = keyof typeof TILE_TYPES
 
 export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
