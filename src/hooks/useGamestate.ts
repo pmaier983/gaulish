@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { type MapObject, useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
-let gamestateLoopRenderCount = 0
+const gamestateLoopRenderCount = 0
 
 export const useGamestate = () => {
   const {
@@ -38,7 +38,7 @@ export const useGamestate = () => {
 
   // Old code from the previous version of the game.
   useEffect(() => {
-    console.log("gamestate loop render count:", gamestateLoopRenderCount++)
+    // console.log("gamestate loop render count:", gamestateLoopRenderCount++)
     const intervalId = setInterval(() => {
       const newMapObject = produce(cleanMapObject, (draftMapObject) => {
         npcs.forEach((npc) => {
@@ -48,8 +48,10 @@ export const useGamestate = () => {
           } = npc
 
           const timePassed = Date.now() - createdAt.getMilliseconds()
-          const tilesMoved = Math.floor(timePassed / speed)
+          // Debugged by Yijiao He
+          const tilesMoved = Math.floor(timePassed * speed)
           const pathKey = path[tilesMoved % path.length]
+
           if (!pathKey)
             throw new Error(
               `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
@@ -66,6 +68,7 @@ export const useGamestate = () => {
           draftMapObject[pathKey] = { ...currentTile, npc }
         })
       })
+      // console.log("newMapObject", newMapObject)
       setMapObject(newMapObject)
     }, 1000)
     return () => clearInterval(intervalId)

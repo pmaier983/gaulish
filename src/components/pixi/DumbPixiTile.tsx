@@ -6,20 +6,11 @@ import * as PIXI from "pixi.js"
 import { TILE_PERCENT_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
 import { getTileImageString } from "~/utils/utils"
-import { type NpcComposite } from "~/state/gamestateStore"
-
-export interface DumbPixiTileProps {
-  tile: Tile
-  npc?: NpcComposite
-}
 
 /**
  * A Dumb Pixi Tile Component that should lack any gamestate logic
  */
-export const DumbPixiTile = ({
-  tile: { x, y, type_id },
-  npc,
-}: DumbPixiTileProps) => {
+export const DumbPixiTile = ({ x, y, type_id }: Tile) => {
   const { isUserAdmin } = useGlobalStore(
     useCallback(
       (state) => ({
@@ -49,7 +40,7 @@ export const DumbPixiTile = ({
       />
       {isUserAdmin && (
         <Text
-          text={`${x}:${y}` + (npc?.ship.name ?? "")}
+          text={`${x}:${y}`}
           x={tileXPosition + textSize / 2}
           y={tileYPosition + textSize / 2}
           width={textSize}

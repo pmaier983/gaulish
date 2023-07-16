@@ -36,12 +36,12 @@ export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
     shipTypeId: 0,
     name: "Plank",
     cargo_capacity: 1,
-    speed: 1,
+    speed: 1 / 5000, // 1 tile every 5 seconds
   },
   1: {
     shipTypeId: 1,
     name: "Raft",
     cargo_capacity: 10,
-    speed: 2,
+    speed: 1 / 2500, // 1 tile every 2.5 seconds
   },
 }
