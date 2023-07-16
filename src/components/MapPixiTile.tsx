@@ -11,7 +11,6 @@ export const MapPixiTile = (tile: Tile) => {
     useCallback((state) => ({ mapObject: state.mapObject }), []),
   )
   const npc = mapObject[tileKey]?.npc
-  // console.log(mapObject[tileKey])
   return (
     <>
       <DumbPixiTile {...tile} />

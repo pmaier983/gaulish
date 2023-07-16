@@ -3,8 +3,6 @@ import { useCallback, useEffect } from "react"
 import { type MapObject, useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
-const gamestateLoopRenderCount = 0
-
 export const useGamestate = () => {
   const {
     setMapArray,
@@ -31,14 +29,12 @@ export const useGamestate = () => {
     staleTime: Infinity,
   })
 
-  // TODO: handle NPC's
   const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
   })
 
-  // Old code from the previous version of the game.
+  // TODO: setup pause and history functionality for this!
   useEffect(() => {
-    // console.log("gamestate loop render count:", gamestateLoopRenderCount++)
     const intervalId = setInterval(() => {
       const newMapObject = produce(cleanMapObject, (draftMapObject) => {
         npcs.forEach((npc) => {
@@ -68,7 +64,6 @@ export const useGamestate = () => {
           draftMapObject[pathKey] = { ...currentTile, npc }
         })
       })
-      // console.log("newMapObject", newMapObject)
       setMapObject(newMapObject)
     }, 1000)
     return () => clearInterval(intervalId)

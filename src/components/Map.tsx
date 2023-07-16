@@ -20,7 +20,7 @@ let count = 0
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const Map = ({ mapWidth, mapHeight, mapArray }: MapProps) => {
-  console.log("Map Render Count:", count++, mapArray)
+  console.log("Map Render Count:", count++)
   return (
     <PixiStage
       width={mapWidth}
