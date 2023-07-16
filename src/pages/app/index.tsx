@@ -13,8 +13,8 @@ const Map = dynamic(() => import("~/components/Map"), {
 
 const App = () => {
   const { sizeRef, size } = useElementSize()
-  const { map } = useGamestateStore(
-    useCallback((state) => ({ map: state.map }), []),
+  const { mapArray } = useGamestateStore(
+    useCallback((state) => ({ mapArray: state.mapArray }), []),
   )
 
   useGamestate()
@@ -24,7 +24,11 @@ const App = () => {
       <div className={styles.header}>Details</div>
       <div className={styles.sidebar}>Sidebar</div>
       <div className={styles.main} ref={sizeRef}>
-        <Map mapWidth={size.width} mapHeight={size.height} map={map} />
+        <Map
+          mapWidth={size.width}
+          mapHeight={size.height}
+          mapArray={mapArray}
+        />
       </div>
       <div className={styles.footer}>Chat & Log</div>
     </div>

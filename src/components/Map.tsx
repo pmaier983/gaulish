@@ -1,13 +1,14 @@
+import React from "react"
 import { PixiStage } from "~/components/pixi/PixiStage"
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 
 import type { Tile } from "schema"
-import { PixiTile } from "~/components/pixi/PixiTile"
+import { MapPixiTile } from "~/components/MapPixiTile"
 
 interface MapProps {
   mapWidth: number
   mapHeight: number
-  map?: Tile[]
+  mapArray?: Tile[]
 }
 
 let count = 0
@@ -18,8 +19,8 @@ let count = 0
   @example import method
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
-const Map = ({ mapWidth, mapHeight, map }: MapProps) => {
-  console.log("Map Render Count:", count++)
+const Map = ({ mapWidth, mapHeight, mapArray }: MapProps) => {
+  console.log("Map Render Count:", count++, mapArray)
   return (
     <PixiStage
       width={mapWidth}
@@ -27,9 +28,10 @@ const Map = ({ mapWidth, mapHeight, map }: MapProps) => {
       options={{ backgroundColor: 0xaaaaaa }}
     >
       <PixiViewport width={mapWidth} height={mapHeight}>
-        {map?.map((tile) => (
-          <PixiTile key={`${tile.x}:${tile.y}`} {...tile} />
-        ))}
+        {mapArray?.map((tile) => {
+          const tileId = `${tile.x}:${tile.y}`
+          return <MapPixiTile key={tileId} {...tile} />
+        })}
       </PixiViewport>
     </PixiStage>
   )
@@ -37,4 +39,4 @@ const Map = ({ mapWidth, mapHeight, map }: MapProps) => {
 
 // Only use dynamic import with this component (see above)!
 // eslint-disable-next-line import/no-default-export
-export default Map
+export default React.memo(Map)

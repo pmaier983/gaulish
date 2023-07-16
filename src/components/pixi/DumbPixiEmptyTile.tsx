@@ -2,20 +2,23 @@ import { Graphics, type _ReactPixi, useApp } from "@pixi/react"
 import { useCallback } from "react"
 import type * as PIXI from "pixi.js"
 
-interface PixiEmptyTileProps extends _ReactPixi.IGraphics {
+interface DumbPixiEmptyTileProps extends _ReactPixi.IGraphics {
   fill: string
   x: number
   y: number
   percentSize: number
 }
 
-export const PixiEmptyTile = ({
+/**
+ * A Dumb Pixi Empty Tile Component that should lack any gamestate logic
+ */
+export const DumbPixiEmptyTile = ({
   fill,
   x,
   y,
   percentSize,
   ...rest
-}: PixiEmptyTileProps) => {
+}: DumbPixiEmptyTileProps) => {
   const app = useApp()
 
   // the width determines the size of the tile

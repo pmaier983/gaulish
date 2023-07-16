@@ -1,6 +1,6 @@
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 import { PixiStage } from "~/components/pixi/PixiStage"
-import { PixiEmptyTile } from "~/components/pixi/PixiEmptyTile"
+import { DumbPixiEmptyTile } from "~/components/pixi/DumbPixiEmptyTile"
 import { createArraySquare } from "~/utils/utils"
 import { useState } from "react"
 import Image from "next/image"
@@ -75,7 +75,7 @@ const MapCreation = () => {
 
                 if (cell.type === TILE_TYPES.EMPTY) {
                   return (
-                    <PixiEmptyTile
+                    <DumbPixiEmptyTile
                       key={`${x}:${y}`}
                       fill="#fff"
                       x={cellXPosition}

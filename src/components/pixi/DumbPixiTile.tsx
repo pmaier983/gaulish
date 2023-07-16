@@ -1,12 +1,25 @@
+import { useCallback } from "react"
 import { Sprite, Text, useApp } from "@pixi/react"
 import { type Tile } from "schema"
 import * as PIXI from "pixi.js"
 
-import { TILE_PERCENT_SIZE, getTileImageString } from "~/components/constants"
+import { TILE_PERCENT_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
-import { useCallback } from "react"
+import { getTileImageString } from "~/utils/utils"
+import { type NpcComposite } from "~/state/gamestateStore"
 
-export const PixiTile = ({ x, y, type_id }: Tile) => {
+export interface DumbPixiTileProps {
+  tile: Tile
+  npc?: NpcComposite
+}
+
+/**
+ * A Dumb Pixi Tile Component that should lack any gamestate logic
+ */
+export const DumbPixiTile = ({
+  tile: { x, y, type_id },
+  npc,
+}: DumbPixiTileProps) => {
   const { isUserAdmin } = useGlobalStore(
     useCallback(
       (state) => ({
@@ -15,6 +28,7 @@ export const PixiTile = ({ x, y, type_id }: Tile) => {
       [],
     ),
   )
+
   const app = useApp()
 
   const mapWidth = app.renderer.options.width ?? 0
@@ -35,7 +49,7 @@ export const PixiTile = ({ x, y, type_id }: Tile) => {
       />
       {isUserAdmin && (
         <Text
-          text={`${x}:${y}`}
+          text={`${x}:${y}` + (npc?.ship.name ?? "")}
           x={tileXPosition + textSize / 2}
           y={tileYPosition + textSize / 2}
           width={textSize}
