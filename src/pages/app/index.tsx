@@ -6,6 +6,7 @@ import styles from "./index.module.css"
 import { useGamestate } from "~/hooks/useGamestate"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { useCallback } from "react"
+import { Chat } from "~/components/Chat"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -30,7 +31,9 @@ const App = () => {
           mapArray={mapArray}
         />
       </div>
-      <div className={styles.footer}>Chat & Log</div>
+      <div className={styles.footer}>
+        <Chat />
+      </div>
     </div>
   )
 }
