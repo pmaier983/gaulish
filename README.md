@@ -43,3 +43,4 @@ one day it will be a great IO game with users!
 - [ ] Look into feature flags
 - [ ] Setup Component library (https://www.radix-ui.com/)
 - [ ] make Admin a role permission and not just my email...
+- [ ] Setup Dark Mode

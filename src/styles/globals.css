@@ -9,12 +9,13 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* TODO: setup dark mode */
+/* @media (prefers-color-scheme: dark) {
   :root {
     background-color: theme(colors.black);
     color: theme(colors.white);
   }
-}
+} */
 
 /*
   1. Use a more-intuitive box-sizing model.
