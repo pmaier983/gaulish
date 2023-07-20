@@ -1,33 +1,41 @@
 import { useChannel } from "@ably-labs/react-hooks"
 import { type Types } from "ably"
-import { type FormEvent, useState } from "react"
+import { useState } from "react"
 
 export const Chat = () => {
   const [messages, setMessages] = useState<Types.Message[]>([])
   const [chatMessage, setChatMessage] = useState("")
 
   const [channel] = useChannel("message", (message) => {
+    console.log(message)
     setMessages((currentMessages) => [...currentMessages, message])
   })
 
-  const onSubmit = (formEvent?: FormEvent<HTMLFormElement>) => {
-    // prevent full page reload
-    formEvent?.preventDefault()
+  const onSubmit = () => {
     channel.publish({ data: chatMessage })
   }
 
   return (
-    <div>
+    <div className="flex-1 self-end">
       {messages.map((message) => (
         <div key={message.id}>{message.data}</div>
       ))}
-      <form onSubmit={onSubmit}>
+      <form
+        className="flex justify-center gap-2 p-2"
+        onSubmit={(e) => {
+          e.preventDefault()
+          onSubmit()
+        }}
+      >
         <textarea
+          className="h-6 w-4/5"
           value={chatMessage}
-          onChange={(e) => setChatMessage(e.target.value)}
+          onChange={(e) => {
+            setChatMessage(e.target.value)
+          }}
           onKeyDown={(e) => {
-            e.preventDefault()
             if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault()
               onSubmit()
             }
           }}
