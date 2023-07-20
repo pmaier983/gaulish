@@ -9,7 +9,7 @@ export const FullPageRedirect = () => {
       <h1>You must sign in to view this page</h1>
       <button
         className="text-center text-2xl"
-        onClick={() => void signIn(undefined, { callbackUrl: router.pathname })}
+        onClick={() => void signIn('google', { callbackUrl: router.pathname })}
       >
         Sign in
       </button>

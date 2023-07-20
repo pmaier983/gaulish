@@ -48,7 +48,7 @@ const LandingPage: React.FC = () => {
         {!isLoggedIn || status === "loading" ? (
           <button
             className="text-center text-3xl"
-            onClick={() => void signIn(undefined, { callbackUrl: "/app" })}
+            onClick={() => void signIn('google', { callbackUrl: "/app" })}
           >
             Sign in
           </button>
