@@ -18,6 +18,7 @@ export const Chat = () => {
   const [chatText, setChatText] = useState("")
   const { data } = useSession()
 
+  // TODO: abstract this to its own hook & handle presence & types
   const [channel] = useChannel("message", (message: Message) => {
     console.log(message)
     setMessages((currentMessages) => [...currentMessages, message])
@@ -33,6 +34,22 @@ export const Chat = () => {
 
   return (
     <div className="flex-1 self-end">
+      {/* <button
+        onClick={() => {
+          channel.presence.enter()
+        }}
+      >
+        Enter presence
+      </button>
+      <button
+        onClick={() => {
+          channel.presence.get((err, members) => {
+            console.log(members)
+          })
+        }}
+      >
+        check presence?
+      </button> */}
       {messages.map((message) => (
         <div key={message.id}>{message.data.text}</div>
       ))}

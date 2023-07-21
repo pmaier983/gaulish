@@ -25,7 +25,7 @@ const clientId = createId()
 
 configureAbly({
   authUrl: `${process.env.NEXTAUTH_URL ?? ""}/api/auth/createTokenRequest`,
-  clientId: clientId,
+  clientId: clientId, // TODO: Make Client ID contain some useful info (like username!?)
 })
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
@@ -34,7 +34,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const { setIsUserAdmin } = useGlobalStore(
     useCallback(
       (state) => ({
-        setIsUserAdmin: state.setIsUserAdmin
+        setIsUserAdmin: state.setIsUserAdmin,
       }),
       [],
     ),
