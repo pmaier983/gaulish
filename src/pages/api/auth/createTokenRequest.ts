@@ -12,4 +12,6 @@ export default async function handler(
     clientId: req.query.clientId as string,
   })
   res.status(200).json(tokenRequestData)
+  // TODO: how to handle client close?
+  client.close()
 }

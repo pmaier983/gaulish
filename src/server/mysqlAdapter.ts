@@ -11,6 +11,7 @@ export const mysqlAdapter = (db: PlanetScaleDatabase): Adapter => {
       await db.insert(users).values({
         ...userData,
         id: createId(),
+        username: "Sailor", // TODO: have a random username generator
       })
       const rows = await db
         .select()

@@ -27,7 +27,7 @@ export const Chat = () => {
     // TODO: figure out a way to always require this type?
     channel.publish({
       channel,
-      data: { text: "chatText", user: data?.user } as MessageData,
+      data: { text: chatText, user: data?.user } as MessageData,
     })
   }
 

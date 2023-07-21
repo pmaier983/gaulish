@@ -117,8 +117,7 @@ export const users = mysqlTable(
       .onUpdateNow()
       .notNull(),
     /* ********** START - CUSTOM USER COLUMNS ********** */
-    hoard_id: int("hoard_id"),
-    username: varchar("username", { length: 191 }),
+    username: varchar("username", { length: 191 }).notNull(),
     /* ********** END - CUSTOM USER COLUMNS ********** */
   },
   (table) => {
