@@ -1,24 +1,40 @@
 import { useChannel } from "@ably-labs/react-hooks"
 import { type Types } from "ably"
+import { type Session } from "next-auth"
+import { useSession } from "next-auth/react"
 import { useState } from "react"
 
-export const Chat = () => {
-  const [messages, setMessages] = useState<Types.Message[]>([])
-  const [chatMessage, setChatMessage] = useState("")
+export interface MessageData {
+  text: string
+  user: Session["user"]
+}
 
-  const [channel] = useChannel("message", (message) => {
+export interface Message extends Omit<Types.Message, "data"> {
+  data: MessageData
+}
+
+export const Chat = () => {
+  const [messages, setMessages] = useState<Message[]>([])
+  const [chatText, setChatText] = useState("")
+  const { data } = useSession()
+
+  const [channel] = useChannel("message", (message: Message) => {
     console.log(message)
     setMessages((currentMessages) => [...currentMessages, message])
   })
 
   const onSubmit = () => {
-    channel.publish({ data: chatMessage })
+    // TODO: figure out a way to always require this type?
+    channel.publish({
+      channel,
+      data: { text: "chatText", user: data?.user } as MessageData,
+    })
   }
 
   return (
     <div className="flex-1 self-end">
       {messages.map((message) => (
-        <div key={message.id}>{message.data}</div>
+        <div key={message.id}>{message.data.text}</div>
       ))}
       <form
         className="flex justify-center gap-2 p-2"
@@ -29,9 +45,9 @@ export const Chat = () => {
       >
         <textarea
           className="h-6 w-4/5"
-          value={chatMessage}
+          value={chatText}
           onChange={(e) => {
-            setChatMessage(e.target.value)
+            setChatText(e.target.value)
           }}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
