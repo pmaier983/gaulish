@@ -5,6 +5,10 @@ export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
 export const TILE_PERCENT_SIZE = 0.05
 
+export const CHANNELS = {
+  MESSAGE: "MESSAGE",
+} as const
+
 export const TILE_TYPES = {
   EMPTY: "EMPTY",
   FOREST: "FOREST",

@@ -2,7 +2,8 @@ import { useChannel } from "@ably-labs/react-hooks"
 import { type Types } from "ably"
 import { type Session } from "next-auth"
 import { useSession } from "next-auth/react"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
+import { CHANNELS } from "~/components/constants"
 
 export interface MessageData {
   text: string
@@ -21,7 +22,7 @@ export const useChatMessage = ({
   onReceiveChatMessage,
 }: UseChatMessageProps) => {
   const { data } = useSession()
-  const [channel] = useChannel("message", (message: Message) => {
+  const [channel] = useChannel(CHANNELS.MESSAGE, (message: Message) => {
     console.log(message)
     onReceiveChatMessage(message)
   })
@@ -34,6 +35,24 @@ export const useChatMessage = ({
     },
     [channel, data?.user],
   )
+
+  // TODO: handle presence errors better
+  useEffect(() => {
+    channel.presence.enter(data?.user, (err) => {
+      if (err) {
+        return console.error("Error entering presence set.")
+      }
+      console.log("This client has entered the presence set.")
+    })
+    return () => {
+      channel.presence.leave(data?.user, (err) => {
+        if (err) {
+          return console.error("Error exiting presence set.")
+        }
+        console.log("This client has exited the presence set.")
+      })
+    }
+  }, [channel.presence, data?.user])
 
   return { publishChatMessage }
 }
