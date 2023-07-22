@@ -1,4 +1,7 @@
+import { createId } from "@paralleldrive/cuid2"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
+
+export const ABLY_CLIENT_ID = createId()
 
 export const createArraySquare = <T>({
   size,

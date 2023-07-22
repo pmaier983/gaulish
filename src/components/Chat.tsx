@@ -1,35 +1,18 @@
-import { useChannel } from "@ably-labs/react-hooks"
-import { type Types } from "ably"
-import { type Session } from "next-auth"
-import { useSession } from "next-auth/react"
 import { useState } from "react"
-
-export interface MessageData {
-  text: string
-  user: Session["user"]
-}
-
-export interface Message extends Omit<Types.Message, "data"> {
-  data: MessageData
-}
+import { type Message, useChatMessage } from "~/hooks/useChatMessage"
 
 export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [chatText, setChatText] = useState("")
-  const { data } = useSession()
 
-  // TODO: abstract this to its own hook & handle presence & types
-  const [channel] = useChannel("message", (message: Message) => {
-    console.log(message)
-    setMessages((currentMessages) => [...currentMessages, message])
-  })
+  const onReceiveChatMessage = (message: Message) => {
+    setMessages([...messages, message])
+  }
+
+  const { publishChatMessage } = useChatMessage({ onReceiveChatMessage })
 
   const onSubmit = () => {
-    // TODO: figure out a way to always require this type?
-    channel.publish({
-      channel,
-      data: { text: chatText, user: data?.user } as MessageData,
-    })
+    publishChatMessage({ text: chatText })
   }
 
   return (

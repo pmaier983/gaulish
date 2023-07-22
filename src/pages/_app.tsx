@@ -4,7 +4,6 @@ import { type Session } from "next-auth"
 import { SessionProvider, useSession } from "next-auth/react"
 import { Poppins } from "next/font/google"
 import { useRouter } from "next/router"
-import { createId } from "@paralleldrive/cuid2"
 import { configureAbly } from "@ably-labs/react-hooks"
 
 import { AUTH_FREE_PAGES } from "~/components/constants"
@@ -14,6 +13,7 @@ import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
+import { ABLY_CLIENT_ID } from "~/utils/utils"
 
 const poppins = Poppins({
   weight: ["400", "700"],
@@ -21,11 +21,10 @@ const poppins = Poppins({
 })
 
 // See: https://github1s.com/vercel/next.js/blob/canary/examples/with-ably
-const clientId = createId()
 
 configureAbly({
   authUrl: `${process.env.NEXTAUTH_URL ?? ""}/api/auth/createTokenRequest`,
-  clientId: clientId, // TODO: Make Client ID contain some useful info (like username!?)
+  clientId: ABLY_CLIENT_ID, // TODO: Make Client ID contain some useful info (like username!?)
 })
 
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
