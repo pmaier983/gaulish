@@ -2,6 +2,7 @@ import { type InferModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
+  bigint,
   int,
   mysqlTable,
   text,
@@ -20,12 +21,14 @@ export const accounts = mysqlTable(
   "accounts",
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
-    userId: varchar("userId", { length: 191 }).notNull(),
+    userId: varchar("user_id", { length: 191 }).notNull(),
     type: varchar("type", { length: 191 })
       .$type<AdapterAccount["type"]>()
       .notNull(),
     provider: varchar("provider", { length: 191 }).notNull(),
-    providerAccountId: varchar("providerAccountId", { length: 191 }).notNull(),
+    providerAccountId: varchar("provider_account_id", {
+      length: 191,
+    }).notNull(),
     accessToken: text("access_token"),
     expiresIn: int("expires_in"),
     idToken: text("id_token"),
@@ -33,11 +36,11 @@ export const accounts = mysqlTable(
     refreshTokenExpiresIn: int("refresh_token_expires_in"),
     scope: varchar("scope", { length: 191 }),
     tokenType: varchar("token_type", { length: 191 }),
-    createdAt: timestamp("createdAt", { mode: "string" })
+    createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow()
       .notNull(),
-    updatedAt: timestamp("updatedAt", { mode: "string" })
+    updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow()
       .notNull(),
@@ -45,9 +48,9 @@ export const accounts = mysqlTable(
   (table) => {
     return {
       providerProviderAccountIdIdx: uniqueIndex(
-        "accounts__provider__providerAccountId__idx",
+        "accounts_provider_providerAccountId_idx",
       ).on(table.provider, table.providerAccountId),
-      userIdIdx: index("accounts__userId__idx").on(table.userId),
+      userIdIdx: index("accounts_userId_idx").on(table.userId),
     }
   },
 )
@@ -56,8 +59,8 @@ export const sessions = mysqlTable(
   "sessions",
   {
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
-    sessionToken: varchar("sessionToken", { length: 191 }).notNull(),
-    userId: varchar("userId", { length: 191 }).notNull(),
+    sessionToken: varchar("session_token", { length: 191 }).notNull(),
+    userId: varchar("user_id", { length: 191 }).notNull(),
     expires: datetime("expires", { mode: "date" }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
@@ -70,10 +73,10 @@ export const sessions = mysqlTable(
   },
   (table) => {
     return {
-      sessionTokenIdx: uniqueIndex("sessions__sessionToken__idx").on(
+      sessionTokenIdx: uniqueIndex("sessions_sessionToken_idx").on(
         table.sessionToken,
       ),
-      userIdIdx: index("sessions__userId__idx").on(table.userId),
+      userIdIdx: index("sessions_userId_idx").on(table.userId),
     }
   },
 )
@@ -95,7 +98,7 @@ export const verificationTokens = mysqlTable(
   },
   (table) => {
     return {
-      tokenIdx: uniqueIndex("verification_tokens__token__idx").on(table.token),
+      tokenIdx: uniqueIndex("verification_tokens_token_idx").on(table.token),
     }
   },
 )
@@ -106,7 +109,7 @@ export const users = mysqlTable(
     id: varchar("id", { length: 191 }).primaryKey().notNull(),
     name: varchar("name", { length: 191 }),
     email: varchar("email", { length: 191 }).notNull(),
-    emailVerified: timestamp("emailVerified", { mode: "date" }),
+    emailVerified: timestamp("email_verified", { mode: "date" }),
     image: varchar("image", { length: 191 }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
@@ -117,12 +120,13 @@ export const users = mysqlTable(
       .onUpdateNow()
       .notNull(),
     /* ********** START - CUSTOM USER COLUMNS ********** */
-    username: varchar("username", { length: 191 }).notNull(),
+    username: varchar("username", { length: 191 }).default("Sailor").notNull(),
+    gold: bigint("gold", { mode: "number" }).default(0).notNull(),
     /* ********** END - CUSTOM USER COLUMNS ********** */
   },
   (table) => {
     return {
-      emailIdx: uniqueIndex("users__email__idx").on(table.email),
+      emailIdx: uniqueIndex("users_email_idx").on(table.email),
     }
   },
 )
@@ -157,7 +161,10 @@ export type Ship = InferModel<typeof ship>
 
 export const path = mysqlTable("path", {
   id: serial("id").primaryKey().notNull(),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
+  createdAt: timestamp("created_at", { mode: "date" })
+    .defaultNow()
+    .onUpdateNow()
+    .notNull(),
   path: longtext("path").notNull(),
 })
 export type Path = InferModel<typeof path>
