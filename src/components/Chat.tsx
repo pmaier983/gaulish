@@ -6,7 +6,7 @@ export const Chat = () => {
   const [chatText, setChatText] = useState("")
 
   const onReceiveChatMessage = (message: Message) => {
-    setMessages([...messages, message])
+    setMessages((receivedMessages) => [...receivedMessages, message])
   }
 
   const { publishChatMessage } = useChatMessage({ onReceiveChatMessage })
