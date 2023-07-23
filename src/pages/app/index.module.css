@@ -53,6 +53,8 @@
 .header {
   grid-area: header;
   background-color: theme(colors.red.200);
+
+  display: flex;
 }
 
 .sidebar {

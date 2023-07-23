@@ -7,6 +7,7 @@ import { useGamestate } from "~/hooks/useGamestate"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { useCallback } from "react"
 import { Chat } from "~/components/Chat"
+import { Leaderboard } from "~/components/Leaderboard"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -22,7 +23,9 @@ const App = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>Details</div>
+      <div className={styles.header}>
+        <Leaderboard />
+      </div>
       <div className={styles.sidebar}>Sidebar</div>
       <div className={styles.main} ref={sizeRef}>
         <Map

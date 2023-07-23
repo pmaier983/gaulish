@@ -17,22 +17,6 @@ export const Chat = () => {
 
   return (
     <div className="flex-1 self-end">
-      {/* <button
-        onClick={() => {
-          channel.presence.enter()
-        }}
-      >
-        Enter presence
-      </button>
-      <button
-        onClick={() => {
-          channel.presence.get((err, members) => {
-            console.log(members)
-          })
-        }}
-      >
-        check presence?
-      </button> */}
       {messages.map((message) => (
         <div key={message.id}>{message.data.text}</div>
       ))}
