@@ -1,10 +1,13 @@
 import { usePresence } from "@ably-labs/react-hooks"
-import { useSession } from "next-auth/react"
-import { useEffect } from "react"
+import { type Session } from "next-auth"
+import { signOut, useSession } from "next-auth/react"
+import { memo, useEffect } from "react"
 
 import { CHANNELS } from "~/components/constants"
+import { api } from "~/utils/api"
 import { ABLY_CLIENT_ID } from "~/utils/utils"
 
+// TODO: possibly look into why this component is re-rending constantly?
 export const Leaderboard = () => {
   const { data } = useSession()
 
@@ -23,8 +26,24 @@ export const Leaderboard = () => {
 
   return (
     <div className="flex-1">
-      {members.map((member) => (
-        <div key={member.clientId}>{member?.data?.name}</div>
+      <LeaderboardList
+        emails={members.map((member) => member.data.email).filter(Boolean)}
+      />
+    </div>
+  )
+}
+
+// TODO: should I be using ID's and not emails here?
+const LeaderboardList = ({ emails }: { emails: string[] }) => {
+  const { data } = api.general.getLeaderboard.useQuery(emails, {
+    enabled: emails.length > 0,
+  })
+  return (
+    <div>
+      {data?.map((user) => (
+        <div key={user.username}>
+          {user.username}-{user.gold}
+        </div>
       ))}
     </div>
   )
