@@ -27,10 +27,16 @@ export const useGamestate = () => {
 
   const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,
+    meta: {
+      errorMessage: "Something went wrong when fetching the tiles",
+    },
   })
 
   const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
+    meta: {
+      errorMessage: "Something went wrong when fetching the npcs",
+    },
   })
 
   // TODO: setup pause and history functionality for this!

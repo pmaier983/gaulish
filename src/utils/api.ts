@@ -8,6 +8,8 @@ import { httpBatchLink, loggerLink } from "@trpc/client"
 import { createTRPCNext } from "@trpc/next"
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server"
 import superjson from "superjson"
+import { QueryCache } from "@tanstack/react-query"
+import toast from "react-hot-toast"
 
 import { type AppRouter } from "~/server/api/root"
 
@@ -21,6 +23,19 @@ const getBaseUrl = () => {
 export const api = createTRPCNext<AppRouter>({
   config() {
     return {
+      queryClientConfig: {
+        // Logic stolen from: https://tkdodo.eu/blog/breaking-react-querys-api-on-purpose
+        queryCache: new QueryCache({
+          onError: (error, query) => {
+            console.error("query error:", error, error)
+            if (typeof query?.meta?.errorMessage === "string") {
+              toast.error(query.meta.errorMessage)
+            } else {
+              toast.error(`Something went wrong`)
+            }
+          },
+        }),
+      },
       /**
        * Transformer used for data de-serialization from the server.
        *

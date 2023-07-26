@@ -49,6 +49,7 @@ export const generalRouter = createTRPCRouter({
   getLeaderboard: protectedProcedure
     .input(z.string().array())
     .query(async ({ ctx, input }) => {
+      throw Error("shucks")
       const leaderboardUsers = await ctx.db
         .select()
         .from(users)

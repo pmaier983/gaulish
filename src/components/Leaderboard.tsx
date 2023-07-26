@@ -1,7 +1,6 @@
 import { usePresence } from "@ably-labs/react-hooks"
-import { type Session } from "next-auth"
-import { signOut, useSession } from "next-auth/react"
-import { memo, useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { useEffect } from "react"
 
 import { CHANNELS } from "~/components/constants"
 import { api } from "~/utils/api"
@@ -37,6 +36,10 @@ export const Leaderboard = () => {
 const LeaderboardList = ({ emails }: { emails: string[] }) => {
   const { data } = api.general.getLeaderboard.useQuery(emails.slice(0, 10), {
     enabled: emails.length > 0,
+    staleTime: 30000, // only refresh the leaderboard every 30s
+    meta: {
+      errorMessage: "Something went wrong while fetching the leaderboard",
+    },
   })
   return (
     <ol

@@ -5,6 +5,7 @@ import { SessionProvider, useSession } from "next-auth/react"
 import { Poppins } from "next/font/google"
 import { useRouter } from "next/router"
 import { configureAbly } from "@ably-labs/react-hooks"
+import { Toaster } from "react-hot-toast"
 
 import { AUTH_FREE_PAGES } from "~/components/constants"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
@@ -41,6 +42,9 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
 
   const { data: isUserAdmin } = api.general.isUserAdmin.useQuery(undefined, {
     staleTime: Infinity,
+    meta: {
+      errorMessage: "Something went checking if the user is an admin",
+    },
   })
 
   useEffect(() => {
@@ -67,6 +71,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <div className={`flex h-full flex-col ${poppins.className}`}>
         <AuthWrapper>
           <DevNavBar />
+          <Toaster position="bottom-center" />
           <Component {...rest} />
         </AuthWrapper>
       </div>
