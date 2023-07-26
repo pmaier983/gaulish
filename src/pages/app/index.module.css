@@ -60,6 +60,8 @@
 .sidebar {
   grid-area: sidebar;
   background-color: theme(colors.blue.200);
+
+  display: flex;
 }
 
 .main {

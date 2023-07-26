@@ -8,6 +8,7 @@ import { useGamestateStore } from "~/state/gamestateStore"
 import { useCallback } from "react"
 import { Chat } from "~/components/Chat"
 import { Leaderboard } from "~/components/Leaderboard"
+import { Sidebar } from "~/components/Sidebar"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -26,7 +27,9 @@ const App = () => {
       <div className={styles.header}>
         <Leaderboard />
       </div>
-      <div className={styles.sidebar}>Sidebar</div>
+      <div className={styles.sidebar}>
+        <Sidebar />
+      </div>
       <div className={styles.main} ref={sizeRef}>
         <Map
           mapWidth={size.width}
