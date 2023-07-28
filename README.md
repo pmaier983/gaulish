@@ -19,6 +19,7 @@ one day it will be a great IO game with users!
 ### High Priority
 
 - [ ] Build MVP and deploy
+- [ ] Make it possible to sign out
 - [ ] Setup Monitoring & error logging
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
