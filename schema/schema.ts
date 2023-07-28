@@ -121,7 +121,6 @@ export const users = mysqlTable(
       .notNull(),
     /* ********** START - CUSTOM USER COLUMNS ********** */
     username: varchar("username", { length: 191 }).default("Sailor").notNull(),
-    gold: bigint("gold", { mode: "number" }).default(0).notNull(),
     /* ********** END - CUSTOM USER COLUMNS ********** */
   },
   (table) => {
@@ -155,7 +154,12 @@ export const ship = mysqlTable("ship", {
   userId: varchar("user_id", { length: 191 }).notNull(),
   cityId: int("city_id").notNull(),
   pathId: int("path_id"),
-  cargo: json("cargo"),
+  // Ship's Cargo - consider moving this to a separate table?
+  gold: int("gold").default(0).notNull(),
+  wheat: int("wheat").default(0).notNull(),
+  wool: int("wool").default(0).notNull(),
+  stone: int("stone").default(0).notNull(),
+  wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
 })
 export type Ship = InferModel<typeof ship>
 

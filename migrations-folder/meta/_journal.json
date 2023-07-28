@@ -50,6 +50,13 @@
       "when": 1690513855114,
       "tag": "0006_slimy_blue_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1690514463690,
+      "tag": "0007_demonic_kree",
+      "breakpoints": true
     }
   ]
 }
