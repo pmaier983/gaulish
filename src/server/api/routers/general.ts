@@ -1,5 +1,5 @@
 import { eq, inArray } from "drizzle-orm"
-import { type Npc, type Path, npc, path, tile, users, ship } from "schema"
+import { type Npc, type Path, npc, path, tile, users, ship, city } from "schema"
 import { z } from "zod"
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
 
@@ -15,6 +15,12 @@ import {
 } from "~/server/api/trpc"
 import { ADMINS } from "~/server/auth"
 import { getPathFromString } from "~/utils/utils"
+import {
+  DEFAULT_CITIES,
+  DEFAULT_MAP,
+  DEFAULT_NPCS,
+  DEFAULT_PATHS,
+} from "~/server/defaults"
 
 // TODO - add all the following api paths:
 // - getMap
@@ -48,12 +54,12 @@ export const generalRouter = createTRPCRouter({
   isUserAdmin: protectedProcedure.query(({ ctx }) => {
     return ADMINS.includes(ctx.session.user.email ?? "")
   }),
-  setTile: adminProcedure.mutation(({ ctx }) => {
-    return ctx.db.insert(tile).values({
-      id: 2,
-      x: 1,
-      y: 1,
-      type_id: TILE_TYPE_TO_TYPE_ID[TILE_TYPES.OCEAN],
+  setupDefaultGamestate: adminProcedure.mutation(async ({ ctx }) => {
+    await ctx.db.transaction(async (trx) => {
+      await trx.insert(tile).values(DEFAULT_MAP)
+      await trx.insert(npc).values(DEFAULT_NPCS)
+      await trx.insert(path).values(DEFAULT_PATHS)
+      await trx.insert(city).values(DEFAULT_CITIES)
     })
   }),
   /**
@@ -76,7 +82,6 @@ export const generalRouter = createTRPCRouter({
         shipTypeId: input.ship_type_id,
         userId: user.id,
         cityId: input.city_id,
-        cargo: {},
       })
     }),
   /**

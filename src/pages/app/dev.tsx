@@ -1,27 +1,26 @@
 import dynamic from "next/dynamic"
 import { useCallback, useState } from "react"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
-import { useChannel } from "@ably-labs/react-hooks"
-import { type Types } from "ably/promises"
 import { useGlobalStore } from "~/state/globalStore"
+import { api } from "~/utils/api"
+import { useSession } from "next-auth/react"
 
 const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
 })
 
 const Dev = () => {
+  const { data } = useSession()
   const { isUserAdmin } = useGlobalStore(
     useCallback(
       (state) => ({
-        isUserAdmin: state.isUserAdmin
+        isUserAdmin: state.isUserAdmin,
       }),
       [],
     ),
   )
   const [isDevMapCreationVisible, setDevMapCreationVisibility] = useState(false)
-  const [channel] = useChannel("some-channel-name", (message: Types.Message) =>
-    console.log("Received Ably message", message),
-  )
+  const { mutate } = api.general.setupDefaultGamestate.useMutation()
 
   if (!isUserAdmin) {
     return <FullPageRedirect />
@@ -30,11 +29,12 @@ const Dev = () => {
   return (
     <>
       <button
+        className="pt-8"
         onClick={() => {
-          channel.publish({ name: "chat-message", data: "hi" })
+          mutate()
         }}
       >
-        Test Socket
+        Setup Default Gamestate
       </button>
       <button
         onClick={() => {
@@ -45,6 +45,7 @@ const Dev = () => {
           ? "Hide Dev Map Creation"
           : "Show Dev Map Creation"}
       </button>
+      <div>{JSON.stringify(data)}</div>
       {isDevMapCreationVisible ? <MapCreation /> : null}
     </>
   )
