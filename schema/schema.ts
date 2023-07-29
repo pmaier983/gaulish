@@ -2,7 +2,6 @@ import { type InferModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
-  bigint,
   int,
   mysqlTable,
   text,

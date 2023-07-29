@@ -136,7 +136,7 @@ const enforceUserIsUserAdmin = t.middleware(({ ctx, next }) => {
   if (
     !ctx.session ||
     !ctx.session.user ||
-    ADMINS.includes(ctx.session.user.email ?? "")
+    !ADMINS.includes(ctx.session.user.email ?? "")
   ) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
