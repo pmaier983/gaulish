@@ -1,5 +1,4 @@
 import { type NextRouter } from "next/router"
-import { type ShipType } from "schema"
 
 export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
@@ -37,16 +36,21 @@ export const TILE_TYPE_TO_TYPE_ID = {
 
 export type TILE_TYPE = keyof typeof TILE_TYPES
 
-export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
-  0: {
-    shipTypeId: 0,
-    name: "Plank",
+export const SHIP_TYPES = {
+  PLANK: 0,
+  RAFT: 1,
+}
+
+export const SHIP_ID_TO_SHIP_TYPES = {
+  [SHIP_TYPES.PLANK]: {
+    shipTypeId: SHIP_TYPES.PLANK,
+    name: "plank",
     cargo_capacity: 1,
     speed: 1 / 5000, // 1 tile every 5 seconds
   },
-  1: {
-    shipTypeId: 1,
-    name: "Raft",
+  [SHIP_TYPES.RAFT]: {
+    shipTypeId: SHIP_TYPES.RAFT,
+    name: "raft",
     cargo_capacity: 10,
     speed: 1 / 2500, // 1 tile every 2.5 seconds
   },

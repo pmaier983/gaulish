@@ -2,7 +2,6 @@ import { type InferModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
-  primaryKey,
   int,
   mysqlTable,
   text,
@@ -228,11 +227,3 @@ export const npc = mysqlTable("npc", {
   pathId: int("path_id"),
 })
 export type Npc = InferModel<typeof npc>
-
-/* CUSTOM TYPES WITH NO DB PARALLEL... YET */
-export type ShipType = {
-  shipTypeId: number
-  name: string
-  cargo_capacity: number
-  speed: number
-}

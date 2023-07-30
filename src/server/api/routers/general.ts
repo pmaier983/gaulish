@@ -75,19 +75,26 @@ export const generalRouter = createTRPCRouter({
     .input(
       z.object({
         ship_type_id: z.number(),
-        city_id: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const user = await getUserFromEmail({
-        email: ctx.session.user.email,
-        db: ctx.db,
-      })
+      await ctx.db.transaction(async (trx) => {
+        const cities = await trx.select().from(city).limit(1)
 
-      return ctx.db.insert(ship).values({
-        shipTypeId: input.ship_type_id,
-        userId: user.id,
-        cityId: input.city_id,
+        const cityForNewShip = cities.at(0)
+
+        if (!cityForNewShip) throw Error("No cities found for the new ship")
+
+        const user = await getUserFromEmail({
+          email: ctx.session.user.email,
+          db: trx,
+        })
+
+        return trx.insert(ship).values({
+          shipTypeId: input.ship_type_id,
+          userId: user.id,
+          cityId: cityForNewShip.id,
+        })
       })
     }),
   /**
@@ -147,7 +154,7 @@ export const generalRouter = createTRPCRouter({
       return Object.entries(userIdToGold).map(([userId, gold]) => ({
         username: userIdToUsername[userId],
         gold: gold,
-        }))
+      }))
     }),
   /**
    * Fetch a list of NPCs with their ships & paths attached
