@@ -107,14 +107,46 @@ export const generalRouter = createTRPCRouter({
     .input(z.string().array())
     .query(async ({ ctx, input }) => {
       const leaderboardUsers = await ctx.db
-        .select()
+        .select({
+          userId: users.id,
+          email: users.email,
+          username: users.username,
+        })
         .from(users)
         .where(inArray(users.email, input))
-      return leaderboardUsers
-        .sort((a, b) => b.gold - a.gold)
-        .map((user) => ({
-          username: user.username,
-          gold: user.gold,
+
+      const userIdToUsername = leaderboardUsers.reduce<{
+        [key: string]: string
+      }>((acc, cur) => {
+        acc[cur.userId] = cur.username
+        return acc
+      }, {})
+
+      const usersShips = await ctx.db
+        .select({ userId: ship.userId, gold: ship.gold })
+        .from(ship)
+        .where(
+          inArray(
+            ship.userId,
+            leaderboardUsers.map((user) => user.userId),
+          ),
+        )
+
+      const userIdToGold = usersShips.reduce<{ [key: string]: number }>(
+        (acc, cur) => {
+          if (acc[cur.userId]) {
+            acc[cur.userId] += cur.gold
+          } else {
+            acc[cur.userId] = cur.gold
+          }
+          return acc
+        },
+        {},
+      )
+
+      return Object.entries(userIdToGold).map(([userId, gold]) => ({
+        username: userIdToUsername[userId],
+        gold: gold,
         }))
     }),
   /**
