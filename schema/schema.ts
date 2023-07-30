@@ -2,6 +2,7 @@ import { type InferModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
+  primaryKey,
   int,
   mysqlTable,
   text,
@@ -186,7 +187,9 @@ export const pathRelations = relations(path, ({ one }) => ({
 export const tile = mysqlTable(
   "tile",
   {
-    id: serial("id").primaryKey().notNull(),
+    // TODO: figure out how not to do this?
+    /* This is a manually created composite key of x & y */
+    xyTileId: varchar("xy_tile_id", { length: 191 }).primaryKey().notNull(),
     x: int("x").notNull(),
     y: int("y").notNull(),
     type_id: smallint("type_id").notNull(),
@@ -199,15 +202,15 @@ export type Tile = InferModel<typeof tile>
 
 export const tileRelations = relations(tile, ({ one }) => ({
   city: one(city, {
-    fields: [tile.id],
-    references: [city.tileId],
+    fields: [tile.xyTileId],
+    references: [city.xyTileId],
   }),
 }))
 
 export const city = mysqlTable("city", {
   id: serial("id").primaryKey().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
-  tileId: int("tile_id").notNull(),
+  xyTileId: varchar("xy_tile_id", { length: 191 }).notNull(),
   level: json("level"),
 })
 export type City = InferModel<typeof city>

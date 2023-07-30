@@ -57,6 +57,20 @@
       "when": 1690514463690,
       "tag": "0007_demonic_kree",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1690673430067,
+      "tag": "0008_common_firedrake",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1690675431424,
+      "tag": "0009_special_dexter_bennett",
+      "breakpoints": true
     }
   ]
 }
