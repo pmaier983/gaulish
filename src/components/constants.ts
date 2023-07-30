@@ -41,7 +41,14 @@ export const SHIP_TYPES = {
   RAFT: 1,
 }
 
-export const SHIP_ID_TO_SHIP_TYPES = {
+export interface ShipType {
+  shipTypeId: number
+  name: string
+  cargo_capacity: number
+  speed: number
+}
+
+export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
   [SHIP_TYPES.PLANK]: {
     shipTypeId: SHIP_TYPES.PLANK,
     name: "plank",

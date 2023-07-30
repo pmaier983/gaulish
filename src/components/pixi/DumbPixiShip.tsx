@@ -46,7 +46,7 @@ export const DumbPixiShip = ({ tile, npc }: DumbPixiShipProps) => {
     <>
       <Graphics draw={draw} />
       <Text
-        text={"  🔴" + npc.ship.name}
+        text={`  🔴${npc.ship.name}`}
         x={tileXPosition}
         y={tileYPosition + tileSize * 0.5 - fontSize / 2}
         style={

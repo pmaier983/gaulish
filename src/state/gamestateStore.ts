@@ -1,12 +1,8 @@
-import {
-  type ShipType,
-  type Npc,
-  type Path,
-  type Tile,
-  type City,
-} from "schema"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
+
+import type { Npc, Path, Tile, City } from "schema"
+import { type ShipType } from "~/components/constants"
 
 export interface PathComposite extends Omit<Path, "path"> {
   path: string[]

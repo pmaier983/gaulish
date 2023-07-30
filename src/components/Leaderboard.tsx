@@ -36,7 +36,7 @@ export const Leaderboard = () => {
 const LeaderboardList = ({ emails }: { emails: string[] }) => {
   const { data } = api.general.getLeaderboard.useQuery(emails.slice(0, 10), {
     enabled: emails.length > 0,
-    staleTime: 30000, // only refresh the leaderboard every 30s
+    staleTime: 60000, // only refresh the leaderboard every 60s
     meta: {
       errorMessage: "Something went wrong while fetching the leaderboard",
     },
@@ -46,19 +46,21 @@ const LeaderboardList = ({ emails }: { emails: string[] }) => {
       className="flex h-full list-decimal flex-col items-center justify-start  overflow-y-auto"
       type="1"
     >
-      {data?.map((user, i) => (
-        <li
-          key={user.username}
-          className="flex w-full justify-between pl-5 pr-5"
-        >
-          <div>
-            {i + 1}
-            {")"}
-          </div>
-          <h3>{user.username}</h3>
-          <div>{user.gold}</div>
-        </li>
-      ))}
+      {data
+        ?.sort((a, b) => a.gold - b.gold)
+        .map((user, i) => (
+          <li
+            key={user.username}
+            className="flex w-full justify-between pl-5 pr-5"
+          >
+            <div>
+              {i + 1}
+              {")"}
+            </div>
+            <h3>{user.username}</h3>
+            <div>{user.gold}</div>
+          </li>
+        ))}
     </ol>
   )
 }
