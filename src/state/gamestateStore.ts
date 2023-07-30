@@ -1,4 +1,10 @@
-import { type ShipType, type Npc, type Path, type Tile } from "schema"
+import {
+  type ShipType,
+  type Npc,
+  type Path,
+  type Tile,
+  type City,
+} from "schema"
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
@@ -17,6 +23,8 @@ export interface TileComposite extends Tile {
 
 export type MapObject = { [key: string]: TileComposite }
 
+export type CityObject = { [key: string]: City }
+
 export interface GamestateStore {
   mapArray: Tile[]
   mapObject: MapObject
@@ -24,13 +32,15 @@ export interface GamestateStore {
    * The Clean map object contains only the Tile data
    */
   cleanMapObject: GamestateStore["mapObject"]
+  cityObject: CityObject
   npcs: NpcComposite[]
 }
 
 interface GamestateStoreActions {
-  setNpcs: (npcs: GamestateStore["npcs"]) => void
   setMapArray: (map: GamestateStore["mapArray"]) => void
   setMapObject: (map: GamestateStore["mapObject"]) => void
+  setCities: (cityObject: GamestateStore["cityObject"]) => void
+  setNpcs: (npcs: GamestateStore["npcs"]) => void
   setCleanMapObject: (map: GamestateStore["cleanMapObject"]) => void
   restart: () => void
 }
@@ -38,6 +48,7 @@ interface GamestateStoreActions {
 export type Gamestate = GamestateStore & GamestateStoreActions
 
 const initialGamestate: GamestateStore = {
+  cityObject: {},
   mapArray: [],
   npcs: [],
   mapObject: {},
@@ -48,9 +59,12 @@ export const useGamestateStore = create<Gamestate>()(
   devtools((set) => ({
     ...initialGamestate,
 
-    setNpcs: (npcs) => set((state) => ({ ...state, npcs })),
     setMapArray: (mapArray) => set((state) => ({ ...state, mapArray })),
     setMapObject: (mapObject) => set((state) => ({ ...state, mapObject })),
+    setCities: (cityObject) => {
+      return set((state) => ({ ...state, cityObject }))
+    },
+    setNpcs: (npcs) => set((state) => ({ ...state, npcs })),
     setCleanMapObject: (cleanMapObject) =>
       set((state) => ({ ...state, cleanMapObject })),
 

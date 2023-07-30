@@ -1,6 +1,10 @@
 import { produce } from "immer"
 import { useCallback, useEffect } from "react"
-import { type MapObject, useGamestateStore } from "~/state/gamestateStore"
+import {
+  type MapObject,
+  useGamestateStore,
+  type CityObject,
+} from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 export const useGamestate = () => {
@@ -8,6 +12,7 @@ export const useGamestate = () => {
     setMapArray,
     setNpcs,
     setMapObject,
+    setCities,
     setCleanMapObject,
     cleanMapObject,
     npcs,
@@ -15,6 +20,7 @@ export const useGamestate = () => {
     useCallback(
       (state) => ({
         setMapArray: state.setMapArray,
+        setCities: state.setCities,
         setNpcs: state.setNpcs,
         setMapObject: state.setMapObject,
         setCleanMapObject: state.setCleanMapObject,
@@ -36,6 +42,13 @@ export const useGamestate = () => {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when fetching the npcs",
+    },
+  })
+
+  const { data: cityData } = api.general.getCities.useQuery(undefined, {
+    staleTime: Infinity,
+    meta: {
+      errorMessage: "Something went wrong when fetching the cities",
     },
   })
 
@@ -81,6 +94,17 @@ export const useGamestate = () => {
   useEffect(() => {
     setNpcs(npcData ?? [])
   }, [npcData, setNpcs])
+
+  /**
+   * Instantiate the cities (Should only happen once)
+   */
+  useEffect(() => {
+    const newCityObject = cityData?.reduce<CityObject>((acc, cur) => {
+      acc[cur.xyTileId] = cur
+      return acc
+    }, {})
+    setCities(newCityObject ?? {})
+  }, [cityData, setCities])
 
   /**
    * Instantiate the map (Should only happen once)

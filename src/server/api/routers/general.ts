@@ -63,6 +63,12 @@ export const generalRouter = createTRPCRouter({
     })
   }),
   /**
+   * Fetch a list of all the cities
+   */
+  getCities: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.select().from(city)
+  }),
+  /**
    * Adds a ship to a users profile
    */
   addShip: protectedProcedure
