@@ -28,10 +28,7 @@ const Map = ({ mapWidth, mapHeight, mapArray }: MapProps) => {
       options={{ backgroundColor: 0xaaaaaa }}
     >
       <PixiViewport width={mapWidth} height={mapHeight}>
-        {mapArray?.map((tile) => {
-          const tileId = `${tile.x}:${tile.y}`
-          return <MapPixiTile key={tileId} {...tile} />
-        })}
+        {mapArray?.map((tile) => <MapPixiTile key={tile.xyTileId} {...tile} />)}
       </PixiViewport>
     </PixiStage>
   )
