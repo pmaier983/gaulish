@@ -38,12 +38,35 @@ export const useGamestate = () => {
     },
   })
 
+  /**
+   * Instantiate the map (Should only happen once)
+   */
+  useEffect(() => {
+    setMapArray(mapData ?? [])
+
+    const theCleanMapObject =
+      mapData?.reduce<MapObject>((acc, tile) => {
+        acc[`${tile.x}:${tile.y}`] = tile
+        return acc
+      }, {}) ?? {}
+
+    setMapObject(theCleanMapObject)
+    setCleanMapObject(theCleanMapObject)
+  }, [mapData, setCleanMapObject, setMapArray, setMapObject])
+
   const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when fetching the npcs",
     },
   })
+
+  /**
+   * Instantiate the npcs (Should only happen once)
+   */
+  useEffect(() => {
+    setNpcs(npcData ?? [])
+  }, [npcData, setNpcs])
 
   const { data: cityData } = api.general.getCities.useQuery(undefined, {
     staleTime: Infinity,
@@ -52,7 +75,20 @@ export const useGamestate = () => {
     },
   })
 
-  // TODO: setup pause and history functionality for this!
+  /**
+   * Instantiate the cities (Should only happen once)
+   */
+  useEffect(() => {
+    const newCityObject = cityData?.reduce<CityObject>((acc, cur) => {
+      acc[cur.xyTileId] = cur
+      return acc
+    }, {})
+    setCities(newCityObject ?? {})
+  }, [cityData, setCities])
+
+  /**
+   * This use effect runs a game loop every 0.5s to update the map object
+   */
   useEffect(() => {
     const intervalId = setInterval(() => {
       const newMapObject = produce(cleanMapObject, (draftMapObject) => {
@@ -84,41 +120,7 @@ export const useGamestate = () => {
         })
       })
       setMapObject(newMapObject)
-    }, 1000)
+    }, 500)
     return () => clearInterval(intervalId)
   })
-
-  /**
-   * Instantiate the npcs (Should only happen once)
-   */
-  useEffect(() => {
-    setNpcs(npcData ?? [])
-  }, [npcData, setNpcs])
-
-  /**
-   * Instantiate the cities (Should only happen once)
-   */
-  useEffect(() => {
-    const newCityObject = cityData?.reduce<CityObject>((acc, cur) => {
-      acc[cur.xyTileId] = cur
-      return acc
-    }, {})
-    setCities(newCityObject ?? {})
-  }, [cityData, setCities])
-
-  /**
-   * Instantiate the map (Should only happen once)
-   */
-  useEffect(() => {
-    setMapArray(mapData ?? [])
-
-    const theCleanMapObject =
-      mapData?.reduce<MapObject>((acc, tile) => {
-        acc[`${tile.x}:${tile.y}`] = tile
-        return acc
-      }, {}) ?? {}
-
-    setMapObject(theCleanMapObject)
-    setCleanMapObject(theCleanMapObject)
-  }, [mapData, setCleanMapObject, setMapArray, setMapObject])
 }
