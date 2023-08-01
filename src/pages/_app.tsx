@@ -9,7 +9,6 @@ import { Toaster } from "react-hot-toast"
 
 import { AUTH_FREE_PAGES } from "~/components/constants"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
-import { DevNavBar } from "~/components/DevNavBar"
 import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 
@@ -71,7 +70,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <div className={`flex h-full flex-col ${poppins.className}`}>
         <AuthWrapper>
-          <DevNavBar />
           <Toaster position="bottom-center" />
           <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
           <Component {...rest} />
