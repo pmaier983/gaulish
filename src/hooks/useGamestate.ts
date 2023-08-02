@@ -1,35 +1,22 @@
 import { produce } from "immer"
 import { useCallback, useEffect } from "react"
-import {
-  type MapObject,
-  useGamestateStore,
-  type CityObject,
-} from "~/state/gamestateStore"
+import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 export const useGamestate = () => {
-  const {
-    setMapArray,
-    setNpcs,
-    setMapObject,
-    setCities,
-    setCleanMapObject,
-    cleanMapObject,
-    npcs,
-  } = useGamestateStore(
-    useCallback(
-      (state) => ({
-        setMapArray: state.setMapArray,
-        setCities: state.setCities,
-        setNpcs: state.setNpcs,
-        setMapObject: state.setMapObject,
-        setCleanMapObject: state.setCleanMapObject,
-        cleanMapObject: state.cleanMapObject,
-        npcs: state.npcs,
-      }),
-      [],
-    ),
-  )
+  const { setMap, setNpcs, setCities, cleanMapObject, npcs } =
+    useGamestateStore(
+      useCallback(
+        (state) => ({
+          setMap: state.setMap,
+          setCities: state.setCities,
+          setNpcs: state.setNpcs,
+          cleanMapObject: state.cleanMapObject,
+          npcs: state.npcs,
+        }),
+        [],
+      ),
+    )
 
   const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,
@@ -42,17 +29,8 @@ export const useGamestate = () => {
    * Instantiate the map (Should only happen once)
    */
   useEffect(() => {
-    setMapArray(mapData ?? [])
-
-    const theCleanMapObject =
-      mapData?.reduce<MapObject>((acc, tile) => {
-        acc[`${tile.x}:${tile.y}`] = tile
-        return acc
-      }, {}) ?? {}
-
-    setMapObject(theCleanMapObject)
-    setCleanMapObject(theCleanMapObject)
-  }, [mapData, setCleanMapObject, setMapArray, setMapObject])
+    setMap(mapData ?? [])
+  }, [mapData, setMap])
 
   const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
@@ -79,11 +57,7 @@ export const useGamestate = () => {
    * Instantiate the cities (Should only happen once)
    */
   useEffect(() => {
-    const newCityObject = cityData?.reduce<CityObject>((acc, cur) => {
-      acc[cur.xyTileId] = cur
-      return acc
-    }, {})
-    setCities(newCityObject ?? {})
+    setCities(cityData ?? [])
   }, [cityData, setCities])
 
   /**

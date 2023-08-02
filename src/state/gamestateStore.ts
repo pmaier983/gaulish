@@ -36,11 +36,9 @@ export interface GamestateStore {
 }
 
 interface GamestateStoreActions {
-  setMapArray: (map: GamestateStore["mapArray"]) => void
-  setMapObject: (map: GamestateStore["mapObject"]) => void
-  setCities: (cityObject: GamestateStore["cityObject"]) => void
+  setMap: (map: GamestateStore["mapArray"]) => void
+  setCities: (cityObject: City[]) => void
   setNpcs: (npcs: GamestateStore["npcs"]) => void
-  setCleanMapObject: (map: GamestateStore["cleanMapObject"]) => void
 
   selectShip: (ship: Ship) => void
 
@@ -62,12 +60,29 @@ export const useGamestateStore = create<Gamestate>()(
   devtools((set, get) => ({
     ...initialGamestate,
 
-    setMapArray: (mapArray) => set((state) => ({ ...state, mapArray })),
-    setMapObject: (mapObject) => set((state) => ({ ...state, mapObject })),
-    setCities: (cityObject) => set((state) => ({ ...state, cityObject })),
+    setMap: (map) => {
+      const cleanMapObject =
+        map?.reduce<MapObject>((acc, tile) => {
+          acc[`${tile.x}:${tile.y}`] = tile
+          return acc
+        }, {}) ?? {}
+      return set((state) => ({
+        ...state,
+        mapArray: map,
+        cleanMapObject: cleanMapObject,
+        mapObject: cleanMapObject,
+      }))
+    },
+
+    setCities: (cityArray) => {
+      const cityObject = cityArray?.reduce<CityObject>((acc, cur) => {
+        acc[cur.xyTileId] = cur
+        return acc
+      }, {})
+      set((state) => ({ ...state, cityObject: cityObject }))
+    },
+
     setNpcs: (npcs) => set((state) => ({ ...state, npcs })),
-    setCleanMapObject: (cleanMapObject) =>
-      set((state) => ({ ...state, cleanMapObject })),
 
     selectShip: (ship) => {
       const citiesObject = get().cityObject
