@@ -5,7 +5,7 @@ export const Sidebar = () => {
   const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
-      errorMessage: "Something went wrong when the users ships",
+      errorMessage: "Something went wrong when the users loaded their ships",
     },
   })
   const { mutate } = api.general.addShip.useMutation()
