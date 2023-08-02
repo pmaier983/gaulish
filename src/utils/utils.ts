@@ -1,3 +1,4 @@
+import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 
@@ -32,4 +33,40 @@ export const getPathFromString = (path: string) => {
   if (pathArray.length < 2)
     throw new Error("Received an array of path length less then 2")
   return pathArray
+}
+
+export const getDirectionTowardsCurrentTile = (
+  currentTile: string,
+  prevTile?: string,
+) => {
+  if (!prevTile) {
+    return undefined
+  }
+
+  const [xStringPrev, yStringPrev] = prevTile.split(":")
+  const [xStringCurrent, yStringCurrent] = currentTile.split(":")
+
+  if (!xStringPrev || !yStringPrev || !xStringCurrent || !yStringCurrent) {
+    throw new Error("Invalid tile string passed into getDirectionFromTiles")
+  }
+
+  const xPrev = parseInt(xStringPrev)
+  const yPrev = parseInt(yStringPrev)
+  const xCurrent = parseInt(xStringCurrent)
+  const yCurrent = parseInt(yStringCurrent)
+
+  if (yCurrent < yPrev) {
+    return DIRECTIONS.NORTH
+  }
+  if (yCurrent > yPrev) {
+    return DIRECTIONS.SOUTH
+  }
+  if (xCurrent > xPrev) {
+    return DIRECTIONS.EAST
+  }
+  if (xCurrent < xPrev) {
+    return DIRECTIONS.WEST
+  }
+
+  throw new Error("Invalid Tiles input into getDirectionFromTiles")
 }

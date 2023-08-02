@@ -2,7 +2,8 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
 import type { Npc, Path, Tile, City, Ship } from "schema"
-import { type ShipType } from "~/components/constants"
+import { type DIRECTION, type ShipType } from "~/components/constants"
+import { getDirectionTowardsCurrentTile } from "~/utils/utils"
 
 export interface PathComposite extends Omit<Path, "path"> {
   path: string[]
@@ -17,13 +18,24 @@ export interface TileComposite extends Tile {
   npc?: NpcComposite
 }
 
-export type MapObject = { [key: string]: TileComposite }
+export type MapObject = { [xyTileId: string]: TileComposite }
 
-export type CityObject = { [key: string]: City }
+export type CityObject = { [xyTileId: string]: City }
+
+export interface SelectedShipPath {
+  previousTileId?: string
+  directionTowardsCurrentTile?: DIRECTION
+  index: number
+}
+
+export type SelectedShipPathObject = {
+  [xyTileId: string]: SelectedShipPath
+}
 
 export interface GamestateStore {
   selectedShip?: Ship
-  selectedShipPath: PathComposite["path"]
+  selectedShipPathArray: PathComposite["path"]
+  selectedShipPathObject: SelectedShipPathObject
 
   mapArray: Tile[]
   mapObject: MapObject
@@ -41,7 +53,7 @@ interface GamestateStoreActions {
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: GamestateStore["npcs"]) => void
 
-  selectShip: (ship: Ship) => void
+  toggleShipSelection: (ship?: Ship) => void
 
   restart: () => void
 }
@@ -49,7 +61,8 @@ interface GamestateStoreActions {
 export type Gamestate = GamestateStore & GamestateStoreActions
 
 const initialGamestate: GamestateStore = {
-  selectedShipPath: [],
+  selectedShipPathArray: [],
+  selectedShipPathObject: {},
   cityObject: {},
   mapArray: [],
   npcs: [],
@@ -87,7 +100,17 @@ export const useGamestateStore = create<Gamestate>()(
 
     setNpcs: (npcs) => set((state) => ({ ...state, npcs })),
 
-    selectShip: (ship) => {
+    toggleShipSelection: (ship) => {
+      // Toggle selected ship off
+      if (!ship || ship.id === get().selectedShip?.id) {
+        return set((state) => ({
+          ...state,
+          selectedShip: undefined,
+          selectedShipPathArray: [],
+          selectedShipPathObject: {},
+        }))
+      }
+
       const citiesObject = get().cityObject
 
       const startingCity = Object.values(citiesObject).find(
@@ -97,13 +120,35 @@ export const useGamestateStore = create<Gamestate>()(
       if (!startingCity)
         throw new Error("Could not find the city your ship is in!")
 
+      const selectedShipPathArray = [startingCity.xyTileId]
+
       return set((state) => ({
         ...state,
         selectedShip: ship,
-        selectedShipPath: [startingCity.xyTileId],
+        selectedShipPathArray: selectedShipPathArray,
+        selectedShipPathObject: generateSelectedShipPathObject(
+          selectedShipPathArray,
+        ),
       }))
     },
 
     restart: () => set(initialGamestate),
   })),
 )
+
+export const generateSelectedShipPathObject = (
+  shipPathArray: GamestateStore["selectedShipPathArray"],
+) => {
+  return shipPathArray.reduce<SelectedShipPathObject>((acc, cur, i) => {
+    const prevTile = shipPathArray[i - 1]
+    acc[cur] = {
+      index: i,
+      previousTileId: prevTile,
+      directionTowardsCurrentTile: getDirectionTowardsCurrentTile(
+        cur,
+        prevTile,
+      ),
+    }
+    return acc
+  }, {})
+}

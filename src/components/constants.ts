@@ -18,6 +18,15 @@ export const TILE_TYPES = {
   OCEAN: "OCEAN",
 } as const
 
+export const DIRECTIONS = {
+  NORTH: "NORTH",
+  SOUTH: "SOUTH",
+  EAST: "EAST",
+  WEST: "WEST",
+} as const
+
+export type DIRECTION = keyof typeof DIRECTIONS
+
 export const TILE_TYPE_ID_TO_TYPE = {
   0: TILE_TYPES.EMPTY,
   1: TILE_TYPES.FOREST,
