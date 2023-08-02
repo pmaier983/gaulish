@@ -36,7 +36,8 @@ export interface GamestateStore {
 }
 
 interface GamestateStoreActions {
-  setMap: (map: GamestateStore["mapArray"]) => void
+  setInitialMapState: (map: GamestateStore["mapArray"]) => void
+  setMapObject: (map: GamestateStore["mapObject"]) => void
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: GamestateStore["npcs"]) => void
 
@@ -60,7 +61,7 @@ export const useGamestateStore = create<Gamestate>()(
   devtools((set, get) => ({
     ...initialGamestate,
 
-    setMap: (map) => {
+    setInitialMapState: (map) => {
       const cleanMapObject =
         map?.reduce<MapObject>((acc, tile) => {
           acc[`${tile.x}:${tile.y}`] = tile
@@ -73,6 +74,8 @@ export const useGamestateStore = create<Gamestate>()(
         mapObject: cleanMapObject,
       }))
     },
+
+    setMapObject: (map) => set((state) => ({ ...state, mapObject: map })),
 
     setCities: (cityArray) => {
       const cityObject = cityArray?.reduce<CityObject>((acc, cur) => {

@@ -4,19 +4,26 @@ import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 export const useGamestate = () => {
-  const { setMap, setNpcs, setCities, cleanMapObject, npcs } =
-    useGamestateStore(
-      useCallback(
-        (state) => ({
-          setMap: state.setMap,
-          setCities: state.setCities,
-          setNpcs: state.setNpcs,
-          cleanMapObject: state.cleanMapObject,
-          npcs: state.npcs,
-        }),
-        [],
-      ),
-    )
+  const {
+    setInitialMapState,
+    setNpcs,
+    setCities,
+    cleanMapObject,
+    npcs,
+    setMapObject,
+  } = useGamestateStore(
+    useCallback(
+      (state) => ({
+        setInitialMapState: state.setInitialMapState,
+        setMapObject: state.setMapObject,
+        setCities: state.setCities,
+        setNpcs: state.setNpcs,
+        cleanMapObject: state.cleanMapObject,
+        npcs: state.npcs,
+      }),
+      [],
+    ),
+  )
 
   const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,
@@ -29,8 +36,8 @@ export const useGamestate = () => {
    * Instantiate the map (Should only happen once)
    */
   useEffect(() => {
-    setMap(mapData ?? [])
-  }, [mapData, setMap])
+    setInitialMapState(mapData ?? [])
+  }, [mapData, setInitialMapState])
 
   const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
