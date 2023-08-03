@@ -35,7 +35,7 @@ export const getPathFromString = (path: string) => {
   return pathArray
 }
 
-export const getDirectionTowardsCurrentTile = (
+export const getDirectionTowardsPrevTile = (
   currentTile: string,
   prevTile?: string,
 ) => {
@@ -55,16 +55,16 @@ export const getDirectionTowardsCurrentTile = (
   const xCurrent = parseInt(xStringCurrent)
   const yCurrent = parseInt(yStringCurrent)
 
-  if (yCurrent < yPrev) {
+  if (yCurrent > yPrev) {
     return DIRECTIONS.NORTH
   }
-  if (yCurrent > yPrev) {
+  if (yCurrent < yPrev) {
     return DIRECTIONS.SOUTH
   }
-  if (xCurrent > xPrev) {
+  if (xCurrent < xPrev) {
     return DIRECTIONS.EAST
   }
-  if (xCurrent < xPrev) {
+  if (xCurrent > xPrev) {
     return DIRECTIONS.WEST
   }
 

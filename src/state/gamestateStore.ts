@@ -3,7 +3,7 @@ import { devtools } from "zustand/middleware"
 
 import type { Npc, Path, Tile, City, Ship } from "schema"
 import { type DIRECTION, type ShipType } from "~/components/constants"
-import { getDirectionTowardsCurrentTile } from "~/utils/utils"
+import { getDirectionTowardsPrevTile } from "~/utils/utils"
 
 export interface PathComposite extends Omit<Path, "path"> {
   path: string[]
@@ -24,7 +24,7 @@ export type CityObject = { [xyTileId: string]: City }
 
 export interface SelectedShipPath {
   previousTileId?: string
-  directionTowardsCurrentTile?: DIRECTION
+  directionTowardsPrevTile?: DIRECTION
   index: number
 }
 
@@ -144,10 +144,7 @@ export const generateSelectedShipPathObject = (
     acc[cur] = {
       index: i,
       previousTileId: prevTile,
-      directionTowardsCurrentTile: getDirectionTowardsCurrentTile(
-        cur,
-        prevTile,
-      ),
+      directionTowardsPrevTile: getDirectionTowardsPrevTile(cur, prevTile),
     }
     return acc
   }, {})

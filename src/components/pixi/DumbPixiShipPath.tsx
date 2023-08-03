@@ -33,7 +33,7 @@ export const DumbPixiShipPath = ({
     (g: PIXI.Graphics) => {
       g.clear()
       g.beginFill(fill)
-      switch (selectedShipPath?.directionTowardsCurrentTile) {
+      switch (selectedShipPath?.directionTowardsPrevTile) {
         case DIRECTIONS.NORTH: {
           g.drawRect(
             tileXPosition + tileSize / 2 - pathBarWidth / 2,
@@ -53,11 +53,21 @@ export const DumbPixiShipPath = ({
           g.endFill()
         }
         case DIRECTIONS.EAST: {
-          g.drawRect(tileXPosition, tileYPosition, tileSize, tileSize)
+          g.drawRect(
+            tileXPosition,
+            tileYPosition + tileSize / 2 - pathBarWidth / 2,
+            tileSize / 2,
+            pathBarWidth,
+          )
           g.endFill()
         }
         case DIRECTIONS.WEST: {
-          g.drawRect(tileXPosition, tileYPosition, tileSize, tileSize)
+          g.drawRect(
+            tileXPosition + tileSize / 2,
+            tileYPosition + tileSize / 2 - pathBarWidth / 2,
+            tileSize / 2,
+            pathBarWidth,
+          )
           g.endFill()
         }
         default: {
@@ -66,10 +76,11 @@ export const DumbPixiShipPath = ({
       }
     },
     [
-      selectedShipPath.directionTowardsCurrentTile,
+      selectedShipPath?.directionTowardsPrevTile,
       tileXPosition,
-      tileYPosition,
       tileSize,
+      pathBarWidth,
+      tileYPosition,
     ],
   )
   return <Graphics draw={draw} />
