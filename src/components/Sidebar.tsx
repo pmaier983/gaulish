@@ -1,7 +1,18 @@
+import { useCallback } from "react"
 import { SHIP_ID_TO_SHIP_TYPES, SHIP_TYPES } from "~/components/constants"
+import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 export const Sidebar = () => {
+  const { toggleShipSelection, selectedShip } = useGamestateStore(
+    useCallback(
+      (state) => ({
+        selectedShip: state.selectedShip,
+        toggleShipSelection: state.toggleShipSelection,
+      }),
+      [],
+    ),
+  )
   const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
@@ -21,7 +32,15 @@ export const Sidebar = () => {
         </button>
       )}
       {data?.map((ship) => (
-        <div key={ship.id}>{SHIP_ID_TO_SHIP_TYPES[ship.shipTypeId]?.name}</div>
+        <button
+          key={ship.id}
+          className={selectedShip?.id === ship.id ? "bg-red-500" : ""}
+          onClick={() => {
+            toggleShipSelection(ship)
+          }}
+        >
+          {SHIP_ID_TO_SHIP_TYPES[ship.shipTypeId]?.name}
+        </button>
       ))}
     </div>
   )

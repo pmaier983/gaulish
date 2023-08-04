@@ -19,7 +19,7 @@ export const DumbPixiShipPath = ({
 
   const mapWidth = app.renderer.options.width ?? 0
 
-  const fill = "#d89a6c"
+  const fill = "#FF0000"
 
   // the width determines the size of the tile
   const tileSize = mapWidth * TILE_PERCENT_SIZE
@@ -33,6 +33,12 @@ export const DumbPixiShipPath = ({
     (g: PIXI.Graphics) => {
       g.clear()
       g.beginFill(fill)
+      g.drawRect(
+        tileXPosition + tileSize / 4,
+        tileYPosition + tileSize / 4,
+        tileSize / 2,
+        tileSize / 2,
+      )
       switch (selectedShipPath?.directionTowardsPrevTile) {
         case DIRECTIONS.NORTH: {
           g.drawRect(
@@ -71,7 +77,7 @@ export const DumbPixiShipPath = ({
           g.endFill()
         }
         default: {
-          throw Error("An unknown direction was passed into DumbPixiShipPath")
+          g.endFill()
         }
       }
     },
