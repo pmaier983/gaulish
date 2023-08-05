@@ -2,10 +2,6 @@ import { type StateCreator } from "zustand"
 
 import { type GlobalState } from "./globalStore"
 
-export type User = {
-  isUserAdmin: boolean
-}
-
 export interface UserSliceState {
   isUserAdmin: boolean
 }

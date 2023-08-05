@@ -50,11 +50,21 @@
   }
 }
 
+.main {
+  grid-area: main;
+  display: flex;
+  position: relative;
+  align-self: center;
+  height: 100%;
+  background-color: theme(colors.green.200);
+}
+
 .header {
   grid-area: header;
   background-color: theme(colors.red.200);
 
   display: flex;
+  position: relative;
 }
 
 .sidebar {
@@ -62,14 +72,7 @@
   background-color: theme(colors.blue.200);
 
   display: flex;
-}
-
-.main {
-  grid-area: main;
-  display: flex;
-  align-self: center;
-  height: 100%;
-  background-color: theme(colors.green.200);
+  position: relative;
 }
 
 .footer {
@@ -77,5 +80,14 @@
   background-color: theme(colors.yellow.200);
 
   display: flex;
+  position: relative;
+}
+
+.isDisabledOverlay {
+  position: absolute;
+  width: 100%;
   height: 100%;
+
+  background-color: theme(colors.black);
+  opacity: 0.5;
 }

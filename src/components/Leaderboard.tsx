@@ -6,13 +6,8 @@ import { CHANNELS } from "~/components/constants"
 import { api } from "~/utils/api"
 import { ABLY_CLIENT_ID } from "~/utils/utils"
 
-interface LeaderboardProps {
-  className?: string
-  isDisabled: boolean
-}
-
 // TODO: possibly look into why this component is re-rending constantly?
-export const Leaderboard = ({ className = "" }: LeaderboardProps) => {
+export const Leaderboard = () => {
   const { data } = useSession()
 
   const [members, updatePresence] = usePresence(CHANNELS.MESSAGE, {
@@ -29,7 +24,7 @@ export const Leaderboard = ({ className = "" }: LeaderboardProps) => {
   }, [data?.user, updatePresence])
 
   return (
-    <div className={`flex-1 ${className}`}>
+    <div className="flex-1">
       <LeaderboardList
         emails={members.map((member) => member.data.email).filter(Boolean)}
       />
@@ -48,7 +43,7 @@ const LeaderboardList = ({ emails }: { emails: string[] }) => {
   })
   return (
     <ol
-      className="flex h-full w-full list-decimal flex-col items-center justify-start overflow-y-auto"
+      className="flex h-full list-decimal flex-col items-center justify-start  overflow-y-auto"
       type="1"
     >
       {data

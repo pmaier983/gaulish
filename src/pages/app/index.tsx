@@ -9,6 +9,7 @@ import { useCallback } from "react"
 import { Chat } from "~/components/Chat"
 import { Leaderboard } from "~/components/Leaderboard"
 import { Sidebar } from "~/components/Sidebar"
+import { useGlobalStore } from "~/state/globalStore"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -19,20 +20,46 @@ const App = () => {
   const { mapArray } = useGamestateStore(
     useCallback((state) => ({ mapArray: state.mapArray }), []),
   )
+  const {
+    isLeaderboardDisabled,
+    isSidebarDisabled,
+    isChatDisabled,
+    isMapDisabled,
+  } = useGlobalStore(
+    useCallback(
+      (state) => ({
+        isLeaderboardDisabled: state.isLeaderboardDisabled,
+        isSidebarDisabled: state.isSidebarDisabled,
+        isChatDisabled: state.isChatDisabled,
+        isMapDisabled: state.isMapDisabled,
+      }),
+      [],
+    ),
+  )
 
   useGamestate()
 
   return (
     <div className={styles.container}>
-      <Leaderboard
-        className={styles.header}
-      />
+      <div className={styles.header}>
+        {isLeaderboardDisabled && <div className={styles.isDisabledOverlay} />}
+        <Leaderboard />
+      </div>
+      <div className={styles.sidebar}>
+        {isSidebarDisabled && <div className={styles.isDisabledOverlay} />}
+        <Sidebar />
+      </div>
       <div className={styles.main} ref={sizeRef}>
+        {isMapDisabled && <div className={styles.isDisabledOverlay} />}
         <Map
           mapWidth={size.width}
           mapHeight={size.height}
           mapArray={mapArray}
         />
+      </div>
+      <div className={styles.footer}>
+        {isChatDisabled && <div className={styles.isDisabledOverlay} />}
+        <Chat />
       </div>
     </div>
   )
