@@ -77,4 +77,5 @@
   background-color: theme(colors.yellow.200);
 
   display: flex;
+  height: 100%;
 }

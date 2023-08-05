@@ -1,7 +1,12 @@
 import { useState } from "react"
 import { type Message, useChatMessage } from "~/hooks/useChatMessage"
 
-export const Chat = () => {
+interface ChatProps {
+  className?: string
+  isDisabled: boolean
+}
+
+export const Chat = ({ className = "" }: ChatProps) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [chatText, setChatText] = useState("")
 
@@ -16,12 +21,12 @@ export const Chat = () => {
   }
 
   return (
-    <div className="flex-1 self-end">
+    <div className={`flex-1 self-end ${className}`}>
       {messages.map((message) => (
         <div key={message.id}>{message.data.text}</div>
       ))}
       <form
-        className="flex justify-center gap-2 p-2"
+        className="flex w-full items-end justify-center gap-2 p-2"
         onSubmit={(e) => {
           e.preventDefault()
           onSubmit()

@@ -3,7 +3,12 @@ import { SHIP_ID_TO_SHIP_TYPES, SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
-export const Sidebar = () => {
+interface SidebarProps {
+  className?: string
+  isDisabled: boolean
+}
+
+export const Sidebar = ({ className = "" }: SidebarProps) => {
   const { toggleShipSelection, selectedShip } = useGamestateStore(
     useCallback(
       (state) => ({
@@ -13,15 +18,18 @@ export const Sidebar = () => {
       [],
     ),
   )
+
   const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when the users loaded their ships",
     },
   })
+
   const { mutate } = api.general.addShip.useMutation()
+
   return (
-    <div className="flex-1">
+    <div className={`flex flex-1 flex-col items-start ${className}`}>
       {data?.length === 0 && !!isSuccess && (
         <button
           onClick={() => {

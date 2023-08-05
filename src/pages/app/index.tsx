@@ -24,21 +24,15 @@ const App = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <Leaderboard />
-      </div>
-      <div className={styles.sidebar}>
-        <Sidebar />
-      </div>
+      <Leaderboard
+        className={styles.header}
+      />
       <div className={styles.main} ref={sizeRef}>
         <Map
           mapWidth={size.width}
           mapHeight={size.height}
           mapArray={mapArray}
         />
-      </div>
-      <div className={styles.footer}>
-        <Chat />
       </div>
     </div>
   )
