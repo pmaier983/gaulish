@@ -30,13 +30,13 @@ export const DevNavBar = () => {
       >
         Hide
       </button>
-      <Link href={"/"} className="rounded-sm bg-slate-400 px-3">
+      <Link href="/" className="rounded-sm bg-slate-400 px-3">
         Home
       </Link>
-      <Link href={"/app"} className="rounded-sm bg-slate-400 px-3">
+      <Link href="/app" className="rounded-sm bg-slate-400 px-3">
         App
       </Link>
-      <Link href={"/app/dev"} className="rounded-sm bg-slate-400 px-3">
+      <Link href="/app/dev" className="rounded-sm bg-slate-400 px-3">
         Dev
       </Link>
       <button

@@ -96,11 +96,12 @@ export const DumbPixiShipPath = ({
       g.endFill()
     },
     [
-      selectedShipPath.isLastTileInPath,
       selectedShipPath.directionLinesToDraw,
+      selectedShipPath.isLastTileInPath,
       tileXPosition,
       tileSize,
       tileYPosition,
+      tile.xyTileId,
       pathBarWidth,
     ],
   )

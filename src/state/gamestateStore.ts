@@ -149,11 +149,11 @@ export const generateSelectedShipPathObject = (
       // For the First Tile
       if (i === 0) {
         acc[curTileId] = {
-      index: i,
+          index: i,
           directionLinesToDraw: [],
           isLastTileInPath: i === shipPathArray.length - 1,
-    }
-    return acc
+        }
+        return acc
       }
 
       const prevTileId = shipPathArray[i - 1]
