@@ -40,7 +40,7 @@ export const getDirectionTowardsPrevTile = (
   prevTile?: string,
 ) => {
   if (!prevTile) {
-    return undefined
+    throw new Error("Nonexistent prevTile passed into getDirectionFromTiles")
   }
 
   const [xStringPrev, yStringPrev] = prevTile.split(":")

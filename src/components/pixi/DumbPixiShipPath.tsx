@@ -31,62 +31,77 @@ export const DumbPixiShipPath = ({
 
   const draw = useCallback(
     (g: PIXI.Graphics) => {
+      console.log("directions", selectedShipPath.directionLinesToDraw)
+
       g.clear()
       g.beginFill(fill)
-      g.drawRect(
-        tileXPosition + tileSize / 4,
-        tileYPosition + tileSize / 4,
-        tileSize / 2,
-        tileSize / 2,
-      )
-      switch (selectedShipPath?.directionTowardsPrevTile) {
-        case DIRECTIONS.NORTH: {
-          g.drawRect(
-            tileXPosition + tileSize / 2 - pathBarWidth / 2,
-            tileYPosition,
-            pathBarWidth,
-            tileSize / 2,
-          )
-          g.endFill()
-        }
-        case DIRECTIONS.SOUTH: {
-          g.drawRect(
-            tileXPosition + tileSize / 2 - pathBarWidth / 2,
-            tileYPosition + tileSize / 2,
-            pathBarWidth,
-            tileSize / 2,
-          )
-          g.endFill()
-        }
-        case DIRECTIONS.EAST: {
-          g.drawRect(
-            tileXPosition,
-            tileYPosition + tileSize / 2 - pathBarWidth / 2,
-            tileSize / 2,
-            pathBarWidth,
-          )
-          g.endFill()
-        }
-        case DIRECTIONS.WEST: {
-          g.drawRect(
-            tileXPosition + tileSize / 2,
-            tileYPosition + tileSize / 2 - pathBarWidth / 2,
-            tileSize / 2,
-            pathBarWidth,
-          )
-          g.endFill()
-        }
-        default: {
-          g.endFill()
-        }
+      if (selectedShipPath.isLastTileInPath) {
+        g.drawRect(
+          tileXPosition + tileSize / 4,
+          tileYPosition + tileSize / 4,
+          tileSize / 2,
+          tileSize / 2,
+        )
       }
+      // If the last tile in the path, draw the "ship"
+      if (selectedShipPath.directionLinesToDraw.length === 0) {
+        g.endFill()
+      }
+
+      selectedShipPath.directionLinesToDraw.forEach((direction) => {
+        switch (direction) {
+          case DIRECTIONS.NORTH: {
+            console.log("NORTH", tile.xyTileId)
+            g.drawRect(
+              tileXPosition + tileSize / 2 - pathBarWidth / 2,
+              tileYPosition,
+              pathBarWidth,
+              tileSize / 2,
+            )
+            break
+          }
+          case DIRECTIONS.SOUTH: {
+            console.log("SOUTH", tile.xyTileId)
+            g.drawRect(
+              tileXPosition + tileSize / 2 - pathBarWidth / 2,
+              tileYPosition + tileSize / 2,
+              pathBarWidth,
+              tileSize / 2,
+            )
+            break
+          }
+          case DIRECTIONS.EAST: {
+            console.log("EAST", tile.xyTileId)
+            g.drawRect(
+              tileXPosition + tileSize / 2,
+              tileYPosition + tileSize / 2 - pathBarWidth / 2,
+              tileSize / 2,
+              pathBarWidth,
+            )
+            break
+          }
+          case DIRECTIONS.WEST: {
+            console.log("WEST", tile.xyTileId)
+            g.drawRect(
+              tileXPosition,
+              tileYPosition + tileSize / 2 - pathBarWidth / 2,
+              tileSize / 2,
+              pathBarWidth,
+            )
+            break
+          }
+        }
+      })
+
+      g.endFill()
     },
     [
-      selectedShipPath?.directionTowardsPrevTile,
+      selectedShipPath.isLastTileInPath,
+      selectedShipPath.directionLinesToDraw,
       tileXPosition,
       tileSize,
-      pathBarWidth,
       tileYPosition,
+      pathBarWidth,
     ],
   )
   return <Graphics draw={draw} />
