@@ -12,7 +12,7 @@ export type GlobalState = UserSlice & DisableSlice
  * This is not shallow by default
  * so avoid this as it will cause unnecessary re-renders.
  */
-const useGlobalStoreBase = create<GlobalState>()(
+export const useGlobalStoreBase = create<GlobalState>()(
   devtools(
     (...a) => ({
       ...createUserSlice(...a),
