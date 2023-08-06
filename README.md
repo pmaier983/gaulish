@@ -39,7 +39,7 @@ one day it will be a great IO game with users!
 
 - [ ] Setup i18n? (try again :cry:) (try: https://twitter.com/tomlienard/status/1675512683007705090?s=46&t=AvxOErBZQssdPziieqzO9w - it works in app directory!)(look into https://crowdin.com/)
 - [ ] Generate random usernames along the order of "SlowSailor"
-- [ ] Setup Github Actions (Build on commit?)
+- [ ] Setup Github Actions (Build on commit?) (https://www.youtube.com/watch?v=yfBtjLxn_6k)
   - we get this automatically with Vercel. Shift to github only when we want something more verbose.
 - [ ] Setup Ad Sense
 - [ ] Look into feature flags
