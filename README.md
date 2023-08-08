@@ -43,6 +43,5 @@ one day it will be a great IO game with users!
   - we get this automatically with Vercel. Shift to github only when we want something more verbose.
 - [ ] Setup Ad Sense
 - [ ] Look into feature flags
-- [ ] Setup Component library (https://www.radix-ui.com/)
 - [ ] make Admin a role permission and not just my email...
 - [ ] Setup Dark Mode
