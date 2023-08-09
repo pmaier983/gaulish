@@ -34,6 +34,7 @@ one day it will be a great IO game with users!
       - P0 arrow keys to nav
       - P2 drag and drop
       - P2 Select city to auto nav (A* pathing https://en.wikipedia.org/wiki/A*\_search_algorithm)
+  - [ ] Plan out User Economy/MVP
 
 ### Low Priority
 
