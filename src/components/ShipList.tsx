@@ -28,10 +28,18 @@ export const ShipList = () => {
     )
   }
 
+  // TODO: Setup an actual table library (https://tanstack.com/table/v8/docs/examples/react/basic)
   return (
-    <ul className="flex-1">
-      {data?.map((ship) => <ShipListItem {...ship} key={ship.id} />)}
-    </ul>
+    <table className="flex-1">
+      <tbody className="flex flex-col gap-1">
+        <tr className="grid grid-cols-5 p-2">
+          <th className="text-left">Ship</th>
+          <th className="text-left">Gold</th>
+          <th className="text-left">Cargo</th>
+        </tr>
+        {data?.map((ship) => <ShipListItem {...ship} key={ship.id} />)}
+      </tbody>
+    </table>
   )
 }
 
@@ -51,17 +59,28 @@ export const ShipListItem = (ship: Ship) => {
   const isSelectedShip = selectedShip?.id === ship.id
 
   return (
-    <li className="grid grid-cols-5">
-      <div>{shipType?.name}</div>
-      <div>{ship.gold}</div>
-      <div>
+    <tr
+      className={`grid grid-cols-5 p-2 ${isSelectedShip ? "bg-blue-400" : ""}`}
+    >
+      <td>{shipType?.name}</td>
+      <td>{ship.gold}</td>
+      <td>
         {/* TODO: implement on hover breakdown */}
         {ship.stone + ship.wheat + ship.wood + ship.wool}
-      </div>
-      <button disabled={isSelectedShip}>Trade</button>
-      <button onClick={void toggleShipSelection}>
-        {isSelectedShip ? "Cancel" : "Sail"}
-      </button>
-    </li>
+      </td>
+      <td>
+        <button disabled={isSelectedShip} className="w-full">
+          Trade
+        </button>
+      </td>
+      <td>
+        <button
+          onClick={() => toggleShipSelection(ship)}
+          className="w-full rounded border border-solid border-black"
+        >
+          {isSelectedShip ? "X" : "->"}
+        </button>
+      </td>
+    </tr>
   )
 }

@@ -4,7 +4,7 @@
 
   display: grid;
   --row-size: 125px;
-  --column-size: 125px;
+  --column-size: 275px;
 
   grid-template-columns: minmax(var(--column-size), 1fr) 2fr;
   grid-template-rows:
