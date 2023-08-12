@@ -1,9 +1,11 @@
 import dynamic from "next/dynamic"
 import { useCallback, useState } from "react"
+import { useSession } from "next-auth/react"
+
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
-import { useSession } from "next-auth/react"
+import { ImageGeneration } from "~/components/ImageGeneration"
 
 const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
@@ -46,6 +48,7 @@ const Dev = () => {
           : "Show Dev Map Creation"}
       </button>
       <div>{JSON.stringify(data)}</div>
+      <ImageGeneration />
       {isDevMapCreationVisible ? <MapCreation /> : null}
     </>
   )

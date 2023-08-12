@@ -15,6 +15,17 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: {
+    // Openai Dall-E Image url's
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "oaidalleapiprodscus.blob.core.windows.net",
+        port: "",
+        pathname: "/private/**",
+      },
+    ],
+  },
 }
 
 const enableRoutesTypes = withRoutes({ outDir: "types" })
