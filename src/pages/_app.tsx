@@ -14,7 +14,6 @@ import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
 import { ABLY_CLIENT_ID } from "~/utils/utils"
-import { ProfilePicture } from "~/components/ProfilePicture"
 
 const poppins = Poppins({
   weight: ["400", "700"],
@@ -71,7 +70,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <div className={`flex h-full flex-col ${poppins.className}`}>
         <AuthWrapper>
           <Toaster position="bottom-center" />
-          <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
           <Component {...rest} />
         </AuthWrapper>
       </div>
