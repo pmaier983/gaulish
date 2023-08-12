@@ -17,6 +17,7 @@ const Home: NextPage = () => {
           content="Explore the seas and trade or travel your way to riches"
         />
         <link rel="icon" href="/favicon.ico" />
+        <link rel="preload" as="image/svg+xml" href="sprite.svg"></link>
       </Head>
       <main className="h-full">
         <LandingPage />
@@ -48,7 +49,7 @@ const LandingPage: React.FC = () => {
         {!isLoggedIn || status === "loading" ? (
           <button
             className="text-center text-3xl"
-            onClick={() => void signIn('google', { callbackUrl: "/app" })}
+            onClick={() => void signIn("google", { callbackUrl: "/app" })}
           >
             Sign in
           </button>

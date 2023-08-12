@@ -1,5 +1,6 @@
 import { useCallback } from "react"
 import { type Ship } from "schema"
+import { Icon } from "~/components/Icon"
 import { SHIP_ID_TO_SHIP_TYPES, SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
@@ -76,9 +77,9 @@ export const ShipListItem = (ship: Ship) => {
       <td>
         <button
           onClick={() => toggleShipSelection(ship)}
-          className="w-full rounded border border-solid border-black"
+          className="flex w-full justify-center rounded border border-solid border-black"
         >
-          {isSelectedShip ? "X" : "->"}
+          <Icon id={isSelectedShip ? "x" : "arrowRight"} />
         </button>
       </td>
     </tr>
