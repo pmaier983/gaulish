@@ -4,7 +4,9 @@ import { type ImagesResponse } from "openai"
 
 export const ImageGeneration = () => {
   // TODO: use useQuery for all of this.
-  const [userPrompt, setUserPrompt] = useState("")
+  const [userPrompt, setUserPrompt] = useState(
+    "A set of gold, silver and bronze coins. Pixelated. Fully visible. Video Game Sailing Viking aesthetic. All similar, a weird symbol instead of a dollar sign.",
+  )
   const [isLoading, setIsLoading] = useState(false)
   const [imageSrc, setImageSrc] = useState<string>()
 

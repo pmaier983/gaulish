@@ -3,11 +3,7 @@ import { type Npc, type Path, npc, path, tile, users, ship, city } from "schema"
 import { z } from "zod"
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
 
-import {
-  SHIP_ID_TO_SHIP_TYPES,
-  TILE_TYPES,
-  TILE_TYPE_TO_TYPE_ID,
-} from "~/components/constants"
+import { SHIP_ID_TO_SHIP_TYPES } from "~/components/constants"
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -21,15 +17,6 @@ import {
   DEFAULT_NPCS,
   DEFAULT_PATHS,
 } from "~/server/defaults"
-
-// TODO - add all the following api paths:
-// - getMap
-// - setMap (admin only)
-// - getUserStats
-// - getUserShips
-// - getNpcPaths
-// - getUserShipPaths
-//   - update this list constantly with websockets.
 
 interface GetUserFromEmail {
   email?: string | null
