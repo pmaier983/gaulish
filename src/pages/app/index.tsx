@@ -11,6 +11,7 @@ import { Leaderboard } from "~/components/Leaderboard"
 import { Sidebar } from "~/components/Sidebar"
 import { useGlobalStore } from "~/state/globalStore"
 import { ProfilePicture } from "~/components/ProfilePicture"
+import { MapFooter } from "~/components/MapFooter"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -52,6 +53,7 @@ const App = () => {
       </div>
       <div className={styles.main} ref={sizeRef}>
         {isMapDisabled && <div className={styles.isDisabledOverlay} />}
+        <MapFooter />
         <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
         <Map
           mapWidth={size.width}

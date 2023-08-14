@@ -1,0 +1,33 @@
+.footerContainer {
+  --button-width: 5rem;
+  --button-gap: 4rem;
+
+  position: absolute;
+  display: flex;
+
+  bottom: 2rem;
+  /* 50% (half the width of the buttons & margin) */
+  left: calc(50% - (((var(--button-width) * 2) + var(--button-gap)) / 2));
+}
+
+.sailButton {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  font-size: 1.5rem;
+
+  width: var(--button-width);
+  background-color: theme(colors.green.200);
+}
+
+.gap {
+  width: var(--button-gap);
+  opacity: 0.5;
+}
+
+.cancelButton {
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+
+  width: var(--button-width);
+  background-color: theme(colors.red.200);
+}
