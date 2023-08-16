@@ -1,6 +1,7 @@
 .footerContainer {
-  --button-width: 5rem;
+  --button-width: 6rem;
   --button-gap: 4rem;
+  --is-sailing-to-known-city: false;
 
   position: absolute;
   display: flex;
@@ -13,10 +14,29 @@
 .sailButton {
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
-  font-size: 1.5rem;
+  font-size: 2rem;
 
   width: var(--button-width);
   background-color: theme(colors.green.200);
+
+  background: repeating-linear-gradient(
+    135deg,
+    theme(colors.green.200),
+    theme(colors.green.200) 10px,
+    theme(colors.green.300) 10px,
+    theme(colors.green.300) 20px
+  );
+}
+.sailButton:disabled {
+  opacity: 0.5;
+}
+.sailButton:focus:enabled,
+.sailButton:hover:enabled {
+  outline: 4px solid theme(colors.green.600);
+}
+
+.sailButtonPure {
+  background: theme(colors.green.300);
 }
 
 .gap {
@@ -25,9 +45,14 @@
 }
 
 .cancelButton {
+  font-size: 1.25rem;
   padding: 0.25rem 0.5rem;
   border-radius: 8px;
 
   width: var(--button-width);
   background-color: theme(colors.red.200);
+}
+.cancelButton:focus:enabled,
+.cancelButton:hover:enabled {
+  outline: 4px solid theme(colors.red.600);
 }
