@@ -59,6 +59,7 @@ interface GamestateStoreActions {
   setNpcs: (npcs: GamestateStore["npcs"]) => void
 
   toggleShipSelection: (ship?: Ship) => void
+  handleShipPath: (someFormOfTileId?: string | string[]) => void
 
   restart: () => void
 }
@@ -134,6 +135,74 @@ export const useGamestateStore = create<Gamestate>()(
         selectedShipPathObject: generateSelectedShipPathObject(
           selectedShipPathArray,
         ),
+      }))
+    },
+
+    /**
+     * Handle the modification of the selected ship path
+     *
+     * someFormOfTileId = undefined -> remove last tile from path
+     * someFormOfTileId = string -> add tile to path
+     * someFormOfTileId = string[] -> override path with new path
+     * someFormOfTileId = [] -> cancel ship selection
+     */
+    handleShipPath: (someFormOfTileId) => {
+      // If passed an array, override the current path!
+      if (Array.isArray(someFormOfTileId)) {
+        const newShipPathArray = someFormOfTileId
+
+        return set((state) => ({
+          ...state,
+          selectedShipPathArray: newShipPathArray,
+          selectedShipPathObject:
+            generateSelectedShipPathObject(newShipPathArray),
+          // If you pass in an empty array, cancel ship selection
+          selectedShip:
+            someFormOfTileId.length === 0 ? undefined : get().selectedShip,
+        }))
+      }
+
+      // If a falsy value is passed into the array
+      if (!someFormOfTileId) {
+        // If there is nothing left to remove, cancel ship path selection
+        if (get().selectedShipPathArray.length <= 1) {
+          return set((state) => ({
+            ...state,
+            selectedShipPathArray: [],
+            selectedShipPathObject: {},
+            selectedShip: undefined,
+          }))
+        }
+
+        // newShipPathArray without its last tile
+        const newShipPathArray = get().selectedShipPathArray.slice(0, -1)
+
+        // Remove the last tile from the path
+        return set((state) => ({
+          ...state,
+          selectedShipPathArray: newShipPathArray,
+          selectedShipPathObject:
+            generateSelectedShipPathObject(newShipPathArray),
+        }))
+      }
+
+      const newPathTile = someFormOfTileId
+
+      if (!get().cleanMapObject.hasOwnProperty(newPathTile)) {
+        throw new Error("This tile does not exist on the map!")
+      }
+
+      // If a valid new tile is passed in, add it to the ships path
+      const newShipPathArray = [
+        ...get().selectedShipPathArray,
+        someFormOfTileId,
+      ]
+
+      return set((state) => ({
+        ...state,
+        selectedShipPathArray: newShipPathArray,
+        selectedShipPathObject:
+          generateSelectedShipPathObject(newShipPathArray),
       }))
     },
 

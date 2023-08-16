@@ -35,6 +35,17 @@ export const getPathFromString = (path: string) => {
   return pathArray
 }
 
+export const getXYFromTileId = (tileId: string) => {
+  const [xString, yString] = tileId.split(":")
+  if (!xString || !yString)
+    throw new Error("Invalid tile string passed into getXYFromTileId")
+  const x = parseInt(xString)
+  const y = parseInt(yString)
+  if (isNaN(x) || isNaN(y))
+    throw new Error("Invalid tile string passed into getXYFromTileId")
+  return { x, y }
+}
+
 export const getDirectionTowardsPrevTile = (
   currentTile: string,
   prevTile?: string,

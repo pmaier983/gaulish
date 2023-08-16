@@ -9,6 +9,7 @@ interface MapProps {
   mapWidth: number
   mapHeight: number
   mapArray?: Tile[]
+  className?: string
 }
 
 let count = 0
@@ -19,13 +20,14 @@ let count = 0
   @example import method
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
-const Map = ({ mapWidth, mapHeight, mapArray }: MapProps) => {
+const Map = ({ mapWidth, mapHeight, mapArray, className }: MapProps) => {
   console.log("Map Render Count:", count++)
   return (
     <PixiStage
       width={mapWidth}
       height={mapHeight}
       options={{ backgroundColor: 0xaaaaaa }}
+      className={className}
     >
       <PixiViewport width={mapWidth} height={mapHeight}>
         {mapArray?.map((tile) => <MapPixiTile key={tile.xyTileId} {...tile} />)}
