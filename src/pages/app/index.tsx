@@ -5,7 +5,7 @@ import { useElementSize } from "~/hooks/useElementSize"
 import styles from "./index.module.css"
 import { useGamestate } from "~/hooks/useGamestate"
 import { useGamestateStore } from "~/state/gamestateStore"
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import { Chat } from "~/components/Chat"
 import { Leaderboard } from "~/components/Leaderboard"
 import { Sidebar } from "~/components/Sidebar"
@@ -19,8 +19,14 @@ const Map = dynamic(() => import("~/components/Map"), {
 
 const App = () => {
   const { sizeRef, size } = useElementSize()
-  const { mapArray } = useGamestateStore(
-    useCallback((state) => ({ mapArray: state.mapArray }), []),
+  const { mapArray, selectedShip } = useGamestateStore(
+    useCallback(
+      (state) => ({
+        mapArray: state.mapArray,
+        selectedShip: state.selectedShip,
+      }),
+      [],
+    ),
   )
   const {
     isLeaderboardDisabled,
@@ -59,6 +65,7 @@ const App = () => {
           mapWidth={size.width}
           mapHeight={size.height}
           mapArray={mapArray}
+          className={selectedShip ? "border-8 border-red-500" : ""}
         />
       </div>
       <div className={styles.footer}>
