@@ -12,6 +12,7 @@ export const ShipList = () => {
       errorMessage: "Something went wrong when the users loaded their ships",
     },
   })
+
   const { mutate } = api.general.addShip.useMutation()
 
   // If the user has no ship, allow the to grab a plank
@@ -33,10 +34,13 @@ export const ShipList = () => {
   return (
     <table className="flex-1">
       <tbody className="flex flex-col gap-1">
-        <tr className="grid grid-cols-5 p-2">
+        <tr className="grid grid-cols-5 items-end p-2">
           <th className="text-left">Ship</th>
-          <th className="text-left">Gold</th>
-          <th className="text-left">Cargo</th>
+          <th className="flex flex-col items-start text-xs">
+            <span className="underline underline-offset-4">Gold</span>
+            <span>Cargo</span>
+          </th>
+          <th className="text-left">City</th>
         </tr>
         {data?.map((ship) => <ShipListItem {...ship} key={ship.id} />)}
       </tbody>
@@ -44,11 +48,13 @@ export const ShipList = () => {
   )
 }
 
+// TODO: rework this to actually fit and function all screen sizes
 export const ShipListItem = (ship: Ship) => {
-  const { toggleShipSelection, selectedShip } = useGamestateStore(
+  const { selectedShip, cityObject, toggleShipSelection } = useGamestateStore(
     useCallback(
       (state) => ({
         selectedShip: state.selectedShip,
+        cityObject: state.cityObject,
         toggleShipSelection: state.toggleShipSelection,
       }),
       [],
@@ -61,14 +67,17 @@ export const ShipListItem = (ship: Ship) => {
 
   return (
     <tr
-      className={`grid grid-cols-5 p-2 ${isSelectedShip ? "bg-blue-400" : ""}`}
+      className={`grid grid-cols-5 items-center p-2 ${
+        isSelectedShip ? "bg-blue-400" : ""
+      }`}
     >
       <td>{shipType?.name}</td>
-      <td>{ship.gold}</td>
-      <td>
+      <td className="flex flex-col items-start text-xs">
+        <span className="underline underline-offset-4">{ship.gold}</span>
         {/* TODO: implement on hover breakdown */}
-        {ship.stone + ship.wheat + ship.wood + ship.wool}
+        <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
       </td>
+      <td className="text-xs">{cityObject[ship.cityId]?.name}</td>
       <td>
         <button disabled={isSelectedShip} className="w-full">
           Trade

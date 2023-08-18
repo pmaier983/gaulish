@@ -98,7 +98,11 @@ export const useGamestateStore = create<Gamestate>()(
 
     setCities: (cityArray) => {
       const cityObject = cityArray?.reduce<CityObject>((acc, cur) => {
+        // TODO: is this "overloaded" city object risky in any way? (cityXYTileId = number:number) (ctyId = number)
+        // set {[cityXYTileId]: city}
         acc[cur.xyTileId] = cur
+        // set {[cityId]: city}
+        acc[cur.id] = cur
         return acc
       }, {})
       set((state) => ({ ...state, cityObject: cityObject }))

@@ -27,7 +27,7 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
       [],
     ),
   )
-  const { mutate, isLoading } = api.general.sail.useMutation({
+  const { mutate: setSail, isLoading } = api.general.sail.useMutation({
     onSuccess: (data) => {
       // When the ship successfully sails, update the cityId to its new location
       queryClient.general.getUsersShips.setData(
@@ -74,7 +74,7 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
         }`}
         onClick={() => {
           // TODO: open a warning modal If the user is sailing to an unknown location!
-          mutate({ path: selectedShipPathArray, shipId: selectedShip.id })
+          setSail({ path: selectedShipPathArray, shipId: selectedShip.id })
         }}
         disabled={selectedShipPathArray.length === 1 || isLoading}
       >
