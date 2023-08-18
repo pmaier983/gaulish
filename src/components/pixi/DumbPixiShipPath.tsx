@@ -95,7 +95,6 @@ export const DumbPixiShipPath = ({
       tileXPosition,
       tileSize,
       tileYPosition,
-      tile.xyTileId,
       pathBarWidth,
     ],
   )

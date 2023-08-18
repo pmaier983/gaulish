@@ -139,8 +139,6 @@ export const useGamestate = () => {
         )
       }
 
-      console.log(e)
-
       if (["ArrowUp", "w"].includes(e.key)) {
         const northTileId = `${x}:${y - 1}`
         if (cleanMapObject.hasOwnProperty(northTileId)) {

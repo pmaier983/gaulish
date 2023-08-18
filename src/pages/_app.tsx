@@ -64,18 +64,16 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session },
   ...rest
-}) => {
-  return (
-    <SessionProvider session={session}>
-      <div className={`flex h-full flex-col ${poppins.className}`}>
-        <AuthWrapper>
-          <Toaster position="bottom-center" />
-          <Component {...rest} />
-        </AuthWrapper>
-      </div>
-    </SessionProvider>
-  )
-}
+}) => (
+  <SessionProvider session={session}>
+    <div className={`flex h-full flex-col ${poppins.className}`}>
+      <AuthWrapper>
+        <Toaster position="bottom-center" />
+        <Component {...rest} />
+      </AuthWrapper>
+    </div>
+  </SessionProvider>
+)
 
 // eslint-disable-next-line import/no-default-export
 export default api.withTRPC(MyApp)
