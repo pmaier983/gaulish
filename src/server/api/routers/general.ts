@@ -35,6 +35,53 @@ const getUserFromEmail = async ({ email, db }: GetUserFromEmail) => {
 }
 
 export const generalRouter = createTRPCRouter({
+  /**
+   * Let a user sail their ship
+   */
+  sail: protectedProcedure
+    .input(
+      z.object({
+        shipId: z.number(),
+        path: z.string().array(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { path, shipId } = input
+      return await ctx.db.transaction(async (trx) => {
+        const userShip = (
+          await trx.select().from(ship).where(eq(ship.id, shipId)).limit(1)
+        ).at(0)
+
+        if (!userShip) throw new Error("No ship found with that id")
+
+        // TODO: do some path validation?
+        // TODO: check for enemy interceptions
+
+        const lastTile = path.at(-1)
+
+        if (!lastTile) throw new Error("No last tile found in path")
+
+        const destination = (
+          await trx
+            .select()
+            .from(city)
+            .where(eq(city.xyTileId, lastTile))
+            .limit(1)
+        ).at(0)
+
+        // TODO: send this to the users log book || chat?
+        if (!destination) throw new Error("Ship is not sailing to a city")
+
+        const destinationCity = destination
+
+        await trx
+          .update(ship)
+          .set({ cityId: destinationCity.id })
+          .where(eq(ship.id, shipId))
+
+        return { destinationCity, path: path }
+      })
+    }),
   getAllTiles: protectedProcedure.query(({ ctx }) => {
     return ctx.db.select().from(tile)
   }),

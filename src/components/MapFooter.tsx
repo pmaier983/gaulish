@@ -1,6 +1,8 @@
 import React, { useCallback } from "react"
-import { useGamestateStore } from "~/state/gamestateStore"
+import { produce } from "immer"
 
+import { useGamestateStore } from "~/state/gamestateStore"
+import { api } from "~/utils/api"
 import styles from "./mapFooter.module.css"
 
 interface MapFooterProps {
@@ -8,6 +10,7 @@ interface MapFooterProps {
 }
 
 export const MapFooter = ({ className = "" }: MapFooterProps) => {
+  const queryClient = api.useContext()
   const {
     selectedShip,
     cityObject,
@@ -24,6 +27,30 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
       [],
     ),
   )
+  const { mutate, isLoading } = api.general.sail.useMutation({
+    onSuccess: (data) => {
+      // When the ship successfully sails, update the cityId to its new location
+      queryClient.general.getUsersShips.setData(
+        undefined,
+        (oldUserShipList) => {
+          const newUserShipList = produce(
+            oldUserShipList,
+            (draftUserShipList) => {
+              draftUserShipList?.forEach((ship) => {
+                if (ship.id === selectedShip?.id) {
+                  ship.cityId = data.destinationCity.id
+                }
+              })
+            },
+          )
+          return newUserShipList
+        },
+      )
+      // On Success Cancel the ship selection
+      toggleShipSelection()
+      // TODO: show something to the user to let them know the ship has sailed
+    },
+  })
 
   if (!selectedShip) return null
 
@@ -36,6 +63,7 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
       <button
         className={styles.cancelButton}
         onClick={() => toggleShipSelection()}
+        disabled={isLoading}
       >
         Cancel
       </button>
@@ -46,11 +74,12 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
         }`}
         onClick={() => {
           // TODO: open a warning modal If the user is sailing to an unknown location!
-          console.log(selectedShip)
+          mutate({ path: selectedShipPathArray, shipId: selectedShip.id })
         }}
-        disabled={selectedShipPathArray.length === 1}
+        disabled={selectedShipPathArray.length === 1 || isLoading}
       >
-        Sail
+        {/* TODO: improve this warning screen! */}
+        {isLoading ? "Loading" : "Sail"}
       </button>
     </div>
   )
