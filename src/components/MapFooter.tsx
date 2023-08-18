@@ -45,6 +45,7 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
           isShipSailingToKnownCity ? styles.sailButtonPure ?? "" : ""
         }`}
         onClick={() => {
+          // TODO: open a warning modal If the user is sailing to an unknown location!
           console.log(selectedShip)
         }}
         disabled={selectedShipPathArray.length === 1}

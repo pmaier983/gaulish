@@ -31,8 +31,6 @@ export const DumbPixiShipPath = ({
 
   const draw = useCallback(
     (g: PIXI.Graphics) => {
-      console.log("directions", selectedShipPath.directionLinesToDraw)
-
       g.clear()
       g.beginFill(fill)
       if (selectedShipPath.isLastTileInPath) {
@@ -51,7 +49,6 @@ export const DumbPixiShipPath = ({
       selectedShipPath.directionLinesToDraw.forEach((direction) => {
         switch (direction) {
           case DIRECTIONS.NORTH: {
-            console.log("NORTH", tile.xyTileId)
             g.drawRect(
               tileXPosition + tileSize / 2 - pathBarWidth / 2,
               tileYPosition,
@@ -61,7 +58,6 @@ export const DumbPixiShipPath = ({
             break
           }
           case DIRECTIONS.SOUTH: {
-            console.log("SOUTH", tile.xyTileId)
             g.drawRect(
               tileXPosition + tileSize / 2 - pathBarWidth / 2,
               tileYPosition + tileSize / 2,
@@ -71,7 +67,6 @@ export const DumbPixiShipPath = ({
             break
           }
           case DIRECTIONS.EAST: {
-            console.log("EAST", tile.xyTileId)
             g.drawRect(
               tileXPosition + tileSize / 2,
               tileYPosition + tileSize / 2 - pathBarWidth / 2,
@@ -81,7 +76,6 @@ export const DumbPixiShipPath = ({
             break
           }
           case DIRECTIONS.WEST: {
-            console.log("WEST", tile.xyTileId)
             g.drawRect(
               tileXPosition,
               tileYPosition + tileSize / 2 - pathBarWidth / 2,
