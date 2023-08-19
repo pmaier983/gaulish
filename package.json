@@ -17,6 +17,7 @@
     "@pixi/react": "^7.1.0",
     "@planetscale/database": "^1.8.0",
     "@radix-ui/react-avatar": "^1.0.3",
+    "@tippyjs/react": "^4.2.6",
     "@trpc/client": "^10.35.0",
     "@trpc/next": "^10.35.0",
     "@trpc/react-query": "^10.35.0",

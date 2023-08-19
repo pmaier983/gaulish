@@ -1,10 +1,13 @@
 import { useCallback } from "react"
 import { type Ship } from "schema"
+
 import { Icon } from "~/components/Icon"
+import { Tooltip } from "~/components/Tooltip"
 import { SHIP_ID_TO_SHIP_TYPES, SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
+// TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
   const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
@@ -77,7 +80,11 @@ export const ShipListItem = (ship: Ship) => {
         {/* TODO: implement on hover breakdown */}
         <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
       </td>
-      <td className="text-xs">{cityObject[ship.cityId]?.name}</td>
+      <Tooltip content={cityObject[ship.cityId]?.name}>
+        <td className="whitespace-no-wrap overflow-hidden text-ellipsis">
+          {cityObject[ship.cityId]?.name}
+        </td>
+      </Tooltip>
       <td>
         <button disabled={isSelectedShip} className="w-full">
           Trade
