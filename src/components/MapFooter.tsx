@@ -1,16 +1,14 @@
 import React, { useCallback } from "react"
-import { produce } from "immer"
 
 import { useGamestateStore } from "~/state/gamestateStore"
-import { api } from "~/utils/api"
 import styles from "./mapFooter.module.css"
+import { useSailing } from "~/hooks/useSailing"
 
 interface MapFooterProps {
   className?: string
 }
 
 export const MapFooter = ({ className = "" }: MapFooterProps) => {
-  const queryClient = api.useContext()
   const {
     selectedShip,
     cityObject,
@@ -27,38 +25,8 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
       [],
     ),
   )
-  const { mutate: setSail, isLoading } = api.general.sail.useMutation({
-    onSuccess: (data) => {
-      // When the ship successfully sails, update the cityId to its new location
-      queryClient.general.getUsersShips.setData(
-        undefined,
-        (oldUserShipList) => {
-          const newUserShipList = produce(
-            oldUserShipList,
-            (draftUserShipList) => {
-              draftUserShipList?.forEach((ship) => {
-                if (ship.id === selectedShip?.id) {
-                  const finalTile = data.path.pathArray.at(-1)
-                  if (!finalTile)
-                    throw new Error(
-                      "No final tile in returned ship sailing path",
-                    )
-                  const destinationCity = cityObject[finalTile]
-                  if (!destinationCity)
-                    throw Error("The final tile was not a know city!")
-                  ship.cityId = destinationCity.id
-                }
-              })
-            },
-          )
-          return newUserShipList
-        },
-      )
-      // On Success Cancel the ship selection
-      toggleShipSelection()
-      // TODO: show something to the user to let them know the ship has sailed
-    },
-  })
+
+  const { mutate: setSail, isLoading } = useSailing()
 
   if (!selectedShip) return null
 

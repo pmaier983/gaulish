@@ -18,7 +18,7 @@ interface UseChatMessageProps {
   onReceiveChatMessage: (message: Message) => void
 }
 
-export const useChatMessage = ({
+export const useMessageChannel = ({
   onReceiveChatMessage,
 }: UseChatMessageProps) => {
   const { data } = useSession()

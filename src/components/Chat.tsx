@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { type Message, useChatMessage } from "~/hooks/useChatMessage"
+import { type Message, useMessageChannel } from "~/hooks/useMessageChannel"
 
 export const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([])
@@ -9,7 +9,7 @@ export const Chat = () => {
     setMessages((receivedMessages) => [...receivedMessages, message])
   }
 
-  const { publishChatMessage } = useChatMessage({ onReceiveChatMessage })
+  const { publishChatMessage } = useMessageChannel({ onReceiveChatMessage })
 
   const onSubmit = () => {
     publishChatMessage({ text: chatText })
