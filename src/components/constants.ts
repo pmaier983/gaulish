@@ -8,6 +8,7 @@ export const FONT_PERCENT_SIZE = 0.2
 
 export const CHANNELS = {
   MESSAGE: "MESSAGE",
+  SAILING: "SAILING",
 } as const
 
 export const TILE_TYPES = {
