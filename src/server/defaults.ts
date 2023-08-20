@@ -7,7 +7,7 @@ export const DEFAULT_CITIES: City[] = [
 
 export const DEFAULT_PATHS: Omit<Path, "createdAt">[] = [
   {
-    id: 1,
+    id: "randomUUID1",
     pathArray: [
       "4:1",
       "3:1",
@@ -26,7 +26,7 @@ export const DEFAULT_PATHS: Omit<Path, "createdAt">[] = [
     ],
   },
   {
-    id: 2,
+    id: "randomUUID1",
     pathArray: ["0:4", "1:4", "2:4", "2:5", "2:6", "1:6", "0:6", "0:5"],
   },
 ]

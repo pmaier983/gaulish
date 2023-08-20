@@ -100,6 +100,10 @@ export const useGamestate = () => {
             ship: { speed },
           } = npc
 
+          if (!createdAt) {
+            throw new Error("NPC path does not have a createdAt property")
+          }
+
           const timePassed = Date.now() - createdAt.getMilliseconds()
           // Debugged by Yijiao He
           const tilesMoved = Math.floor(timePassed * speed)
