@@ -154,7 +154,7 @@ export const ship = mysqlTable("ship", {
 export type Ship = InferModel<typeof ship>
 
 export const path = mysqlTable("path", {
-  id: serial("id").primaryKey().notNull(),
+  id: varchar("id", { length: 191 }).primaryKey().notNull(),
   createdAt: timestamp("created_at", { mode: "date" })
     .defaultNow()
     .onUpdateNow(),

@@ -1,0 +1,1 @@
+ALTER TABLE `path` MODIFY COLUMN `id` varchar(191) NOT NULL;

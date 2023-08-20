@@ -2,6 +2,7 @@ import { eq, inArray } from "drizzle-orm"
 import { type Npc, type Path, npc, path, tile, users, ship, city } from "schema"
 import { z } from "zod"
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
+import { createId } from "@paralleldrive/cuid2"
 
 import { SHIP_ID_TO_SHIP_TYPES } from "~/components/constants"
 import {
@@ -76,6 +77,7 @@ export const generalRouter = createTRPCRouter({
         const newPath = {
           pathArray: shipPath,
           createdAt: new Date(),
+          id: createId(),
         }
 
         // Add the path to the path list
