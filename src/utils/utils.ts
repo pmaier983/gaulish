@@ -25,16 +25,6 @@ export const getTileImageString = (typeId: number) => {
   }
 }
 
-export const getPathFromString = (path: string) => {
-  // TODO: consider using Zod validation here?
-  if (path.length === 0) throw new Error("Received an empty string as the path")
-  const pathArray = JSON.parse(path.replaceAll("'", `"`)) as string[]
-  if (!pathArray) throw new Error("Something went wrong when parsing the path")
-  if (pathArray.length < 2)
-    throw new Error("Received an array of path length less then 2")
-  return pathArray
-}
-
 export const getXYFromTileId = (tileId: string) => {
   const [xString, yString] = tileId.split(":")
   if (!xString || !yString)

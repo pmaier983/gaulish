@@ -11,7 +11,6 @@ import {
   serial,
   smallint,
   json,
-  longtext,
 } from "drizzle-orm/mysql-core"
 import { type AdapterAccount } from "next-auth/adapters"
 
@@ -37,12 +36,10 @@ export const accounts = mysqlTable(
     tokenType: varchar("token_type", { length: 191 }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
   },
   (table) => {
     return {
@@ -63,12 +60,10 @@ export const sessions = mysqlTable(
     expires: datetime("expires", { mode: "date" }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
   },
   (table) => {
     return {
@@ -88,12 +83,10 @@ export const verificationTokens = mysqlTable(
     expires: datetime("expires", { mode: "date" }).notNull(),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
   },
   (table) => {
     return {
@@ -112,12 +105,10 @@ export const users = mysqlTable(
     image: varchar("image", { length: 191 }),
     createdAt: timestamp("created_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
-      .onUpdateNow()
-      .notNull(),
+      .onUpdateNow(),
     /* ********** START - CUSTOM USER COLUMNS ********** */
     username: varchar("username", { length: 191 }).default("Sailor").notNull(),
     /* ********** END - CUSTOM USER COLUMNS ********** */
@@ -166,9 +157,8 @@ export const path = mysqlTable("path", {
   id: serial("id").primaryKey().notNull(),
   createdAt: timestamp("created_at", { mode: "date" })
     .defaultNow()
-    .onUpdateNow()
-    .notNull(),
-  path: longtext("path").notNull(),
+    .onUpdateNow(),
+  pathArray: json("path_array").$type<string[]>().notNull(),
 })
 export type Path = InferModel<typeof path>
 

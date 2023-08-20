@@ -96,14 +96,14 @@ export const useGamestate = () => {
       const newMapObject = produce(cleanMapObject, (draftMapObject) => {
         npcs.forEach((npc) => {
           const {
-            path: { createdAt, path },
+            path: { createdAt, pathArray },
             ship: { speed },
           } = npc
 
           const timePassed = Date.now() - createdAt.getMilliseconds()
           // Debugged by Yijiao He
           const tilesMoved = Math.floor(timePassed * speed)
-          const pathKey = path[tilesMoved % path.length]
+          const pathKey = pathArray[tilesMoved % pathArray.length]
 
           if (!pathKey)
             throw new Error(

@@ -71,6 +71,20 @@
       "when": 1690675431424,
       "tag": "0009_special_dexter_bennett",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1692486307016,
+      "tag": "0010_handy_doctor_doom",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1692496733541,
+      "tag": "0011_modern_nighthawk",
+      "breakpoints": true
     }
   ]
 }

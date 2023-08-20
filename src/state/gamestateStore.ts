@@ -9,12 +9,8 @@ import {
 } from "~/components/constants"
 import { getDirectionTowardsPrevTile } from "~/utils/utils"
 
-export interface PathComposite extends Omit<Path, "path"> {
-  path: string[]
-}
-
 export interface NpcComposite extends Npc {
-  path: PathComposite
+  path: Path
   ship: ShipType
 }
 
@@ -39,7 +35,7 @@ export type SelectedShipPathObject = {
 
 export interface GamestateStore {
   selectedShip?: Ship
-  selectedShipPathArray: PathComposite["path"]
+  selectedShipPathArray: Path["pathArray"]
   selectedShipPathObject: SelectedShipPathObject
 
   mapArray: Tile[]

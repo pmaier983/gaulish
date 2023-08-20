@@ -22,6 +22,7 @@ export const useChatMessage = ({
   onReceiveChatMessage,
 }: UseChatMessageProps) => {
   const { data } = useSession()
+
   const [channel] = useChannel(CHANNELS.MESSAGE, (message: Message) => {
     console.log(message)
     onReceiveChatMessage(message)

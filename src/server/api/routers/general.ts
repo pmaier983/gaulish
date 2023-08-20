@@ -10,7 +10,6 @@ import {
   adminProcedure,
 } from "~/server/api/trpc"
 import { ADMINS } from "~/server/auth"
-import { getPathFromString } from "~/utils/utils"
 import {
   DEFAULT_CITIES,
   DEFAULT_MAP,
@@ -46,7 +45,7 @@ export const generalRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const { path, shipId } = input
+      const { path: shipPath, shipId } = input
       return await ctx.db.transaction(async (trx) => {
         const userShip = (
           await trx.select().from(ship).where(eq(ship.id, shipId)).limit(1)
@@ -57,7 +56,7 @@ export const generalRouter = createTRPCRouter({
         // TODO: do some path validation?
         // TODO: check for enemy interceptions
 
-        const lastTile = path.at(-1)
+        const lastTile = shipPath.at(-1)
 
         if (!lastTile) throw new Error("No last tile found in path")
 
@@ -74,12 +73,21 @@ export const generalRouter = createTRPCRouter({
 
         const destinationCity = destination
 
+        const newPath = {
+          pathArray: shipPath,
+          createdAt: new Date(),
+        }
+
+        // Add the path to the path list
+        await trx.insert(path).values(newPath)
+
+        // Update the ships location (prematurely)
         await trx
           .update(ship)
           .set({ cityId: destinationCity.id })
           .where(eq(ship.id, shipId))
 
-        return { destinationCity, path: path }
+        return { path: newPath, ship: userShip }
       })
     }),
   getAllTiles: protectedProcedure.query(({ ctx }) => {
@@ -211,10 +219,7 @@ export const generalRouter = createTRPCRouter({
               throw new Error(`Invalid shipTypeId, ${JSON.stringify(npc)}`)
             return {
               ...npc,
-              path: {
-                ...path,
-                path: getPathFromString(path.path),
-              },
+              path,
               ship,
             }
           }),

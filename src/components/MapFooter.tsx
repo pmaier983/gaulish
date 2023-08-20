@@ -38,7 +38,15 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
             (draftUserShipList) => {
               draftUserShipList?.forEach((ship) => {
                 if (ship.id === selectedShip?.id) {
-                  ship.cityId = data.destinationCity.id
+                  const finalTile = data.path.pathArray.at(-1)
+                  if (!finalTile)
+                    throw new Error(
+                      "No final tile in returned ship sailing path",
+                    )
+                  const destinationCity = cityObject[finalTile]
+                  if (!destinationCity)
+                    throw Error("The final tile was not a know city!")
+                  ship.cityId = destinationCity.id
                 }
               })
             },
