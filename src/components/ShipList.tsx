@@ -1,3 +1,4 @@
+import { produce } from "immer"
 import { useCallback } from "react"
 import { type Ship } from "schema"
 
@@ -9,6 +10,8 @@ import { api } from "~/utils/api"
 
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
+  const queryClient = api.useContext()
+
   const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
@@ -16,7 +19,19 @@ export const ShipList = () => {
     },
   })
 
-  const { mutate } = api.general.addShip.useMutation()
+  const { mutate } = api.general.addShip.useMutation({
+    onSuccess: async (data) => {
+      // when a new ship is added, update the ship list cache & invalidate the leaderboard
+      queryClient.general.getUsersShips.setData(undefined, (oldShipList) => {
+        const newData = produce(oldShipList, (draftShipList) => {
+          draftShipList?.push(data)
+          return
+        })
+        return newData
+      })
+      await queryClient.general.getLeaderboard.invalidate()
+    },
+  })
 
   // If the user has no ship, allow the to grab a plank
   if (data?.length === 0 && isSuccess) {

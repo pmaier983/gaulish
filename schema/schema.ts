@@ -139,7 +139,7 @@ export const usersRelations = relations(users, ({ one }) => ({
 }))
 
 export const ship = mysqlTable("ship", {
-  id: serial("id").primaryKey().notNull(),
+  id: varchar("id", { length: 191 }).primaryKey().notNull(),
   shipTypeId: smallint("ship_type_id").notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   cityId: int("city_id").notNull(),

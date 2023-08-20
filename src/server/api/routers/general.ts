@@ -41,7 +41,7 @@ export const generalRouter = createTRPCRouter({
   sail: protectedProcedure
     .input(
       z.object({
-        shipId: z.number(),
+        shipId: z.string(),
         path: z.string().array(),
       }),
     )
@@ -122,7 +122,7 @@ export const generalRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.transaction(async (trx) => {
+      return await ctx.db.transaction(async (trx) => {
         const cities = await trx.select().from(city).limit(1)
 
         const cityForNewShip = cities.at(0)
@@ -134,11 +134,27 @@ export const generalRouter = createTRPCRouter({
           db: trx,
         })
 
-        return trx.insert(ship).values({
+        const partialNewShip = {
+          id: createId(),
           shipTypeId: input.ship_type_id,
           userId: user.id,
           cityId: cityForNewShip.id,
-        })
+        }
+
+        await trx.insert(ship).values(partialNewShip)
+
+        const newShip = (
+          await trx
+            .select()
+            .from(ship)
+            .where(eq(ship.id, partialNewShip.id))
+            .limit(1)
+        ).at(0)
+
+        if (!newShip)
+          throw new Error("Ship was not found immediately after being inserted")
+
+        return newShip
       })
     }),
   /**
