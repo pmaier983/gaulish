@@ -1,16 +1,15 @@
 import { z } from "zod"
 import type { NextApiRequest, NextApiResponse } from "next"
 
-import { Configuration, OpenAIApi, type CreateImageRequest } from "openai"
+import OpenAI from "openai"
 import { ADMINS, getServerAuthSession } from "~/server/auth"
+import { type ImageGenerateParams } from "openai/resources"
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-const openai = new OpenAIApi(configuration)
-
-const dalleInputs = z.custom<CreateImageRequest>()
+const dalleInputs = z.custom<ImageGenerateParams>()
 
 // export createTokenRequest
 // eslint-disable-next-line import/no-default-export
@@ -43,7 +42,7 @@ export default async function handler(
       throw new Error("Invalid environment variables")
     }
 
-    const response = await openai.createImage({
+    const response = await openai.images.generate({
       n: 1,
       size: "512x512",
       response_format: "url",

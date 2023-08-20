@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { useState } from "react"
-import { type ImagesResponse } from "openai"
+import { type ImagesResponse } from "openai/resources"
 
 export const ImageGeneration = () => {
   // TODO: use useQuery for all of this.
