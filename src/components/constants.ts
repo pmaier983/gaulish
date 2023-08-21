@@ -53,29 +53,28 @@ export const TILE_TYPE_TO_TYPE_ID = {
 
 export type TILE_TYPE = keyof typeof TILE_TYPES
 
-export const SHIP_TYPES = {
-  PLANK: 0,
-  RAFT: 1,
-}
-
-export interface ShipType {
-  shipTypeId: number
-  name: string
-  cargo_capacity: number
+export interface ShipProperties {
+  shipType: string
+  cargoCapacity: number
   speed: number
 }
 
-export const SHIP_ID_TO_SHIP_TYPES: { [key: number]: ShipType } = {
+export const SHIP_TYPES = {
+  PLANK: "PLANK",
+  RAFT: "RAFT",
+}
+
+export type ShipType = keyof typeof SHIP_TYPES
+
+export const SHIP_TYPE_TO_SHIP_PROPERTIES: { [key: string]: ShipProperties } = {
   [SHIP_TYPES.PLANK]: {
-    shipTypeId: SHIP_TYPES.PLANK,
-    name: "plank",
-    cargo_capacity: 1,
-    speed: 1 / 5000, // 1 tile every 5 seconds
+    shipType: SHIP_TYPES.PLANK,
+    cargoCapacity: 1,
+    speed: 1 / 1000, // 1 tile every second
   },
   [SHIP_TYPES.RAFT]: {
-    shipTypeId: SHIP_TYPES.RAFT,
-    name: "raft",
-    cargo_capacity: 10,
+    shipType: SHIP_TYPES.RAFT,
+    cargoCapacity: 10,
     speed: 1 / 2500, // 1 tile every 2.5 seconds
   },
 }

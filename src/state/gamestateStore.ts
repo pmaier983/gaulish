@@ -2,23 +2,16 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
 import type { Npc, Path, Tile, City, Ship } from "schema"
-import {
-  OPPOSITE_DIRECTIONS,
-  type DIRECTION,
-  type ShipType,
-  SHIP_ID_TO_SHIP_TYPES,
-} from "~/components/constants"
+import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
 import { getDirectionTowardsPrevTile, uniqueBy } from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
 
 export interface ShipComposite extends Ship {
   path: Path
-  shipType: ShipType
 }
 
 export interface NpcComposite extends Npc {
   path: Path
-  shipType: ShipType
 }
 
 export interface TileComposite extends Tile {
@@ -116,18 +109,14 @@ export const useGamestateStore = create<Gamestate>()(
     },
 
     setNpcs: (npcs) => {
-      const npcsWithShipTypes = npcs.map((npc) => {
-        const npcShipType = SHIP_ID_TO_SHIP_TYPES[npc.shipTypeId]
-
-        if (!npcShipType) throw Error("NPC given with an unknown shipType")
-
+      const npcsComposite = npcs.map((npcAndPath) => {
         return {
-          ...npc,
-          shipType: npcShipType,
+          ...npcAndPath.npc,
+          path: npcAndPath.path,
         }
       })
 
-      set((state) => ({ ...state, npcs: npcsWithShipTypes }))
+      set((state) => ({ ...state, npcs: npcsComposite }))
     },
 
     setShips: (newShips) => {

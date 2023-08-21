@@ -1,6 +1,5 @@
 import { produce } from "immer"
 import { useCallback } from "react"
-import { SHIP_ID_TO_SHIP_TYPES } from "~/components/constants"
 import { useSailingChannel } from "~/hooks/useSailingChannel"
 
 import { useGamestateStore } from "~/state/gamestateStore"
@@ -25,15 +24,9 @@ export const useSailing = () => {
     onReceiveSailingInfo: (sailingInfo) => {
       const newShip = sailingInfo.data.ship
 
-      const newShipType = SHIP_ID_TO_SHIP_TYPES[newShip.shipTypeId]
-
-      if (!newShipType)
-        throw Error("A ship was sent with an unknown shipTypeId")
-
       setShips([
         {
           ...newShip,
-          shipType: newShipType,
           path: sailingInfo.data.path,
         },
       ])

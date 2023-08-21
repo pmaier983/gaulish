@@ -4,7 +4,7 @@ import { type Ship } from "schema"
 
 import { Icon } from "~/components/Icon"
 import { Tooltip } from "~/components/Tooltip"
-import { SHIP_ID_TO_SHIP_TYPES, SHIP_TYPES } from "~/components/constants"
+import { SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
@@ -39,7 +39,7 @@ export const ShipList = () => {
       <div className="flex-1">
         <button
           onClick={() => {
-            mutate({ ship_type_id: SHIP_TYPES.PLANK })
+            mutate({ ship_type: SHIP_TYPES.PLANK })
           }}
         >
           Grab a Plank
@@ -79,8 +79,6 @@ export const ShipListItem = (ship: Ship) => {
     ),
   )
 
-  const shipType = SHIP_ID_TO_SHIP_TYPES[ship.shipTypeId]
-
   const isSelectedShip = selectedShip?.id === ship.id
 
   return (
@@ -89,7 +87,7 @@ export const ShipListItem = (ship: Ship) => {
         isSelectedShip ? "bg-blue-400" : ""
       }`}
     >
-      <td>{shipType?.name}</td>
+      <td>{ship?.name}</td>
       <td className="flex flex-col items-start text-xs">
         <span className="underline underline-offset-4">{ship.gold}</span>
         {/* TODO: implement on hover breakdown */}

@@ -102,7 +102,7 @@ export const useGamestate = () => {
         npcs.forEach((npc) => {
           const {
             path: { createdAt, pathArray },
-            shipType: { speed },
+            speed,
           } = npc
 
           const tilesMoved = getTilesMoved({ speed, createdAt })
@@ -131,7 +131,7 @@ export const useGamestate = () => {
         ships.forEach((ship) => {
           const {
             path: { createdAt, pathArray },
-            shipType: { speed },
+            speed,
           } = ship
 
           const tilesMoved = getTilesMoved({ speed, createdAt })

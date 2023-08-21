@@ -1,4 +1,8 @@
-import { type Path, type Npc, type Tile, type City } from "schema"
+import { type Path, type Tile, type City, type Npc } from "schema"
+import {
+  SHIP_TYPES,
+  SHIP_TYPE_TO_SHIP_PROPERTIES,
+} from "~/components/constants"
 
 export const DEFAULT_CITIES: City[] = [
   { level: 1, name: "Lumbridge", xyTileId: "1:3", id: 1 },
@@ -26,14 +30,26 @@ export const DEFAULT_PATHS: Omit<Path, "createdAt">[] = [
     ],
   },
   {
-    id: "randomUUID1",
+    id: "randomUUID2",
     pathArray: ["0:4", "1:4", "2:4", "2:5", "2:6", "1:6", "0:6", "0:5"],
   },
 ]
 
-export const DEFAULT_NPCS: Omit<Npc, "id">[] = [
-  { pathId: 1, shipTypeId: 0 },
-  { pathId: 2, shipTypeId: 1 },
+export const DEFAULT_NPCS: Npc[] = [
+  {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    id: 1,
+    pathId: "randomUUID1",
+    ...SHIP_TYPE_TO_SHIP_PROPERTIES[SHIP_TYPES.PLANK]!,
+    name: "Drunk Pirate",
+  },
+  {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+    id: 2,
+    pathId: "randomUUID2",
+    ...SHIP_TYPE_TO_SHIP_PROPERTIES[SHIP_TYPES.RAFT]!,
+    name: "Two Drunk Pirate's",
+  },
 ]
 
 export const DEFAULT_MAP: Omit<Tile, "id">[] = [

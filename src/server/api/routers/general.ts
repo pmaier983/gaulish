@@ -1,10 +1,10 @@
 import { eq, inArray } from "drizzle-orm"
-import { type Npc, type Path, npc, path, tile, users, ship, city } from "schema"
+import { path, tile, users, ship, city, npc, type Npc, type Path } from "schema"
 import { z } from "zod"
 import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
 import { createId } from "@paralleldrive/cuid2"
 
-import { SHIP_ID_TO_SHIP_TYPES } from "~/components/constants"
+import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -118,13 +118,14 @@ export const generalRouter = createTRPCRouter({
   addShip: protectedProcedure
     .input(
       z.object({
-        ship_type_id: z.number(),
+        ship_type: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       return await ctx.db.transaction(async (trx) => {
         const cities = await trx.select().from(city).limit(1)
 
+        // TODO: properly choose a city!
         const cityForNewShip = cities.at(0)
 
         if (!cityForNewShip) throw Error("No cities found for the new ship")
@@ -134,11 +135,17 @@ export const generalRouter = createTRPCRouter({
           db: trx,
         })
 
+        const shipProperties = SHIP_TYPE_TO_SHIP_PROPERTIES[input.ship_type]
+
+        if (!shipProperties)
+          throw Error("No ship properties found for that ship_type")
+
         const partialNewShip = {
           id: createId(),
-          shipTypeId: input.ship_type_id,
           userId: user.id,
           cityId: cityForNewShip.id,
+          ...shipProperties,
+          name: "shippy mcshipface",
         }
 
         await trx.insert(ship).values(partialNewShip)
@@ -225,22 +232,11 @@ export const generalRouter = createTRPCRouter({
       .from(npc)
       .leftJoin(path, eq(path.id, npc.pathId))
       .then((npcs) =>
-        npcs
-          .filter(
-            // Type Guards (https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
-            (npcAndPath): npcAndPath is { npc: Npc; path: Path } =>
-              !!npcAndPath.path && !!npcAndPath.npc,
-          )
-          .map(({ npc, path }) => {
-            const ship = SHIP_ID_TO_SHIP_TYPES[npc.shipTypeId]
-            if (!ship)
-              throw new Error(`Invalid shipTypeId, ${JSON.stringify(npc)}`)
-            return {
-              ...npc,
-              path,
-              ship,
-            }
-          }),
+        npcs.filter(
+          // Type Guards (https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
+          (npcAndPath): npcAndPath is { npc: Npc; path: Path } =>
+            !!npcAndPath.path && !!npcAndPath.npc,
+        ),
       )
   }),
 })

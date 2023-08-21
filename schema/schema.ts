@@ -3,6 +3,7 @@ import {
   datetime,
   index,
   int,
+  float,
   mysqlTable,
   text,
   uniqueIndex,
@@ -123,6 +124,7 @@ export type User = InferModel<typeof users>
 
 /* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
 
+// TODO: unify a bunch of these columns so there is less duplicate code
 export const usersRelations = relations(users, ({ one }) => ({
   ship: one(ship, {
     fields: [users.id],
@@ -140,16 +142,19 @@ export const usersRelations = relations(users, ({ one }) => ({
 
 export const ship = mysqlTable("ship", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
-  shipTypeId: smallint("ship_type_id").notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   cityId: int("city_id").notNull(),
-  pathId: int("path_id"),
+  pathId: varchar("path_id", { length: 191 }),
   // Ship's Cargo - consider moving this to a separate table?
   gold: int("gold").default(0).notNull(),
   wheat: int("wheat").default(0).notNull(),
   wool: int("wool").default(0).notNull(),
   stone: int("stone").default(0).notNull(),
   wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
+  shipType: varchar("ship_type", { length: 191 }).notNull(),
+  name: varchar("name", { length: 191 }).notNull(),
+  speed: float("speed").notNull(),
+  cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Ship = InferModel<typeof ship>
 
@@ -213,7 +218,10 @@ export const cityRelations = relations(city, ({ one }) => ({
 
 export const npc = mysqlTable("npc", {
   id: serial("id").primaryKey().notNull(),
-  shipTypeId: int("ship_type_id").notNull(),
-  pathId: int("path_id"),
+  pathId: varchar("path_id", { length: 191 }),
+  shipType: varchar("ship_type", { length: 191 }).notNull(),
+  name: varchar("name", { length: 191 }).notNull(),
+  speed: float("speed").notNull(),
+  cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Npc = InferModel<typeof npc>
