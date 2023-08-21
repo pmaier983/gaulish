@@ -1,20 +1,14 @@
-import { signOut } from "next-auth/react"
 import Link from "next/link"
 import { useCallback, useState } from "react"
+import { useGamestateStore } from "~/state/gamestateStore"
 import { useGlobalStore } from "~/state/globalStore"
 
 export const DevNavBar = () => {
   const [hasHideDevNavBar, setHasHideDevNavBar] = useState(false)
-  const { isUserAdmin } = useGlobalStore(
-    useCallback(
-      (state) => ({
-        isUserAdmin: state.isUserAdmin,
-      }),
-      [],
-    ),
-  )
+  const globalState = useGlobalStore(useCallback((state) => state, []))
+  const gameState = useGamestateStore(useCallback((state) => state, []))
 
-  if (!isUserAdmin || hasHideDevNavBar) {
+  if (!globalState.isUserAdmin || hasHideDevNavBar) {
     return null
   }
 
@@ -30,20 +24,16 @@ export const DevNavBar = () => {
       >
         Hide
       </button>
-      <Link href="/" className="rounded-sm bg-slate-400 px-3">
-        Home
-      </Link>
       <Link href="/app" className="rounded-sm bg-slate-400 px-3">
         App
       </Link>
-      <Link href="/app/dev" className="rounded-sm bg-slate-400 px-3">
-        Dev
-      </Link>
       <button
-        onClick={() => void signOut()}
-        className="rounded-sm bg-red-300 px-3"
+        className="rounded-sm bg-blue-400 px-3"
+        onClick={() => {
+          console.log({ gameState, globalState })
+        }}
       >
-        Sign Out
+        Console State
       </button>
     </div>
   )

@@ -15,7 +15,12 @@ export const ProfilePicture = ({ className }: ProfilePictureProps) => {
 
   return (
     <div className={className}>
-      <Avatar.Root onClick={void signOut} className="cursor-pointer">
+      <Avatar.Root
+        onClick={() => {
+          void signOut()
+        }}
+        className="cursor-pointer"
+      >
         <Avatar.Image
           className="rounded-full border-2 border-solid border-black"
           src={data?.user?.image ?? ""}
