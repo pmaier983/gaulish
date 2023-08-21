@@ -20,13 +20,30 @@ export const MapPixiTile = (tile: Tile) => {
   )
   const currentTile = mapObject[tile.xyTileId]
   const npc = currentTile?.npc
+  const ship = currentTile?.ship
 
   const city = cityObject[tile.xyTileId]
   const shipPath = selectedShipPathObject[tile.xyTileId]
+
   return (
     <>
       <DumbPixiTile {...tile} />
-      {npc && <DumbPixiShip tile={tile} npc={npc} />}
+      {npc && (
+        <DumbPixiShip
+          tile={tile}
+          isEnemy={true}
+          name={npc.shipType.name ?? ship?.shipType.name}
+          shipType={npc.shipType ?? ship?.shipType}
+        />
+      )}
+      {ship && (
+        <DumbPixiShip
+          tile={tile}
+          isEnemy={false}
+          name={ship.shipType.name}
+          shipType={ship?.shipType}
+        />
+      )}
       {city && <DumbPixiCity tile={tile} city={city} />}
       {shipPath && <DumbPixiShipPath tile={tile} selectedShipPath={shipPath} />}
     </>

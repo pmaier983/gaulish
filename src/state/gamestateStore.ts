@@ -6,16 +6,24 @@ import {
   OPPOSITE_DIRECTIONS,
   type DIRECTION,
   type ShipType,
+  SHIP_ID_TO_SHIP_TYPES,
 } from "~/components/constants"
-import { getDirectionTowardsPrevTile } from "~/utils/utils"
+import { getDirectionTowardsPrevTile, uniqueBy } from "~/utils/utils"
+import { type RouterOutputs } from "~/utils/api"
+
+export interface ShipComposite extends Ship {
+  path: Path
+  shipType: ShipType
+}
 
 export interface NpcComposite extends Npc {
   path: Path
-  ship: ShipType
+  shipType: ShipType
 }
 
 export interface TileComposite extends Tile {
   npc?: NpcComposite
+  ship?: ShipComposite
 }
 
 export type MapObject = { [xyTileId: string]: TileComposite }
@@ -39,6 +47,7 @@ export interface GamestateStore {
   selectedShipPathObject: SelectedShipPathObject
 
   mapArray: Tile[]
+  ships: ShipComposite[]
   mapObject: MapObject
   /**
    * The Clean map object contains only the Tile data
@@ -52,7 +61,8 @@ interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
   setMapObject: (map: GamestateStore["mapObject"]) => void
   setCities: (cityObject: City[]) => void
-  setNpcs: (npcs: GamestateStore["npcs"]) => void
+  setNpcs: (npcs: RouterOutputs["general"]["getNpcs"]) => void
+  setShips: (ships: ShipComposite[]) => void
 
   toggleShipSelection: (ship?: Ship) => void
   handleShipPath: (someFormOfTileId?: string | string[]) => void
@@ -68,6 +78,7 @@ const initialGamestate: GamestateStore = {
   cityObject: {},
   mapArray: [],
   npcs: [],
+  ships: [],
   mapObject: {},
   cleanMapObject: {},
 }
@@ -104,7 +115,29 @@ export const useGamestateStore = create<Gamestate>()(
       set((state) => ({ ...state, cityObject: cityObject }))
     },
 
-    setNpcs: (npcs) => set((state) => ({ ...state, npcs })),
+    setNpcs: (npcs) => {
+      const npcsWithShipTypes = npcs.map((npc) => {
+        const npcShipType = SHIP_ID_TO_SHIP_TYPES[npc.shipTypeId]
+
+        if (!npcShipType) throw Error("NPC given with an unknown shipType")
+
+        return {
+          ...npc,
+          shipType: npcShipType,
+        }
+      })
+
+      set((state) => ({ ...state, npcs: npcsWithShipTypes }))
+    },
+
+    setShips: (newShips) => {
+      const ships = get().ships
+
+      // ensure we don't get any duplicate ships
+      const newShipsArray = uniqueBy([...ships, ...newShips], "id")
+
+      return set((state) => ({ ...state, ships: newShipsArray }))
+    },
 
     toggleShipSelection: (ship) => {
       // Toggle selected ship off

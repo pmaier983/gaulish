@@ -27,6 +27,7 @@ export const useGamestate = () => {
     handleShipPath,
     cleanMapObject,
     npcs,
+    ships,
     selectedShip,
     selectedShipPathArray,
   } = useGamestateStore(
@@ -39,6 +40,7 @@ export const useGamestate = () => {
         handleShipPath: state.handleShipPath,
         cleanMapObject: state.cleanMapObject,
         npcs: state.npcs,
+        ships: state.ships,
         selectedShip: state.selectedShip,
         selectedShipPathArray: state.selectedShipPathArray,
       }),
@@ -94,17 +96,23 @@ export const useGamestate = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const newMapObject = produce(cleanMapObject, (draftMapObject) => {
+        /**
+         * Adding NPCs to the map object
+         */
         npcs.forEach((npc) => {
           const {
             path: { createdAt, pathArray },
-            ship: { speed },
+            shipType: { speed },
           } = npc
 
           if (!createdAt) {
             throw new Error("NPC path does not have a createdAt property")
           }
 
-          const timePassed = Date.now() - createdAt.getMilliseconds()
+          const createdAtDate =
+            typeof createdAt === "string" ? new Date(createdAt) : createdAt
+
+          const timePassed = Date.now() - createdAtDate.getTime()
           // Debugged by Yijiao He
           const tilesMoved = Math.floor(timePassed * speed)
           const pathKey = pathArray[tilesMoved % pathArray.length]
@@ -123,6 +131,54 @@ export const useGamestate = () => {
               )}`,
             )
           draftMapObject[pathKey] = { ...currentTile, npc }
+        })
+
+        /**
+         * Adding player Ships to the map object
+         */
+        ships.forEach((ship) => {
+          const {
+            path: { createdAt, pathArray },
+            shipType: { speed },
+          } = ship
+
+          if (!createdAt) {
+            throw new Error("Ship path does not have a createdAt property")
+          }
+
+          const createdAtDate =
+            typeof createdAt === "string" ? new Date(createdAt) : createdAt
+
+          const timePassed = Date.now() - createdAtDate.getTime()
+          // Debugged by Yijiao He
+          const tilesMoved = Math.floor(timePassed * speed)
+
+          console.log({
+            isSailing: !(tilesMoved > pathArray.length),
+            tilesMoved,
+            timePassed,
+            createdAtDate,
+            createdAt,
+          })
+          // If the ship has finished sailing, don't add it to the map object
+          if (tilesMoved >= pathArray.length) return
+
+          const pathKey = pathArray[tilesMoved]
+
+          if (!pathKey)
+            throw new Error(
+              `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
+                ship,
+              )}`,
+            )
+          const currentTile = draftMapObject[pathKey]
+          if (!currentTile)
+            throw new Error(
+              `Tried to access a non-existent tile. Info: ${JSON.stringify(
+                ship,
+              )}`,
+            )
+          draftMapObject[pathKey] = { ...currentTile, ship }
         })
       })
       setMapObject(newMapObject)

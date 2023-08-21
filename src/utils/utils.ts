@@ -71,3 +71,13 @@ export const getDirectionTowardsPrevTile = (
 
   throw new Error("Invalid Tiles input into getDirectionFromTiles")
 }
+
+// Taken from here: https://stackoverflow.com/a/46219650/7945415
+export const uniqueBy = <element>(
+  array: element[],
+  propertyName: keyof element,
+) => {
+  return array.filter(
+    (e, i) => array.findIndex((a) => a[propertyName] === e[propertyName]) === i,
+  )
+}

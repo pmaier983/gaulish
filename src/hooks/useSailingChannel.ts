@@ -14,7 +14,7 @@ export interface SailingInfoData {
 }
 
 export interface SailingInfo extends Omit<Types.Message, "data"> {
-  data: SailingInfo
+  data: SailingInfoData
 }
 
 interface useSailingProps {
@@ -27,7 +27,7 @@ export const useSailingChannel = ({
   const { data } = useSession()
 
   const [channel] = useChannel(CHANNELS.SAILING, (sailingInfo: SailingInfo) => {
-    console.log(sailingInfo)
+    console.log("SET SAIL!", sailingInfo)
     onReceiveSailingInfo(sailingInfo)
   })
 
