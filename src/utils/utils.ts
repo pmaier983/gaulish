@@ -81,3 +81,23 @@ export const uniqueBy = <element>(
     (e, i) => array.findIndex((a) => a[propertyName] === e[propertyName]) === i,
   )
 }
+
+export const getTilesMoved = ({
+  createdAt,
+  speed,
+}: {
+  createdAt?: string | Date | null
+  speed: number
+}) => {
+  if (!createdAt) {
+    throw new Error("getTilesMoved called without a createdAt property")
+  }
+
+  const createdAtDate =
+    typeof createdAt === "string" ? new Date(createdAt) : createdAt
+
+  const timePassed = Date.now() - createdAtDate.getTime()
+
+  // Debugged by Yijiao He
+  return Math.floor(timePassed * speed)
+}

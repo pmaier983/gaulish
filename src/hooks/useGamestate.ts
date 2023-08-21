@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
-import { getXYFromTileId } from "~/utils/utils"
+import { getTilesMoved, getXYFromTileId } from "~/utils/utils"
 
 const VALID_KEYS = [
   "ArrowUp",
@@ -105,16 +105,8 @@ export const useGamestate = () => {
             shipType: { speed },
           } = npc
 
-          if (!createdAt) {
-            throw new Error("NPC path does not have a createdAt property")
-          }
+          const tilesMoved = getTilesMoved({ speed, createdAt })
 
-          const createdAtDate =
-            typeof createdAt === "string" ? new Date(createdAt) : createdAt
-
-          const timePassed = Date.now() - createdAtDate.getTime()
-          // Debugged by Yijiao He
-          const tilesMoved = Math.floor(timePassed * speed)
           const pathKey = pathArray[tilesMoved % pathArray.length]
 
           if (!pathKey)
@@ -142,24 +134,8 @@ export const useGamestate = () => {
             shipType: { speed },
           } = ship
 
-          if (!createdAt) {
-            throw new Error("Ship path does not have a createdAt property")
-          }
+          const tilesMoved = getTilesMoved({ speed, createdAt })
 
-          const createdAtDate =
-            typeof createdAt === "string" ? new Date(createdAt) : createdAt
-
-          const timePassed = Date.now() - createdAtDate.getTime()
-          // Debugged by Yijiao He
-          const tilesMoved = Math.floor(timePassed * speed)
-
-          console.log({
-            isSailing: !(tilesMoved > pathArray.length),
-            tilesMoved,
-            timePassed,
-            createdAtDate,
-            createdAt,
-          })
           // If the ship has finished sailing, don't add it to the map object
           if (tilesMoved >= pathArray.length) return
 

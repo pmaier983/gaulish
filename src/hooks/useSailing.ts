@@ -42,6 +42,8 @@ export const useSailing = () => {
 
   const setSailMutationReturn = api.general.sail.useMutation({
     onSuccess: (data) => {
+      publishSailingInfo(data)
+
       // When the ship successfully sails, update the cityId to its new location
       queryClient.general.getUsersShips.setData(
         undefined,
@@ -60,7 +62,6 @@ export const useSailing = () => {
                   if (!destinationCity)
                     throw Error("The final tile was not a know city!")
                   ship.cityId = destinationCity.id
-                  publishSailingInfo(data)
                 }
               })
             },

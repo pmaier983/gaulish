@@ -36,7 +36,7 @@ export const Leaderboard = () => {
 const LeaderboardList = ({ emails }: { emails: string[] }) => {
   const { data } = api.general.getLeaderboard.useQuery(emails.slice(0, 10), {
     enabled: emails.length > 0,
-    staleTime: 60000, // only refresh the leaderboard every 60s
+    staleTime: 20000, // only refresh the leaderboard every 20s
     meta: {
       errorMessage: "Something went wrong while fetching the leaderboard",
     },
