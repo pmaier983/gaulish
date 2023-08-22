@@ -68,18 +68,24 @@ export const ShipList = () => {
 
 // TODO: rework this to actually fit and function all screen sizes
 export const ShipListItem = (ship: Ship) => {
-  const { selectedShip, cityObject, toggleShipSelection } = useGamestateStore(
-    useCallback(
-      (state) => ({
-        selectedShip: state.selectedShip,
-        cityObject: state.cityObject,
-        toggleShipSelection: state.toggleShipSelection,
-      }),
-      [],
-    ),
-  )
+  const { ships, selectedShip, cityObject, toggleShipSelection } =
+    useGamestateStore(
+      useCallback(
+        (state) => ({
+          ships: state.ships,
+          selectedShip: state.selectedShip,
+          cityObject: state.cityObject,
+          toggleShipSelection: state.toggleShipSelection,
+        }),
+        [],
+      ),
+    )
 
   const isSelectedShip = selectedShip?.id === ship.id
+
+  const isSailing = ships.map((currentShip) => currentShip.id).includes(ship.id)
+
+  const cityName = cityObject[ship.cityId]?.name
 
   return (
     <tr
@@ -87,15 +93,19 @@ export const ShipListItem = (ship: Ship) => {
         isSelectedShip ? "bg-blue-400" : ""
       }`}
     >
-      <td>{ship?.name}</td>
+      <Tooltip content={ship?.name}>
+        <td className="whitespace-no-wrap overflow-hidden text-ellipsis">
+          {ship?.name}
+        </td>
+      </Tooltip>
       <td className="flex flex-col items-start text-xs">
         <span className="underline underline-offset-4">{ship.gold}</span>
         {/* TODO: implement on hover breakdown */}
         <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
       </td>
-      <Tooltip content={cityObject[ship.cityId]?.name}>
+      <Tooltip content={cityName}>
         <td className="whitespace-no-wrap overflow-hidden text-ellipsis">
-          {cityObject[ship.cityId]?.name}
+          {isSailing ? "Sailing" : cityName}
         </td>
       </Tooltip>
       <td>

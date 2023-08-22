@@ -22,6 +22,7 @@ export const useGamestate = () => {
   const {
     setInitialMapState,
     setNpcs,
+    setShips,
     setCities,
     setMapObject,
     handleShipPath,
@@ -36,6 +37,7 @@ export const useGamestate = () => {
         setInitialMapState: state.setInitialMapState,
         setMapObject: state.setMapObject,
         setCities: state.setCities,
+        setShips: state.setShips,
         setNpcs: state.setNpcs,
         handleShipPath: state.handleShipPath,
         cleanMapObject: state.cleanMapObject,
@@ -137,7 +139,11 @@ export const useGamestate = () => {
           const tilesMoved = getTilesMoved({ speed, createdAt })
 
           // If the ship has finished sailing, don't add it to the map object
-          if (tilesMoved >= pathArray.length) return
+          if (tilesMoved >= pathArray.length) {
+            // Remove the ship from the ship list if it is finished sailing
+            setShips(ships.filter((currentShip) => currentShip.id !== ship.id))
+            return
+          }
 
           const pathKey = pathArray[tilesMoved]
 
@@ -160,7 +166,7 @@ export const useGamestate = () => {
       setMapObject(newMapObject)
     }, 500)
     return () => clearInterval(intervalId)
-  })
+  }, [cleanMapObject, npcs, setMapObject, ships, setShips])
 
   const shipNavigationHandler = useCallback(
     (e: KeyboardEvent) => {

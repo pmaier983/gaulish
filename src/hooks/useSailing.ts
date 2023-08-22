@@ -7,13 +7,13 @@ import { api } from "~/utils/api"
 
 export const useSailing = () => {
   const queryClient = api.useContext()
-  const { selectedShip, cityObject, setShips, toggleShipSelection } =
+  const { selectedShip, cityObject, addShips, toggleShipSelection } =
     useGamestateStore(
       useCallback(
         (state) => ({
           cityObject: state.cityObject,
           selectedShip: state.selectedShip,
-          setShips: state.setShips,
+          addShips: state.addShips,
           toggleShipSelection: state.toggleShipSelection,
         }),
         [],
@@ -24,7 +24,7 @@ export const useSailing = () => {
     onReceiveSailingInfo: (sailingInfo) => {
       const newShip = sailingInfo.data.ship
 
-      setShips([
+      addShips([
         {
           ...newShip,
           path: sailingInfo.data.path,

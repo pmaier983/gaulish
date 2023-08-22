@@ -55,6 +55,7 @@ interface GamestateStoreActions {
   setMapObject: (map: GamestateStore["mapObject"]) => void
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["general"]["getNpcs"]) => void
+  addShips: (ships: ShipComposite[]) => void
   setShips: (ships: ShipComposite[]) => void
 
   toggleShipSelection: (ship?: Ship) => void
@@ -119,7 +120,7 @@ export const useGamestateStore = create<Gamestate>()(
       set((state) => ({ ...state, npcs: npcsComposite }))
     },
 
-    setShips: (newShips) => {
+    addShips: (newShips) => {
       const ships = get().ships
 
       // ensure we don't get any duplicate ships
@@ -127,6 +128,8 @@ export const useGamestateStore = create<Gamestate>()(
 
       return set((state) => ({ ...state, ships: newShipsArray }))
     },
+
+    setShips: (newShips) => set((state) => ({ ...state, ships: newShips })),
 
     toggleShipSelection: (ship) => {
       // Toggle selected ship off
