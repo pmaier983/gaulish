@@ -138,6 +138,10 @@ export const usersRelations = relations(users, ({ one }) => ({
     fields: [users.id],
     references: [accounts.userId],
   }),
+  log: one(log, {
+    fields: [users.id],
+    references: [log.userId],
+  }),
 }))
 
 export const ship = mysqlTable("ship", {
@@ -225,3 +229,10 @@ export const npc = mysqlTable("npc", {
   cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Npc = InferModel<typeof npc>
+
+export const log = mysqlTable("log", {
+  id: serial("id").primaryKey().notNull(),
+  userId: varchar("user_id", { length: 191 }).notNull(),
+  text: text("text").notNull(),
+})
+export type Log = InferModel<typeof log>
