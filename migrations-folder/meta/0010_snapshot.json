@@ -113,17 +113,12 @@
       "indexes": {
         "accounts_provider_providerAccountId_idx": {
           "name": "accounts_provider_providerAccountId_idx",
-          "columns": [
-            "provider",
-            "provider_account_id"
-          ],
+          "columns": ["provider", "provider_account_id"],
           "isUnique": true
         },
         "accounts_userId_idx": {
           "name": "accounts_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -131,9 +126,7 @@
       "compositePrimaryKeys": {
         "accounts_id": {
           "name": "accounts_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -175,9 +168,7 @@
       "compositePrimaryKeys": {
         "city_id": {
           "name": "city_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -212,9 +203,7 @@
       "compositePrimaryKeys": {
         "npc_id": {
           "name": "npc_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -251,9 +240,7 @@
       "compositePrimaryKeys": {
         "path_id": {
           "name": "path_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -311,16 +298,12 @@
       "indexes": {
         "sessions_sessionToken_idx": {
           "name": "sessions_sessionToken_idx",
-          "columns": [
-            "session_token"
-          ],
+          "columns": ["session_token"],
           "isUnique": true
         },
         "sessions_userId_idx": {
           "name": "sessions_userId_idx",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -328,9 +311,7 @@
       "compositePrimaryKeys": {
         "sessions_id": {
           "name": "sessions_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -419,9 +400,7 @@
       "compositePrimaryKeys": {
         "ship_id": {
           "name": "ship_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -461,10 +440,7 @@
       "indexes": {
         "xy_index": {
           "name": "xy_index",
-          "columns": [
-            "x",
-            "y"
-          ],
+          "columns": ["x", "y"],
           "isUnique": true
         }
       },
@@ -472,9 +448,7 @@
       "compositePrimaryKeys": {
         "tile_xy_tile_id": {
           "name": "tile_xy_tile_id",
-          "columns": [
-            "xy_tile_id"
-          ]
+          "columns": ["xy_tile_id"]
         }
       },
       "uniqueConstraints": {}
@@ -547,9 +521,7 @@
       "indexes": {
         "users_email_idx": {
           "name": "users_email_idx",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -557,9 +529,7 @@
       "compositePrimaryKeys": {
         "users_id": {
           "name": "users_id",
-          "columns": [
-            "id"
-          ]
+          "columns": ["id"]
         }
       },
       "uniqueConstraints": {}
@@ -610,9 +580,7 @@
       "indexes": {
         "verification_tokens_token_idx": {
           "name": "verification_tokens_token_idx",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         }
       },
@@ -620,9 +588,7 @@
       "compositePrimaryKeys": {
         "verification_tokens_identifier": {
           "name": "verification_tokens_identifier",
-          "columns": [
-            "identifier"
-          ]
+          "columns": ["identifier"]
         }
       },
       "uniqueConstraints": {}
