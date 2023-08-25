@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useEffect } from "react"
 import { type AppType } from "next/app"
 import { type Session } from "next-auth"
 import { SessionProvider, useSession } from "next-auth/react"
@@ -30,14 +30,9 @@ configureAbly({
 const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter()
   const { status } = useSession()
-  const { setIsUserAdmin } = useGlobalStore(
-    useCallback(
-      (state) => ({
-        setIsUserAdmin: state.setIsUserAdmin,
-      }),
-      [],
-    ),
-  )
+  const { setIsUserAdmin } = useGlobalStore((state) => ({
+    setIsUserAdmin: state.setIsUserAdmin,
+  }))
 
   const { data: isUserAdmin } = api.general.isUserAdmin.useQuery(undefined, {
     staleTime: Infinity,

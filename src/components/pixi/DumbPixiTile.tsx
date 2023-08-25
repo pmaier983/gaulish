@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import { Sprite, Text, useApp } from "@pixi/react"
 import { type Tile } from "schema"
 import * as PIXI from "pixi.js"
@@ -11,14 +10,9 @@ import { getTileImageString } from "~/utils/utils"
  * A Dumb Pixi Tile Component that should lack any gamestate logic
  */
 export const DumbPixiTile = ({ x, y, type_id }: Tile) => {
-  const { isUserAdmin } = useGlobalStore(
-    useCallback(
-      (state) => ({
-        isUserAdmin: state.isUserAdmin,
-      }),
-      [],
-    ),
-  )
+  const { isUserAdmin } = useGlobalStore((state) => ({
+    isUserAdmin: state.isUserAdmin,
+  }))
 
   const app = useApp()
 

@@ -1,5 +1,4 @@
 import { produce } from "immer"
-import { useCallback } from "react"
 import { useSailingChannel } from "~/hooks/useSailingChannel"
 
 import { useGamestateStore } from "~/state/gamestateStore"
@@ -8,17 +7,12 @@ import { api } from "~/utils/api"
 export const useSailing = () => {
   const queryClient = api.useContext()
   const { selectedShip, cityObject, addShips, toggleShipSelection } =
-    useGamestateStore(
-      useCallback(
-        (state) => ({
-          cityObject: state.cityObject,
-          selectedShip: state.selectedShip,
-          addShips: state.addShips,
-          toggleShipSelection: state.toggleShipSelection,
-        }),
-        [],
-      ),
-    )
+    useGamestateStore((state) => ({
+      cityObject: state.cityObject,
+      selectedShip: state.selectedShip,
+      addShips: state.addShips,
+      toggleShipSelection: state.toggleShipSelection,
+    }))
 
   const { publishSailingInfo } = useSailingChannel({
     onReceiveSailingInfo: (sailingInfo) => {

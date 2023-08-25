@@ -31,7 +31,7 @@ const Home: NextPage = () => {
 export default Home
 
 // Logged in message questioning?
-const LandingPage: React.FC = () => {
+const LandingPage = () => {
   const { data: sessionData, status } = useSession()
 
   const isLoggedIn = !!sessionData

@@ -1,5 +1,4 @@
 import { produce } from "immer"
-import { useCallback } from "react"
 import { type Ship } from "schema"
 
 import { Icon } from "~/components/Icon"
@@ -69,17 +68,12 @@ export const ShipList = () => {
 // TODO: rework this to actually fit and function all screen sizes
 export const ShipListItem = (ship: Ship) => {
   const { ships, selectedShip, cityObject, toggleShipSelection } =
-    useGamestateStore(
-      useCallback(
-        (state) => ({
-          ships: state.ships,
-          selectedShip: state.selectedShip,
-          cityObject: state.cityObject,
-          toggleShipSelection: state.toggleShipSelection,
-        }),
-        [],
-      ),
-    )
+    useGamestateStore((state) => ({
+      ships: state.ships,
+      selectedShip: state.selectedShip,
+      cityObject: state.cityObject,
+      toggleShipSelection: state.toggleShipSelection,
+    }))
 
   const isSelectedShip = selectedShip?.id === ship.id
 

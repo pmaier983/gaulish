@@ -1,4 +1,3 @@
-import { useCallback } from "react"
 import { type Tile } from "schema"
 import { DumbPixiCity } from "~/components/pixi/DumbPixiCity"
 import { DumbPixiShip } from "~/components/pixi/DumbPixiShip"
@@ -9,14 +8,11 @@ import { useGamestateStore } from "~/state/gamestateStore"
 
 export const MapPixiTile = (tile: Tile) => {
   const { mapObject, cityObject, selectedShipPathObject } = useGamestateStore(
-    useCallback(
-      (state) => ({
-        mapObject: state.mapObject,
-        cityObject: state.cityObject,
-        selectedShipPathObject: state.selectedShipPathObject,
-      }),
-      [],
-    ),
+    (state) => ({
+      mapObject: state.mapObject,
+      cityObject: state.cityObject,
+      selectedShipPathObject: state.selectedShipPathObject,
+    }),
   )
   const currentTile = mapObject[tile.xyTileId]
   const npc = currentTile?.npc

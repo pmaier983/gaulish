@@ -31,24 +31,19 @@ export const useGamestate = () => {
     ships,
     selectedShip,
     selectedShipPathArray,
-  } = useGamestateStore(
-    useCallback(
-      (state) => ({
-        setInitialMapState: state.setInitialMapState,
-        setMapObject: state.setMapObject,
-        setCities: state.setCities,
-        setShips: state.setShips,
-        setNpcs: state.setNpcs,
-        handleShipPath: state.handleShipPath,
-        cleanMapObject: state.cleanMapObject,
-        npcs: state.npcs,
-        ships: state.ships,
-        selectedShip: state.selectedShip,
-        selectedShipPathArray: state.selectedShipPathArray,
-      }),
-      [],
-    ),
-  )
+  } = useGamestateStore((state) => ({
+    setInitialMapState: state.setInitialMapState,
+    setMapObject: state.setMapObject,
+    setCities: state.setCities,
+    setShips: state.setShips,
+    setNpcs: state.setNpcs,
+    handleShipPath: state.handleShipPath,
+    cleanMapObject: state.cleanMapObject,
+    npcs: state.npcs,
+    ships: state.ships,
+    selectedShip: state.selectedShip,
+    selectedShipPathArray: state.selectedShipPathArray,
+  }))
 
   const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,

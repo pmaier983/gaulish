@@ -1,4 +1,4 @@
-import React, { useCallback } from "react"
+import React from "react"
 
 import { useGamestateStore } from "~/state/gamestateStore"
 import styles from "./mapFooter.module.css"
@@ -14,17 +14,12 @@ export const MapFooter = ({ className = "" }: MapFooterProps) => {
     cityObject,
     selectedShipPathArray,
     toggleShipSelection,
-  } = useGamestateStore(
-    useCallback(
-      (state) => ({
-        cityObject: state.cityObject,
-        selectedShipPathArray: state.selectedShipPathArray,
-        selectedShip: state.selectedShip,
-        toggleShipSelection: state.toggleShipSelection,
-      }),
-      [],
-    ),
-  )
+  } = useGamestateStore((state) => ({
+    cityObject: state.cityObject,
+    selectedShipPathArray: state.selectedShipPathArray,
+    selectedShip: state.selectedShip,
+    toggleShipSelection: state.toggleShipSelection,
+  }))
 
   const { mutate: setSail, isLoading } = useSailing()
 

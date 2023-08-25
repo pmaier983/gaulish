@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { useSession } from "next-auth/react"
 
 import { FullPageRedirect } from "~/components/FullPageRedirect"
@@ -13,14 +13,9 @@ const MapCreation = dynamic(() => import("~/components/MapCreation"), {
 
 const Dev = () => {
   const { data } = useSession()
-  const { isUserAdmin } = useGlobalStore(
-    useCallback(
-      (state) => ({
-        isUserAdmin: state.isUserAdmin,
-      }),
-      [],
-    ),
-  )
+  const { isUserAdmin } = useGlobalStore((state) => ({
+    isUserAdmin: state.isUserAdmin,
+  }))
   const [isDevMapCreationVisible, setDevMapCreationVisibility] = useState(false)
   const { mutate } = api.general.setupDefaultGamestate.useMutation()
 

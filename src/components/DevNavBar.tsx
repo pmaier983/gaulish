@@ -1,12 +1,12 @@
 import Link from "next/link"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { useGlobalStore } from "~/state/globalStore"
 
 export const DevNavBar = () => {
   const [hasHideDevNavBar, setHasHideDevNavBar] = useState(false)
-  const globalState = useGlobalStore(useCallback((state) => state, []))
-  const gameState = useGamestateStore(useCallback((state) => state, []))
+  const globalState = useGlobalStore((state) => state)
+  const gameState = useGamestateStore((state) => state)
 
   if (!globalState.isUserAdmin || hasHideDevNavBar) {
     return null
