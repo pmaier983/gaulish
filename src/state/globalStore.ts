@@ -1,4 +1,4 @@
-import { create } from "zustand"
+import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 import { shallow } from "zustand/shallow"
 
@@ -12,7 +12,7 @@ export type GlobalState = UserSlice & DisableSlice
  * This is not shallow by default
  * so avoid this as it will cause unnecessary re-renders.
  */
-export const useGlobalStoreBase = create<GlobalState>()(
+export const useGlobalStoreBase = createWithEqualityFn<GlobalState>()(
   devtools(
     (...a) => ({
       ...createUserSlice(...a),
@@ -20,6 +20,7 @@ export const useGlobalStoreBase = create<GlobalState>()(
     }),
     { name: "global-state" },
   ),
+  shallow,
 )
 
 /**

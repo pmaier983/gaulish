@@ -1,10 +1,11 @@
-import { create } from "zustand"
+import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
 import type { Npc, Path, Tile, City, Ship } from "schema"
 import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
 import { getDirectionTowardsPrevTile, uniqueBy } from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
+import { shallow } from "zustand/shallow"
 
 export interface ShipComposite extends Ship {
   path: Path
@@ -77,7 +78,7 @@ const initialGamestate: GamestateStore = {
   cleanMapObject: {},
 }
 
-export const useGamestateStore = create<Gamestate>()(
+export const useGamestateStore = createWithEqualityFn<Gamestate>()(
   devtools((set, get) => ({
     ...initialGamestate,
 
@@ -233,6 +234,7 @@ export const useGamestateStore = create<Gamestate>()(
 
     restart: () => set(initialGamestate),
   })),
+  shallow,
 )
 
 export const generateSelectedShipPathObject = (
