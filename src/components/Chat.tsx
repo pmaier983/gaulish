@@ -1,8 +1,10 @@
+import { useAtom } from "jotai"
 import { useState } from "react"
 import { type Message, useMessageChannel } from "~/hooks/useMessageChannel"
+import { chatMessagesAtom } from "~/state/atoms"
 
 export const Chat = () => {
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useAtom(chatMessagesAtom)
   const [chatText, setChatText] = useState("")
 
   const onReceiveChatMessage = (message: Message) => {
