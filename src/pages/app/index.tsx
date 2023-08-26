@@ -6,13 +6,13 @@ import styles from "./index.module.css"
 import { useGamestate } from "~/hooks/useGamestate"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { useCallback } from "react"
-import { Chat } from "~/components/Chat"
 import { Leaderboard } from "~/components/Leaderboard"
 import { Sidebar } from "~/components/Sidebar"
 import { useGlobalStore } from "~/state/globalStore"
 import { ProfilePicture } from "~/components/ProfilePicture"
 import { MapFooter } from "~/components/MapFooter"
 import { DevNavBar } from "~/components/DevNavBar"
+import { Footer } from "~/components/Footer"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -72,7 +72,7 @@ const App = () => {
       </div>
       <div className={styles.footer}>
         {isChatDisabled && <div className={styles.isDisabledOverlay} />}
-        <Chat />
+        <Footer />
       </div>
     </div>
   )

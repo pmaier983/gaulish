@@ -6,7 +6,7 @@ export const Chat = () => {
   const [chatText, setChatText] = useState("")
 
   const onReceiveChatMessage = (message: Message) => {
-    setMessages((receivedMessages) => [...receivedMessages, message])
+    setMessages((receivedMessages) => [message, ...receivedMessages])
   }
 
   const { publishChatMessage } = useMessageChannel({ onReceiveChatMessage })
@@ -16,19 +16,21 @@ export const Chat = () => {
   }
 
   return (
-    <div className="flex-1 self-end">
-      {messages.map((message) => (
-        <div key={message.id}>{message.data.text}</div>
-      ))}
+    <div className="flex flex-1 flex-col justify-between gap-3 overflow-y-auto p-3 ">
+      <div className="flex flex-1 flex-col-reverse overflow-y-auto">
+        {messages.map((message) => (
+          <div key={message.id}>{message.data.text}</div>
+        ))}
+      </div>
       <form
-        className="flex justify-center gap-2 p-2"
+        className="flex items-end gap-2"
         onSubmit={(e) => {
           e.preventDefault()
           onSubmit()
         }}
       >
         <textarea
-          className="h-6 w-4/5"
+          className="h-8 flex-1"
           value={chatText}
           onChange={(e) => {
             setChatText(e.target.value)
