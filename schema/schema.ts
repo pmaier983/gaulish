@@ -234,5 +234,8 @@ export const log = mysqlTable("log", {
   id: serial("id").primaryKey().notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   text: text("text").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" })
+    .defaultNow()
+    .onUpdateNow(),
 })
 export type Log = InferModel<typeof log>

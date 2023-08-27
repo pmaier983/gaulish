@@ -1,0 +1,1 @@
+ALTER TABLE `log` ADD `created_at` timestamp DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP;
