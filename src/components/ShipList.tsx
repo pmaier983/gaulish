@@ -103,7 +103,10 @@ export const ShipListItem = (ship: Ship) => {
         </td>
       </Tooltip>
       <td>
-        <button disabled={isSelectedShip} className="w-full">
+        <button
+          disabled={isSelectedShip}
+          className="flex w-full justify-center rounded border border-solid border-black"
+        >
           Trade
         </button>
       </td>

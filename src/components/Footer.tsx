@@ -13,10 +13,13 @@ export const Footer = () => {
   const [footerType, setFooterType] = useState<FooterType>(FOOTER_TYPES.CHAT)
 
   return (
-    <div className="flex h-full flex-1 flex-col">
+    <div className="flex h-full flex-1 flex-col p-3">
       {/* TODO: should this have any special a11y tags going on? */}
       <div className="flex gap-2">
         <button
+          className={`flex justify-center rounded border border-solid border-black p-1 ${
+            footerType === FOOTER_TYPES.CHAT && "bg-blue-400 font-bold"
+          }`}
           onClick={() => {
             setFooterType(FOOTER_TYPES.CHAT)
           }}
@@ -24,6 +27,9 @@ export const Footer = () => {
           Chat
         </button>
         <button
+          className={`flex justify-center rounded border border-solid border-black p-1 ${
+            footerType === FOOTER_TYPES.LOG && "bg-blue-400 font-bold"
+          }`}
           onClick={() => {
             setFooterType(FOOTER_TYPES.LOG)
           }}
