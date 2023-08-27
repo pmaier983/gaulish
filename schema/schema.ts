@@ -118,7 +118,7 @@ export type User = InferModel<typeof users>
 
 // TODO: unify a bunch of these columns so there is less duplicate code
 export const usersRelations = relations(users, ({ one, many }) => ({
-  ships: many(ship),
+  ship: many(ship),
   sessions: one(sessions, {
     fields: [users.id],
     references: [sessions.userId],
@@ -127,7 +127,7 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     fields: [users.id],
     references: [accounts.userId],
   }),
-  logs: many(log),
+  log: many(log),
 }))
 
 export const ship = mysqlTable("ship", {
