@@ -125,11 +125,8 @@ export type User = InferModel<typeof users>
 /* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
 
 // TODO: unify a bunch of these columns so there is less duplicate code
-export const usersRelations = relations(users, ({ one }) => ({
-  ship: one(ship, {
-    fields: [users.id],
-    references: [ship.userId],
-  }),
+export const usersRelations = relations(users, ({ one, many }) => ({
+  ships: many(ship),
   sessions: one(sessions, {
     fields: [users.id],
     references: [sessions.userId],
@@ -138,10 +135,7 @@ export const usersRelations = relations(users, ({ one }) => ({
     fields: [users.id],
     references: [accounts.userId],
   }),
-  log: one(log, {
-    fields: [users.id],
-    references: [log.userId],
-  }),
+  logs: many(log),
 }))
 
 export const ship = mysqlTable("ship", {
@@ -161,6 +155,20 @@ export const ship = mysqlTable("ship", {
   cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Ship = InferModel<typeof ship>
+export const shipRelations = relations(ship, ({ one }) => ({
+  user: one(users, {
+    fields: [ship.userId],
+    references: [users.id],
+  }),
+  path: one(path, {
+    fields: [ship.pathId],
+    references: [path.id],
+  }),
+  city: one(city, {
+    fields: [ship.cityId],
+    references: [city.id],
+  }),
+}))
 
 export const path = mysqlTable("path", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
@@ -170,8 +178,8 @@ export const path = mysqlTable("path", {
   pathArray: json("path_array").$type<string[]>().notNull(),
 })
 export type Path = InferModel<typeof path>
-
 export const pathRelations = relations(path, ({ one }) => ({
+  // TODO: consider the benefits || negatives of merging these two tables
   npc: one(npc, {
     fields: [path.id],
     references: [npc.pathId],
@@ -197,7 +205,6 @@ export const tile = mysqlTable(
   }),
 )
 export type Tile = InferModel<typeof tile>
-
 export const tileRelations = relations(tile, ({ one }) => ({
   city: one(city, {
     fields: [tile.xyTileId],
@@ -212,11 +219,11 @@ export const city = mysqlTable("city", {
   level: json("level"),
 })
 export type City = InferModel<typeof city>
-
-export const cityRelations = relations(city, ({ one }) => ({
-  ship: one(ship, {
-    fields: [city.id],
-    references: [ship.cityId],
+export const cityRelations = relations(city, ({ one, many }) => ({
+  ship: many(ship),
+  tile: one(tile, {
+    fields: [city.xyTileId],
+    references: [tile.xyTileId],
   }),
 }))
 
@@ -229,6 +236,12 @@ export const npc = mysqlTable("npc", {
   cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Npc = InferModel<typeof npc>
+export const npcRelations = relations(npc, ({ one }) => ({
+  path: one(path, {
+    fields: [npc.pathId],
+    references: [path.id],
+  }),
+}))
 
 export const log = mysqlTable("log", {
   id: serial("id").primaryKey().notNull(),
@@ -239,3 +252,9 @@ export const log = mysqlTable("log", {
     .onUpdateNow(),
 })
 export type Log = InferModel<typeof log>
+export const logRelations = relations(log, ({ one }) => ({
+  user: one(users, {
+    fields: [log.userId],
+    references: [users.id],
+  }),
+}))
