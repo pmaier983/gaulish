@@ -1,8 +1,23 @@
-import { eq, inArray } from "drizzle-orm"
-import { path, tile, users, ship, city, npc, type Npc, type Path } from "schema"
+import { type ExtractTablesWithRelations, eq, inArray } from "drizzle-orm"
+import {
+  path,
+  tile,
+  users,
+  ship,
+  city,
+  npc,
+  log,
+  type Npc,
+  type Path,
+} from "schema"
 import { z } from "zod"
-import { type PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
+import {
+  type PlanetScaleDatabase,
+  type PlanetScalePreparedQueryHKT,
+  type PlanetscaleQueryResultHKT,
+} from "drizzle-orm/planetscale-serverless"
 import { createId } from "@paralleldrive/cuid2"
+import { type MySqlTransaction } from "drizzle-orm/mysql-core"
 
 import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
 import {
@@ -18,9 +33,20 @@ import {
   DEFAULT_PATHS,
 } from "~/server/defaults"
 
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+export type TransactionDatabase = MySqlTransaction<
+  PlanetscaleQueryResultHKT,
+  PlanetScalePreparedQueryHKT,
+  typeof import("schema"),
+  ExtractTablesWithRelations<typeof import("schema")>
+>
+
+export type Database = PlanetScaleDatabase<typeof import("schema")>
+/* eslint-enable @typescript-eslint/consistent-type-imports */
+
 interface GetUserFromEmail {
   email?: string | null
-  db: PlanetScaleDatabase<Record<string, never>>
+  db: TransactionDatabase | Database
 }
 
 // TODO: add user id to the session!!!!
@@ -112,6 +138,24 @@ export const generalRouter = createTRPCRouter({
   getCities: protectedProcedure.query(({ ctx }) => {
     return ctx.db.select().from(city)
   }),
+  /**
+   * Fetch a users Logs
+   */
+  getLogs: protectedProcedure
+    .input(
+      // https://trpc.io/docs/client/react/useInfiniteQuery
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.number().nullish(),
+      }),
+    )
+    .query(async ({ ctx, input: { cursor, limit: possibleLimit } }) => {
+      const limit = possibleLimit ?? 50
+      return await ctx.db.query.log.findMany({
+        limit,
+        where: eq(log.userId, ctx.session.user.id),
+      })
+    }),
   /**
    * Adds a ship to a users profile
    */
