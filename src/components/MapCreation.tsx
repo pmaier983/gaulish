@@ -120,7 +120,9 @@ const MapCreation = () => {
             <Image
               key={type}
               className={
-                type === cellSelectionType ? "border-2 border-red-700" : ""
+                type === cellSelectionType
+                  ? "outline outline-2 outline-red-700"
+                  : ""
               }
               src={`/${type.toLocaleLowerCase()}.webp`}
               width={mapWidth / Object.values(TILE_TYPES).length}

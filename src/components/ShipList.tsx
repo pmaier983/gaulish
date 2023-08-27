@@ -105,7 +105,7 @@ export const ShipListItem = (ship: Ship) => {
       <td>
         <button
           disabled={isSelectedShip}
-          className="flex w-full justify-center rounded border border-solid border-black"
+          className="flex w-full justify-center rounded outline outline-1"
         >
           Trade
         </button>
@@ -113,7 +113,7 @@ export const ShipListItem = (ship: Ship) => {
       <td>
         <button
           onClick={() => toggleShipSelection(ship)}
-          className="flex w-full justify-center rounded border border-solid border-black"
+          className="flex w-full justify-center rounded outline outline-1"
         >
           <Icon id={isSelectedShip ? "x" : "arrowRight"} />
         </button>

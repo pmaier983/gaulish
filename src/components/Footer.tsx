@@ -1,6 +1,8 @@
+import { useAtom } from "jotai"
 import { useState } from "react"
 import { Chat } from "~/components/Chat"
 import { LineLog } from "~/components/LineLog"
+import { haveLogsUpdatedAtom } from "~/state/atoms"
 
 const FOOTER_TYPES = {
   CHAT: "CHAT",
@@ -10,6 +12,8 @@ const FOOTER_TYPES = {
 export type FooterType = keyof typeof FOOTER_TYPES
 
 export const Footer = () => {
+  const [haveLogsUpdated] = useAtom(haveLogsUpdatedAtom)
+
   const [footerType, setFooterType] = useState<FooterType>(FOOTER_TYPES.CHAT)
 
   return (
@@ -17,7 +21,7 @@ export const Footer = () => {
       {/* TODO: should this have any special a11y tags going on? */}
       <div className="flex gap-2">
         <button
-          className={`flex justify-center rounded border border-solid border-black p-1 ${
+          className={`flex justify-center rounded p-1 outline outline-1 ${
             footerType === FOOTER_TYPES.CHAT && "bg-blue-400 font-bold"
           }`}
           onClick={() => {
@@ -27,9 +31,9 @@ export const Footer = () => {
           Chat
         </button>
         <button
-          className={`flex justify-center rounded border border-solid border-black p-1 ${
+          className={`flex justify-center rounded p-1 outline outline-1 ${
             footerType === FOOTER_TYPES.LOG && "bg-blue-400 font-bold"
-          }`}
+          } ${haveLogsUpdated && "outline-4 outline-red-600"}`}
           onClick={() => {
             setFooterType(FOOTER_TYPES.LOG)
           }}

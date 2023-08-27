@@ -22,13 +22,13 @@ export const ProfilePicture = ({ className }: ProfilePictureProps) => {
         className="cursor-pointer"
       >
         <Avatar.Image
-          className="rounded-full border-2 border-solid border-black"
+          className="rounded-full outline outline-2"
           src={data?.user?.image ?? ""}
           alt={data?.user?.name ?? ""}
         />
         <Avatar.Fallback delayMs={300}>
           <Image
-            className="rounded-full border-2 border-solid border-black"
+            className="rounded-full outline outline-2"
             src={staticDefaultProfilePicture}
             alt="a helmet with wings on it, they symbol of gaulish.io"
             width={100}

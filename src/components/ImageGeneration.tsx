@@ -43,7 +43,7 @@ export const ImageGeneration = () => {
           onChange={(e) => setUserPrompt(e.target.value)}
         />
         <button
-          className="rounded-md border-2 border-green-500 bg-green-300 p-2"
+          className="rounded-md bg-green-300 p-2 outline-2 outline-green-500"
           onClick={() => {
             fetchData().catch((e) => console.error(e))
           }}
