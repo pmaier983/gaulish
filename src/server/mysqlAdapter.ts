@@ -5,7 +5,10 @@ import { createId } from "@paralleldrive/cuid2"
 import { users, accounts, sessions, verificationTokens } from "~/../schema"
 
 /** @return { import("next-auth/adapters").Adapter } */
-export const mysqlAdapter = (db: PlanetScaleDatabase): Adapter => {
+export const mysqlAdapter = (
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  db: PlanetScaleDatabase<typeof import("schema")>,
+): Adapter => {
   return {
     async createUser(userData) {
       await db.insert(users).values({

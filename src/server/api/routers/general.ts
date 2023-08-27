@@ -1,4 +1,5 @@
 import { type ExtractTablesWithRelations, eq, inArray } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 import {
   path,
   tile,
@@ -60,6 +61,7 @@ const getUserFromEmail = async ({ email, db }: GetUserFromEmail) => {
   return user
 }
 
+// TODO: use relational queries for things?
 export const generalRouter = createTRPCRouter({
   /**
    * Let a user sail their ship
@@ -174,11 +176,6 @@ export const generalRouter = createTRPCRouter({
 
         if (!cityForNewShip) throw Error("No cities found for the new ship")
 
-        const user = await getUserFromEmail({
-          email: ctx.session.user.email,
-          db: trx,
-        })
-
         const shipProperties = SHIP_TYPE_TO_SHIP_PROPERTIES[input.ship_type]
 
         if (!shipProperties)
@@ -186,7 +183,7 @@ export const generalRouter = createTRPCRouter({
 
         const partialNewShip = {
           id: createId(),
-          userId: user.id,
+          userId: ctx.session.user.id,
           cityId: cityForNewShip.id,
           ...shipProperties,
           name: "shippy mcshipface",
@@ -212,11 +209,10 @@ export const generalRouter = createTRPCRouter({
    * Fetch a list of the users Ships
    */
   getUsersShips: protectedProcedure.query(async ({ ctx }) => {
-    const user = await getUserFromEmail({
-      email: ctx.session.user.email,
-      db: ctx.db,
-    })
-    return ctx.db.select().from(ship).where(eq(ship.userId, user.id))
+    return ctx.db
+      .select()
+      .from(ship)
+      .where(eq(ship.userId, ctx.session.user.id))
   }),
   /**
    * Given a list of emails, return a sorted leaderboard of {usernames, gold}
