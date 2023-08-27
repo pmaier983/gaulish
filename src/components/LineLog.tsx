@@ -1,9 +1,22 @@
 import { useAtom } from "jotai"
 import { useEffect } from "react"
+
 import { haveLogsUpdatedAtom } from "~/state/atoms"
+import { api } from "~/utils/api"
 
 export const LineLog = () => {
   const [haveLogsUpdated, setHaveLogsUpdated] = useAtom(haveLogsUpdatedAtom)
+
+  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    api.general.getLogs.useInfiniteQuery(
+      {
+        limit: 10,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+        staleTime: Infinity,
+      },
+    )
 
   /**
    * Once the user sees the new logs, reset the flag
@@ -14,9 +27,29 @@ export const LineLog = () => {
     }
   }, [haveLogsUpdated, setHaveLogsUpdated])
 
+  const logs = data?.pages.map((page) => page.logs).flat()
+
+  const isLoadingInitialPage = isLoading && !isFetchingNextPage
+
   return (
-    <div className="flex flex-1 self-end">
-      <div>Line Log</div>
+    <div className="flex flex-1 gap-3 overflow-y-auto pt-3">
+      <div className="flex flex-1 flex-col-reverse overflow-y-auto p-2">
+        {isLoadingInitialPage && <div>Loading...</div>}
+        {logs?.reverse()?.map((log) => (
+          <div key={log.id}>
+            {log.createdAt?.toLocaleTimeString()} - {log.text}
+          </div>
+        ))}
+        {hasNextPage && (
+          <button
+            disabled={isFetchingNextPage}
+            className="bg-blue-200 outline outline-1"
+            onClick={() => void fetchNextPage()}
+          >
+            {isFetchingNextPage ? "Loading..." : "More"}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

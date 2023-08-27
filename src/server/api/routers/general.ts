@@ -1,5 +1,4 @@
-import { type ExtractTablesWithRelations, eq, inArray } from "drizzle-orm"
-import { eq, inArray } from "drizzle-orm"
+import { asc, eq, inArray, sql } from "drizzle-orm"
 import {
   path,
   tile,
@@ -12,13 +11,7 @@ import {
   type Path,
 } from "schema"
 import { z } from "zod"
-import {
-  type PlanetScaleDatabase,
-  type PlanetScalePreparedQueryHKT,
-  type PlanetscaleQueryResultHKT,
-} from "drizzle-orm/planetscale-serverless"
 import { createId } from "@paralleldrive/cuid2"
-import { type MySqlTransaction } from "drizzle-orm/mysql-core"
 
 import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
 import {
@@ -33,33 +26,6 @@ import {
   DEFAULT_NPCS,
   DEFAULT_PATHS,
 } from "~/server/defaults"
-
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-export type TransactionDatabase = MySqlTransaction<
-  PlanetscaleQueryResultHKT,
-  PlanetScalePreparedQueryHKT,
-  typeof import("schema"),
-  ExtractTablesWithRelations<typeof import("schema")>
->
-
-export type Database = PlanetScaleDatabase<typeof import("schema")>
-/* eslint-enable @typescript-eslint/consistent-type-imports */
-
-interface GetUserFromEmail {
-  email?: string | null
-  db: TransactionDatabase | Database
-}
-
-// TODO: add user id to the session!!!!
-const getUserFromEmail = async ({ email, db }: GetUserFromEmail) => {
-  if (!email) throw new Error("No user email found in session")
-  // TODO: how to get userId in the users session?
-  const user = (
-    await db.select().from(users).where(eq(users.email, email)).limit(1)
-  ).at(0)
-  if (!user) throw new Error("No user found with that email")
-  return user
-}
 
 // TODO: use relational queries for things?
 export const generalRouter = createTRPCRouter({
@@ -151,13 +117,47 @@ export const generalRouter = createTRPCRouter({
         cursor: z.number().nullish(),
       }),
     )
-    .query(async ({ ctx, input: { cursor, limit: possibleLimit } }) => {
-      const limit = possibleLimit ?? 50
-      return await ctx.db.query.log.findMany({
-        limit,
-        where: eq(log.userId, ctx.session.user.id),
-      })
-    }),
+    .query(
+      async ({
+        ctx,
+        input: { cursor: possibleCursor, limit: possibleLimit },
+      }) => {
+        // TODO: is this the proper way to set a default?
+        const limit = possibleLimit ?? 50
+        const cursor = possibleCursor ?? 0
+
+        const logs = await ctx.db.query.log.findMany({
+          limit,
+          where: eq(log.userId, ctx.session.user.id),
+          orderBy: [asc(log.createdAt), asc(log.id)],
+          // TODO: this doesn't work if logs are added in-between requests?
+          offset: cursor,
+        })
+
+        // This fetches the number of logs the user has
+        const logsCount = parseInt(
+          (
+            await ctx.db
+              .select({ count: sql<string>`count(*)` })
+              .from(log)
+              .where(eq(log.userId, ctx.session.user.id))
+          ).at(0)?.count ?? "0",
+          10,
+        )
+
+        return {
+          logs,
+          // the next cursor should be undefined if there are no more logs to render
+          nextCursor: cursor + limit >= logsCount ? undefined : cursor + limit,
+        }
+      },
+    ),
+  addLog: adminProcedure.input(z.string()).mutation(async ({ ctx, input }) => {
+    await ctx.db.insert(log).values({
+      text: input,
+      userId: ctx.session.user.id,
+    })
+  }),
   /**
    * Adds a ship to a users profile
    */
