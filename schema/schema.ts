@@ -35,9 +35,7 @@ export const accounts = mysqlTable(
     refreshTokenExpiresIn: int("refresh_token_expires_in"),
     scope: varchar("scope", { length: 191 }),
     tokenType: varchar("token_type", { length: 191 }),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow(),
@@ -59,9 +57,7 @@ export const sessions = mysqlTable(
     sessionToken: varchar("session_token", { length: 191 }).notNull(),
     userId: varchar("user_id", { length: 191 }).notNull(),
     expires: datetime("expires", { mode: "date" }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow(),
@@ -82,9 +78,7 @@ export const verificationTokens = mysqlTable(
     identifier: varchar("identifier", { length: 191 }).primaryKey().notNull(),
     token: varchar("token", { length: 191 }).notNull(),
     expires: datetime("expires", { mode: "date" }).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow(),
@@ -104,9 +98,7 @@ export const users = mysqlTable(
     email: varchar("email", { length: 191 }).notNull(),
     emailVerified: timestamp("email_verified", { mode: "date" }),
     image: varchar("image", { length: 191 }),
-    createdAt: timestamp("created_at", { mode: "string" })
-      .defaultNow()
-      .onUpdateNow(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "string" })
       .defaultNow()
       .onUpdateNow(),
@@ -172,9 +164,7 @@ export const shipRelations = relations(ship, ({ one }) => ({
 
 export const path = mysqlTable("path", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
-  createdAt: timestamp("created_at", { mode: "date" })
-    .defaultNow()
-    .onUpdateNow(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
   pathArray: json("path_array").$type<string[]>().notNull(),
 })
 export type Path = InferModel<typeof path>
@@ -247,9 +237,7 @@ export const log = mysqlTable("log", {
   id: serial("id").primaryKey().notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   text: text("text").notNull(),
-  createdAt: timestamp("created_at", { mode: "date" })
-    .defaultNow()
-    .onUpdateNow(),
+  createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 })
 export type Log = InferModel<typeof log>
 export const logRelations = relations(log, ({ one }) => ({
