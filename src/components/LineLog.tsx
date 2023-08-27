@@ -8,7 +8,7 @@ export const LineLog = () => {
   const [haveLogsUpdated, setHaveLogsUpdated] = useAtom(haveLogsUpdatedAtom)
 
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    api.general.getLogs.useInfiniteQuery(
+    api.logs.getLogs.useInfiniteQuery(
       {
         limit: 10,
       },

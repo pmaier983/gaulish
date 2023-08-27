@@ -45,7 +45,7 @@ export const useGamestate = () => {
     selectedShipPathArray: state.selectedShipPathArray,
   }))
 
-  const { data: mapData } = api.general.getAllTiles.useQuery(undefined, {
+  const { data: mapData } = api.map.getAllTiles.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when fetching the tiles",
@@ -59,7 +59,7 @@ export const useGamestate = () => {
     setInitialMapState(mapData ?? [])
   }, [mapData, setInitialMapState])
 
-  const { data: npcData } = api.general.getNpcs.useQuery(undefined, {
+  const { data: npcData } = api.map.getNpcs.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when fetching the npcs",
@@ -73,7 +73,7 @@ export const useGamestate = () => {
     setNpcs(npcData ?? [])
   }, [npcData, setNpcs])
 
-  const { data: cityData } = api.general.getCities.useQuery(undefined, {
+  const { data: cityData } = api.map.getCities.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when fetching the cities",

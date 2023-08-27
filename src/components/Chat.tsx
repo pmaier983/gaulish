@@ -18,7 +18,7 @@ export const Chat = () => {
   }
 
   return (
-    <div className="flex flex-1 flex-col justify-between gap-3 overflow-y-auto ">
+    <div className="flex flex-1 flex-col justify-between gap-3 overflow-y-auto">
       <div className="flex flex-1 flex-col-reverse overflow-y-auto">
         {messages.map((message) => (
           <div key={message.id}>{message.data.text}</div>

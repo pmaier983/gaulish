@@ -11,17 +11,17 @@ import { api } from "~/utils/api"
 export const ShipList = () => {
   const queryClient = api.useContext()
 
-  const { data, isSuccess } = api.general.getUsersShips.useQuery(undefined, {
+  const { data, isSuccess } = api.ships.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,
     meta: {
       errorMessage: "Something went wrong when the users loaded their ships",
     },
   })
 
-  const { mutate } = api.general.addShip.useMutation({
+  const { mutate } = api.ships.addShip.useMutation({
     onSuccess: async (data) => {
       // when a new ship is added, update the ship list cache & invalidate the leaderboard
-      queryClient.general.getUsersShips.setData(undefined, (oldShipList) => {
+      queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
         const newData = produce(oldShipList, (draftShipList) => {
           draftShipList?.push(data)
           return

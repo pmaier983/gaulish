@@ -55,7 +55,7 @@ interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
   setMapObject: (map: GamestateStore["mapObject"]) => void
   setCities: (cityObject: City[]) => void
-  setNpcs: (npcs: RouterOutputs["general"]["getNpcs"]) => void
+  setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
   addShips: (ships: ShipComposite[]) => void
   setShips: (ships: ShipComposite[]) => void
 
