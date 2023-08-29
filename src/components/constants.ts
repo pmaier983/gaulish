@@ -19,6 +19,8 @@ export const TILE_TYPES = {
   OCEAN: "OCEAN",
 } as const
 
+export type TILE_TYPE = keyof typeof TILE_TYPES
+
 export const DIRECTIONS = {
   NORTH: "NORTH",
   SOUTH: "SOUTH",
@@ -35,7 +37,7 @@ export const OPPOSITE_DIRECTIONS = {
   [DIRECTIONS.WEST]: DIRECTIONS.EAST,
 } as const
 
-export const TILE_TYPE_ID_TO_TYPE = {
+export const TILE_TYPE_ID_TO_TYPE: { [key: number]: TILE_TYPE } = {
   0: TILE_TYPES.EMPTY,
   1: TILE_TYPES.FOREST,
   2: TILE_TYPES.GRASSLAND,
@@ -50,8 +52,6 @@ export const TILE_TYPE_TO_TYPE_ID = {
   [TILE_TYPES.MOUNTAIN]: 3,
   [TILE_TYPES.OCEAN]: 4,
 }
-
-export type TILE_TYPE = keyof typeof TILE_TYPES
 
 export interface ShipProperties {
   shipType: string

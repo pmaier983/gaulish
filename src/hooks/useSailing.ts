@@ -29,6 +29,10 @@ export const useSailing = () => {
 
   const setSailMutationReturn = api.ships.sail.useMutation({
     onSuccess: (data) => {
+      // On Success Cancel the ship selection
+      toggleShipSelection()
+
+      // Load the ships sailing path into the gamestate
       publishSailingInfo(data)
 
       // When the ship successfully sails, update the cityId to its new location
@@ -43,7 +47,9 @@ export const useSailing = () => {
                   throw new Error("No final tile in returned ship sailing path")
                 const destinationCity = cityObject[finalTile]
                 if (!destinationCity)
-                  throw Error("The final tile was not a know city!")
+                  throw Error(
+                    "The final tile in the sailing path was not a know city!",
+                  )
                 ship.cityId = destinationCity.id
               }
             })
@@ -51,8 +57,7 @@ export const useSailing = () => {
         )
         return newUserShipList
       })
-      // On Success Cancel the ship selection
-      toggleShipSelection()
+
       // TODO: show something to the user to let them know the ship has sailed
     },
   })

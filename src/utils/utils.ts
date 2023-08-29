@@ -25,8 +25,8 @@ export const getTileImageString = (typeId: number) => {
   }
 }
 
-export const getXYFromTileId = (tileId: string) => {
-  const [xString, yString] = tileId.split(":")
+export const getXYFromXYTileId = (xyTileId: string) => {
+  const [xString, yString] = xyTileId.split(":")
   if (!xString || !yString)
     throw new Error("Invalid tile string passed into getXYFromTileId")
   const x = parseInt(xString)

@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
-import { getTilesMoved, getXYFromTileId } from "~/utils/utils"
+import { getTilesMoved, getXYFromXYTileId } from "~/utils/utils"
 
 const VALID_KEYS = [
   "ArrowUp",
@@ -168,7 +168,7 @@ export const useGamestate = () => {
       e.preventDefault()
 
       const currentTile = selectedShipPathArray.at(-1)
-      const { x, y } = getXYFromTileId(currentTile ?? "")
+      const { x, y } = getXYFromXYTileId(currentTile ?? "")
 
       if (!VALID_KEYS.includes(e.key)) {
         toast.error(
