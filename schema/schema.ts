@@ -147,7 +147,7 @@ export const ship = mysqlTable("ship", {
   cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Ship = InferModel<typeof ship>
-export const shipRelations = relations(ship, ({ one }) => ({
+export const shipRelations = relations(ship, ({ one, many }) => ({
   user: one(users, {
     fields: [ship.userId],
     references: [users.id],
@@ -160,6 +160,7 @@ export const shipRelations = relations(ship, ({ one }) => ({
     fields: [ship.cityId],
     references: [city.id],
   }),
+  log: many(log),
 }))
 
 export const path = mysqlTable("path", {
@@ -236,6 +237,7 @@ export const npcRelations = relations(npc, ({ one }) => ({
 export const log = mysqlTable("log", {
   id: serial("id").primaryKey().notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
+  shipId: varchar("ship_id", { length: 191 }).notNull(),
   text: text("text").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 })
@@ -244,5 +246,9 @@ export const logRelations = relations(log, ({ one }) => ({
   user: one(users, {
     fields: [log.userId],
     references: [users.id],
+  }),
+  ship: one(ship, {
+    fields: [log.shipId],
+    references: [ship.id],
   }),
 }))

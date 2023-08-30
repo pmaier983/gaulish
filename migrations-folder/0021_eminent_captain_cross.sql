@@ -1,0 +1,1 @@
+ALTER TABLE `log` ADD `ship_id` varchar(191) NOT NULL;
