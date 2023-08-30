@@ -7,4 +7,4 @@ export const chatMessagesAtom = atom<Message[]>([])
 export const logsAtom = atom<Log[]>([])
 
 // TODO: is there a way to do this with react-query?
-export const haveLogsUpdatedAtom = atom<boolean>(true)
+export const haveLogsUpdatedAtom = atom<boolean>(false)
