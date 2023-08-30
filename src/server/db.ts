@@ -9,3 +9,5 @@ const connection = connect({
 })
 
 export const db = drizzle(connection, { schema })
+
+export type DatabaseType = typeof db

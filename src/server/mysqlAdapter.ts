@@ -1,14 +1,11 @@
 import { type Adapter } from "next-auth/adapters"
-import type { PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless"
 import { and, eq } from "drizzle-orm"
 import { createId } from "@paralleldrive/cuid2"
 import { users, accounts, sessions, verificationTokens } from "~/../schema"
+import { type DatabaseType } from "~/server/db"
 
 /** @return { import("next-auth/adapters").Adapter } */
-export const mysqlAdapter = (
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  db: PlanetScaleDatabase<typeof import("schema")>,
-): Adapter => {
+export const mysqlAdapter = (db: DatabaseType): Adapter => {
   return {
     async createUser(userData) {
       await db.insert(users).values({
