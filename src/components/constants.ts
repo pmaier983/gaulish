@@ -6,6 +6,8 @@ export const TILE_PERCENT_SIZE = 0.05
 
 export const FONT_PERCENT_SIZE = 0.2
 
+export const LOG_PAGE_SIZE = 10
+
 export const CHANNELS = {
   MESSAGE: "MESSAGE",
   SAILING: "SAILING",

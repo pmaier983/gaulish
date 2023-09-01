@@ -1,6 +1,7 @@
 import { useAtom } from "jotai"
 import { useEffect } from "react"
 
+import { LOG_PAGE_SIZE } from "~/components/constants"
 import { haveLogsUpdatedAtom } from "~/state/atoms"
 import { api } from "~/utils/api"
 
@@ -10,7 +11,7 @@ export const LineLog = () => {
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     api.logs.getLogs.useInfiniteQuery(
       {
-        limit: 10,
+        limit: LOG_PAGE_SIZE,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
