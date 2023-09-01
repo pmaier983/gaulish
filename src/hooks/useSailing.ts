@@ -3,9 +3,13 @@ import { useSailingChannel } from "~/hooks/useSailingChannel"
 
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
+import { handleSailingEvents } from "~/utils/sailingUtils"
+import { useAtom } from "jotai"
+import { haveLogsUpdatedAtom } from "~/state/atoms"
 
 export const useSailing = () => {
   const queryClient = api.useContext()
+  const [, setHaveLogsUpdatedState] = useAtom(haveLogsUpdatedAtom)
   const { selectedShip, cityObject, addShips, toggleShipSelection } =
     useGamestateStore((state) => ({
       cityObject: state.cityObject,
@@ -35,7 +39,14 @@ export const useSailing = () => {
       // Load the ships sailing path into the gamestate
       publishSailingInfo(data)
 
-      // When the ship successfully sails, update the cityId to its new location
+      // handles all the updated to logs & such
+      handleSailingEvents({
+        data,
+        queryClient,
+        setHaveLogsUpdatedState,
+      })
+
+      // Always update a ship to its next possible location
       queryClient.ships.getUsersShips.setData(undefined, (oldUserShipList) => {
         const newUserShipList = produce(
           oldUserShipList,
