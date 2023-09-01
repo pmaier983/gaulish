@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2"
 import { and, eq, inArray } from "drizzle-orm"
-import { city, path, ship, tile } from "schema"
+import { path, ship, tile } from "schema"
 import { z } from "zod"
 import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
 
@@ -10,6 +10,7 @@ import {
   getEnhancedShipPath,
   getTileObject,
   validateTileConflicts,
+  validateFinalDestination,
 } from "~/utils/sailingUtils"
 
 export const shipsRouter = createTRPCRouter({
@@ -27,11 +28,6 @@ export const shipsRouter = createTRPCRouter({
       const { path: shipPath, shipId } = input
       return await ctx.db.transaction(async (trx) => {
         const startTime = new Date()
-        const newPath = {
-          pathArray: shipPath,
-          createdAt: startTime,
-          id: createId(),
-        }
 
         const userShip = await trx.query.ship.findFirst({
           where: eq(ship.id, shipId),
@@ -43,21 +39,26 @@ export const shipsRouter = createTRPCRouter({
           where: inArray(tile.xyTileId, shipPath),
         })
 
-        const events: ValidationProps["events"] = []
+        const mutableEvents: ValidationProps["mutableEvents"] = []
+        const mutableEnhancedShipPath = getEnhancedShipPath(
+          shipPath,
+          startTime,
+          userShip,
+        )
+        const userId = ctx.session.user.id
 
         const validationProps: ValidationProps = {
           tiles,
+          userShip,
           shipPath,
-          userShip: userShip,
-
-          events,
           startTime,
+          tilesObject: getTileObject(tiles),
+
+          mutableEvents,
+          mutableEnhancedShipPath,
 
           db: trx,
-          userId: ctx.session.user.id,
-
-          tilesObject: getTileObject(tiles),
-          enhancedShipPath: getEnhancedShipPath(shipPath, startTime, userShip),
+          userId,
         }
 
         // Validate if the ship hits land
@@ -69,18 +70,14 @@ export const shipsRouter = createTRPCRouter({
 
         // TODO: check for enemy interceptions
 
-        const lastTile = shipPath.at(-1)
+        // Validate if the ship is going to a city
+        const destinationId = await validateFinalDestination(validationProps)
 
-        if (!lastTile) throw new Error("No last tile found in path")
-
-        const destination = await trx.query.city.findFirst({
-          where: eq(city.xyTileId, lastTile),
-        })
-
-        // TODO: send this to the users log book || chat?
-        if (!destination) throw new Error("Ship is not sailing to a city")
-
-        const destinationCity = destination
+        const newPath = {
+          pathArray: mutableEnhancedShipPath.map(({ xyTileId }) => xyTileId),
+          createdAt: startTime,
+          id: createId(),
+        }
 
         // Add the path to the path list
         await trx.insert(path).values(newPath)
@@ -88,13 +85,14 @@ export const shipsRouter = createTRPCRouter({
         // Update the ships location (prematurely)
         await trx
           .update(ship)
-          .set({ cityId: destinationCity.id })
+          // If there is no destination city, don't update the location of the ship
+          .set({ cityId: destinationId })
           .where(eq(ship.id, shipId))
 
         return {
           path: newPath,
           ship: userShip,
-          events,
+          events: mutableEvents,
         }
       })
     }),

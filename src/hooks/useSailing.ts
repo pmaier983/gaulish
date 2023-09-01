@@ -57,11 +57,11 @@ export const useSailing = () => {
                 if (!finalTile)
                   throw new Error("No final tile in returned ship sailing path")
                 const destinationCity = cityObject[finalTile]
-                if (!destinationCity)
-                  throw Error(
-                    "The final tile in the sailing path was not a know city!",
-                  )
-                ship.cityId = destinationCity.id
+
+                // There is a chance the destination is not a city and the ship has sunk!
+                if (destinationCity) {
+                  ship.cityId = destinationCity.id
+                }
               }
             })
           },
