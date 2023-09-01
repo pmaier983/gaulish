@@ -12,6 +12,7 @@ import {
   serial,
   smallint,
   json,
+  boolean,
 } from "drizzle-orm/mysql-core"
 import { type AdapterAccount } from "next-auth/adapters"
 
@@ -145,6 +146,7 @@ export const ship = mysqlTable("ship", {
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
   cargoCapacity: int("cargo_capacity").notNull(),
+  isSunk: boolean("is_sunk").default(false).notNull(),
 })
 export type Ship = InferModel<typeof ship>
 export const shipRelations = relations(ship, ({ one, many }) => ({
@@ -235,7 +237,7 @@ export const npcRelations = relations(npc, ({ one }) => ({
 }))
 
 export const log = mysqlTable("log", {
-  id: serial("id").primaryKey().notNull(),
+  id: varchar("id", { length: 191 }).primaryKey().notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   shipId: varchar("ship_id", { length: 191 }).notNull(),
   text: text("text").notNull(),
