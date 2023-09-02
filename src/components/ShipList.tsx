@@ -7,6 +7,8 @@ import { SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
+import styles from "./shipList.module.css"
+
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
   const queryClient = api.useContext()
@@ -51,13 +53,13 @@ export const ShipList = () => {
   return (
     <table className="flex-1">
       <tbody className="flex flex-col gap-1">
-        <tr className="grid grid-cols-5 items-end p-2">
+        <tr className={styles.tableWrapper}>
           <th className="text-left">Ship</th>
-          <th className="flex flex-col items-start text-xs">
-            <span className="underline underline-offset-4">Gold</span>
+          <th className="text-left">City</th>
+          <th className="flex flex-col items-start ">
+            <span className="border-b-2 border-black">Gold</span>
             <span>Cargo</span>
           </th>
-          <th className="text-left">City</th>
         </tr>
         {data?.map((ship) => <ShipListItem {...ship} key={ship.id} />)}
       </tbody>
@@ -83,7 +85,7 @@ export const ShipListItem = (ship: Ship) => {
 
   return (
     <tr
-      className={`grid grid-cols-5 items-center p-2 ${
+      className={`${styles.tableWrapper} ${
         isSelectedShip ? "bg-blue-400" : ""
       }`}
     >
@@ -92,25 +94,23 @@ export const ShipListItem = (ship: Ship) => {
           {ship?.name}
         </td>
       </Tooltip>
-      <td className="flex flex-col items-start text-xs">
-        <span className="underline underline-offset-4">{ship.gold}</span>
-        {/* TODO: implement on hover breakdown */}
-        <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
-      </td>
       <Tooltip content={cityName}>
         <td className="whitespace-no-wrap overflow-hidden text-ellipsis">
           {isSailing ? "Sailing" : cityName}
         </td>
       </Tooltip>
-      <td>
+      <td className="flex flex-col items-start ">
+        <span className="border-b-2 border-black">{ship.gold}</span>
+        {/* TODO: implement on hover breakdown */}
+        <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
+      </td>
+      <td className="flex flex-col gap-2">
         <button
           disabled={isSelectedShip}
           className="flex w-full justify-center rounded outline outline-1"
         >
           Trade
         </button>
-      </td>
-      <td>
         <button
           onClick={() => toggleShipSelection(ship)}
           className="flex w-full justify-center rounded outline outline-1"

@@ -301,7 +301,7 @@ export const validateFinalDestination = async ({
     id: createId(),
     userId,
     shipId: userShip.id,
-    text: `Your ship: ${userShip.name} Sailed from ${startingCity?.name} to ${destination.name}}`,
+    text: `Your ship: ${userShip.name} Sailed from ${startingCity?.name} to ${destination.name}`,
     createdAt: new Date(finalTile.timeAtTileEnd),
   }
 

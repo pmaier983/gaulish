@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2"
-import { and, eq, inArray } from "drizzle-orm"
+import { and, eq, inArray, sql } from "drizzle-orm"
 import { path, ship, tile } from "schema"
 import { z } from "zod"
 import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
@@ -125,12 +125,27 @@ export const shipsRouter = createTRPCRouter({
         if (!shipProperties)
           throw Error("No ship properties found for that ship_type")
 
+        const countOfShipType = parseInt(
+          (
+            await trx
+              .select({ count: sql<string>`count(*)` })
+              .from(ship)
+              .where(
+                and(
+                  eq(ship.userId, ctx.session.user.id),
+                  eq(ship.shipType, input.ship_type),
+                ),
+              )
+          ).at(0)?.count ?? "0",
+          10,
+        )
+
         const partialNewShip = {
           id: createId(),
           userId: ctx.session.user.id,
           cityId: cityForNewShip.id,
           ...shipProperties,
-          name: "shippy mcshipface",
+          name: `${input.ship_type.toLowerCase()} ${countOfShipType + 1}`,
         }
 
         await trx.insert(ship).values(partialNewShip)
