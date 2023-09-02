@@ -3,11 +3,12 @@ import { type Ship } from "schema"
 
 import { Icon } from "~/components/Icon"
 import { Tooltip } from "~/components/Tooltip"
-import { SHIP_TYPES } from "~/components/constants"
+import { MAX_SHIP_NAME_LENGTH, SHIP_TYPES } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 import styles from "./shipList.module.css"
+import { TooltipEditText } from "~/components/TooltipTextEditor"
 
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
@@ -69,6 +70,7 @@ export const ShipList = () => {
 
 // TODO: rework this to actually fit and function all screen sizes
 export const ShipListItem = (ship: Ship) => {
+  const queryClient = api.useContext()
   const { ships, selectedShip, cityObject, toggleShipSelection } =
     useGamestateStore((state) => ({
       ships: state.ships,
@@ -76,6 +78,21 @@ export const ShipListItem = (ship: Ship) => {
       cityObject: state.cityObject,
       toggleShipSelection: state.toggleShipSelection,
     }))
+
+  const { mutate } = api.ships.updateShipName.useMutation({
+    onSuccess: (newShipData) => {
+      // when the ship name is updated update the ship list!
+      queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
+        const newData = oldShipList?.map((currentShip) => {
+          if (currentShip.id === newShipData.shipId) {
+            return { ...currentShip, name: newShipData.newName }
+          }
+          return ship
+        })
+        return newData
+      })
+    },
+  })
 
   const isSelectedShip = selectedShip?.id === ship.id
 
@@ -89,9 +106,20 @@ export const ShipListItem = (ship: Ship) => {
         isSelectedShip ? "bg-blue-400" : ""
       }`}
     >
-      <Tooltip content={ship?.name}>
+      <Tooltip
+        interactive
+        content={
+          <TooltipEditText
+            text={ship.name}
+            maxNewTextLength={MAX_SHIP_NAME_LENGTH}
+            onSubmit={(newName) => {
+              mutate({ shipId: ship.id, newName: newName })
+            }}
+          />
+        }
+      >
         <td className="whitespace-no-wrap overflow-hidden text-ellipsis">
-          {ship?.name}
+          {ship.name}
         </td>
       </Tooltip>
       <Tooltip content={cityName}>

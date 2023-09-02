@@ -8,6 +8,8 @@ export const FONT_PERCENT_SIZE = 0.2
 
 export const LOG_PAGE_SIZE = 10
 
+export const MAX_SHIP_NAME_LENGTH = 20
+
 export const CHANNELS = {
   MESSAGE: "MESSAGE",
   SAILING: "SAILING",

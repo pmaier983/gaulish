@@ -2,7 +2,10 @@ import { createId } from "@paralleldrive/cuid2"
 import { and, eq, inArray, sql } from "drizzle-orm"
 import { path, ship, tile } from "schema"
 import { z } from "zod"
-import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
+import {
+  MAX_SHIP_NAME_LENGTH,
+  SHIP_TYPE_TO_SHIP_PROPERTIES,
+} from "~/components/constants"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import {
@@ -159,5 +162,23 @@ export const shipsRouter = createTRPCRouter({
 
         return newShip
       })
+    }),
+  /**
+   * Update a specific ships name
+   */
+  updateShipName: protectedProcedure
+    .input(
+      z.object({
+        shipId: z.string(),
+        newName: z.string().max(MAX_SHIP_NAME_LENGTH).min(1),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(ship)
+        .set({ name: input.newName })
+        .where(eq(ship.id, input.shipId))
+
+      return input
     }),
 })
