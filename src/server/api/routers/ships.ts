@@ -14,6 +14,8 @@ import {
   getTileObject,
   validateTileConflicts,
   validateFinalDestination,
+  validateShipCurrentStatus,
+  validateShipCurrentSailingStatus,
 } from "~/utils/sailingUtils"
 
 export const shipsRouter = createTRPCRouter({
@@ -70,6 +72,7 @@ export const shipsRouter = createTRPCRouter({
         // TODO: do some path validation?
 
         // TODO: check if the ship is already sailing
+        await validateShipCurrentSailingStatus(validationProps)
 
         // TODO: check for enemy interceptions
 

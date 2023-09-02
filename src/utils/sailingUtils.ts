@@ -315,3 +315,26 @@ export const validateFinalDestination = async ({
 
   return destination.id
 }
+export const validateShipCurrentSailingStatus = async ({
+  db,
+  userShip,
+}: ValidationProps) => {
+  // If the ship has no prev pathId it cannot be sailing, so just return
+  if (!userShip.pathId) return
+
+  const possibleCurrentShipPath = await db.query.path.findFirst({
+    where: eq(path.id, userShip.pathId),
+  })
+
+  if (!possibleCurrentShipPath || !possibleCurrentShipPath.createdAt)
+    throw new Error("Ship has a non existent Path ID!")
+
+  const endTime = new Date(
+    possibleCurrentShipPath.createdAt.getTime()! +
+      possibleCurrentShipPath?.pathArray.length * (1 / userShip.speed),
+  )
+
+  if (endTime > new Date()) {
+    throw new Error("Ship is already sailing!")
+  }
+}
