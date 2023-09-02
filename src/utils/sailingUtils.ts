@@ -1,6 +1,5 @@
 import { createId } from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
-import { produce } from "immer"
 import { type Log, log, type Ship, ship, type Tile, city } from "schema"
 import {
   LOG_PAGE_SIZE,
@@ -74,33 +73,7 @@ export const handleSailingEvents = ({
           const sinkEvent = event as SailEventSink
           setHaveLogsUpdatedState(true)
 
-          queryClient.logs.getLogs.setInfiniteData(
-            { limit: LOG_PAGE_SIZE },
-            (oldData) => {
-              const newLog = { logs: [sinkEvent.log], nextCursor: 1 }
-
-              if (!oldData)
-                return {
-                  pages: [newLog],
-                  pageParams: [],
-                }
-
-              const middlePages = oldData.pages.slice(
-                0,
-                oldData.pages.length - 1,
-              )
-              const lastPage = oldData.pages.at(-1)!
-
-              return {
-                ...oldData,
-                pages: [
-                  newLog,
-                  ...middlePages,
-                  { ...lastPage, nextCursor: lastPage.nextCursor! + 1 },
-                ],
-              }
-            },
-          )
+          addToLogs({ queryClient, newLog: sinkEvent.log })
 
           queryClient.ships.getUsersShips.setData(
             undefined,
@@ -111,21 +84,20 @@ export const handleSailingEvents = ({
         }, event.triggerTime - Date.now())
         break
       }
+      /**
+       * When triggering a generic log
+       * - Set Logs to have updated
+       * - Add the new log to the logs list
+       */
       case SAIL_EVENT_TYPES.LOG: {
-        // TODO: avoid asserting type here
-        const logEvent = event as SailEventLog
+        setTimeout(() => {
+          // TODO: avoid asserting type here
+          const logEvent = event as SailEventLog
 
-        setHaveLogsUpdatedState(true)
-        queryClient.logs.getLogs.setData(
-          { limit: LOG_PAGE_SIZE, cursor: undefined },
-          (oldLogs) => {
-            const newLogs = produce(oldLogs, (draftLogs) => {
-              draftLogs?.logs?.push(logEvent.log)
-            })
+          setHaveLogsUpdatedState(true)
 
-            return newLogs
-          },
-        )
+          addToLogs({ queryClient, newLog: logEvent.log })
+        }, event.triggerTime - Date.now())
         break
       }
       case SAIL_EVENT_TYPES.TILE_REVEAL: {
@@ -135,6 +107,38 @@ export const handleSailingEvents = ({
         throw Error("Invalid event type in handleSailingEvents")
     }
   })
+}
+
+interface AddToLogsProps {
+  queryClient: QueryClient
+  newLog: Log
+}
+
+export const addToLogs = ({ queryClient, newLog }: AddToLogsProps) => {
+  queryClient.logs.getLogs.setInfiniteData(
+    { limit: LOG_PAGE_SIZE },
+    (oldData) => {
+      const newLogPage = { logs: [newLog], nextCursor: 1 }
+
+      if (!oldData)
+        return {
+          pages: [newLogPage],
+          pageParams: [],
+        }
+
+      const middlePages = oldData.pages.slice(0, oldData.pages.length - 1)
+      const lastPage = oldData.pages.at(-1)!
+
+      return {
+        ...oldData,
+        pages: [
+          newLogPage,
+          ...middlePages,
+          { ...lastPage, nextCursor: lastPage.nextCursor! + 1 },
+        ],
+      }
+    },
+  )
 }
 
 export const getEnhancedShipPath = (
@@ -288,6 +292,26 @@ export const validateFinalDestination = async ({
 
     return userShip.cityId
   }
+
+  const startingCity = await db.query.city.findFirst({
+    where: eq(city.id, userShip.cityId),
+  })
+
+  const newLog = {
+    id: createId(),
+    userId,
+    shipId: userShip.id,
+    text: `Your ship: ${userShip.name} Sailed from ${startingCity?.name} to ${destination.name}}`,
+    createdAt: new Date(finalTile.timeAtTileEnd),
+  }
+
+  mutableEvents.push({
+    type: SAIL_EVENT_TYPES.LOG,
+    triggerTime: finalTile.timeAtTileEnd,
+    log: newLog,
+  })
+
+  await db.insert(log).values(newLog)
 
   return destination.id
 }
