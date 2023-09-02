@@ -1,4 +1,4 @@
-import { asc, eq, sql } from "drizzle-orm"
+import { desc, eq, sql } from "drizzle-orm"
 import { log } from "schema"
 import { z } from "zod"
 
@@ -28,7 +28,7 @@ export const logsRouter = createTRPCRouter({
         const logs = await ctx.db.query.log.findMany({
           limit,
           where: eq(log.userId, ctx.session.user.id),
-          orderBy: [asc(log.createdAt), asc(log.id)],
+          orderBy: [desc(log.createdAt)],
           // TODO: this doesn't work if logs are added in-between requests?
           offset: cursor,
         })
@@ -51,15 +51,4 @@ export const logsRouter = createTRPCRouter({
         }
       },
     ),
-  /**
-   * Add a log to a users logs
-   */
-  addLog: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(log).values({
-        text: input,
-        userId: ctx.session.user.id,
-      })
-    }),
 })

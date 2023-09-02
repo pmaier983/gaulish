@@ -70,19 +70,35 @@ export const handleSailingEvents = ({
        * - Remove the ship from the ship list
        */
       case SAIL_EVENT_TYPES.SINK: {
-        console.log({ now: Date.now(), time: event.triggerTime })
         setTimeout(() => {
           const sinkEvent = event as SailEventSink
           setHaveLogsUpdatedState(true)
 
-          queryClient.logs.getLogs.setData(
-            { limit: LOG_PAGE_SIZE, cursor: undefined },
-            (oldLogs) => {
-              const newLogs = produce(oldLogs, (draftLogs) => {
-                draftLogs?.logs?.push(sinkEvent.log)
-              })
+          queryClient.logs.getLogs.setInfiniteData(
+            { limit: LOG_PAGE_SIZE },
+            (oldData) => {
+              const newLog = { logs: [sinkEvent.log], nextCursor: 1 }
 
-              return newLogs
+              if (!oldData)
+                return {
+                  pages: [newLog],
+                  pageParams: [],
+                }
+
+              const middlePages = oldData.pages.slice(
+                0,
+                oldData.pages.length - 1,
+              )
+              const lastPage = oldData.pages.at(-1)!
+
+              return {
+                ...oldData,
+                pages: [
+                  newLog,
+                  ...middlePages,
+                  { ...lastPage, nextCursor: lastPage.nextCursor! + 1 },
+                ],
+              }
             },
           )
 
@@ -198,7 +214,6 @@ export const validateTileConflicts = async ({
      * - Update the ship to be sunk
      */
     if (tileType !== TILE_TYPES.OCEAN) {
-      console.log("time at tile", enhancedShipPathTile.timeAtTileEnd)
       const logText = `Your ship ${
         userShip.name
       } sank after sailing into a ${tileType.toLocaleLowerCase()}!`
@@ -247,8 +262,6 @@ export const validateFinalDestination = async ({
     where: eq(city.xyTileId, finalTile.xyTileId),
   })
 
-  console.log({ destination })
-
   /**
    * If there is no destination
    * - Sink the ship
@@ -270,8 +283,6 @@ export const validateFinalDestination = async ({
       triggerTime: finalTile.timeAtTileEnd,
       log: newLog,
     })
-
-    console.log("sunk!", newLog)
 
     await db.insert(log).values(newLog)
 

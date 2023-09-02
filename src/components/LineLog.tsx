@@ -36,9 +36,15 @@ export const LineLog = () => {
     <div className="flex flex-1 gap-3 overflow-y-auto pt-3">
       <div className="flex flex-1 flex-col-reverse overflow-y-auto p-2">
         {isLoadingInitialPage && <div>Loading...</div>}
-        {logs?.reverse()?.map((log) => (
+        {logs?.map((log) => (
           <div key={log.id}>
-            {log.createdAt?.toLocaleTimeString()} - {log.text}
+            {log.createdAt?.toLocaleTimeString(undefined, {
+              month: "short",
+              day: "2-digit",
+              hour: "numeric",
+              minute: "2-digit",
+            })}{" "}
+            - {log.text}
           </div>
         ))}
         {hasNextPage && (
