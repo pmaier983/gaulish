@@ -1,7 +1,10 @@
-import { eq } from "drizzle-orm"
-import { type Npc, type Path, city, npc, path, tile } from "schema"
+import { type Npc, type Path, city, tile } from "schema"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
+
+interface NpcWithPath extends Npc {
+  path: Path
+}
 
 export const mapRouter = createTRPCRouter({
   /**
@@ -21,17 +24,15 @@ export const mapRouter = createTRPCRouter({
   /**
    * Fetch a list of NPCs with their ships & paths attached
    */
-  getNpcs: protectedProcedure.query(({ ctx }) => {
-    return ctx.db
-      .select()
-      .from(npc)
-      .leftJoin(path, eq(path.id, npc.pathId))
-      .then((npcs) =>
-        npcs.filter(
-          // Type Guards (https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
-          (npcAndPath): npcAndPath is { npc: Npc; path: Path } =>
-            !!npcAndPath.path && !!npcAndPath.npc,
-        ),
-      )
+  getNpcs: protectedProcedure.query(async ({ ctx }) => {
+    const npcs = await ctx.db.query.npc.findMany({
+      with: {
+        path: true,
+      },
+    })
+    return npcs.filter(
+      // Type Guards (https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
+      (npcAndPath): npcAndPath is NpcWithPath => !!npcAndPath.path,
+    )
   }),
 })

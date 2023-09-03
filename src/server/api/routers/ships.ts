@@ -15,6 +15,7 @@ import {
   validateTileConflicts,
   validateFinalDestination,
   validateShipCurrentSailingStatus,
+  validateNpcConflicts,
 } from "~/utils/sailingUtils"
 
 export const shipsRouter = createTRPCRouter({
@@ -70,10 +71,11 @@ export const shipsRouter = createTRPCRouter({
 
         // TODO: do some path validation?
 
-        // TODO: check if the ship is already sailing
+        // Check if the ship is already sailing
         await validateShipCurrentSailingStatus(validationProps)
 
-        // TODO: check for enemy interceptions
+        // Check for enemy interceptions
+        await validateNpcConflicts(validationProps)
 
         // Validate if the ship is going to a city
         const destinationId = await validateFinalDestination(validationProps)
@@ -107,6 +109,9 @@ export const shipsRouter = createTRPCRouter({
   getUsersShips: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.query.ship.findMany({
       where: and(eq(ship.userId, ctx.session.user.id), eq(ship.isSunk, false)),
+      with: {
+        path: true,
+      },
     })
   }),
   /**

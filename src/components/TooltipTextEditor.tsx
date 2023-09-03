@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useState, useEffect } from "react"
 
 import { Icon } from "~/components/Icon"
 
@@ -24,6 +24,20 @@ export const TooltipEditText = ({
       onSubmit(inputText)
     }
   }
+
+  useEffect(() => {
+    const handleEscapeButton = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsEditing(false)
+      }
+    }
+
+    document.addEventListener("keydown", handleEscapeButton)
+
+    return () => {
+      document.removeEventListener("keydown", handleEscapeButton)
+    }
+  }, [])
 
   if (isEditing) {
     return (

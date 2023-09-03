@@ -28,7 +28,7 @@ const fakeNpcPath: Omit<Path, "pathArray"> = {
 describe("Utils Tests - ", () => {
   describe("hasNpcUserCollision:", () => {
     describe("resister's NO COLLISION when", () => {
-      test("NPC and Player are on separate paths", () => {
+      test("NPC and User are on separate paths", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 1000,
@@ -42,7 +42,7 @@ describe("Utils Tests - ", () => {
         expect(hasCollision).toBe(false)
       })
 
-      test("NPC and Player are on the same path but far apart in time", () => {
+      test("NPC and User are on the same path but far apart in time", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 1000,
@@ -56,7 +56,7 @@ describe("Utils Tests - ", () => {
         expect(hasCollision).toBe(false)
       })
 
-      test("NPC barely misses a Player", () => {
+      test("NPC barely misses a User", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 1000,
@@ -70,7 +70,7 @@ describe("Utils Tests - ", () => {
         expect(hasCollision).toBe(false)
       })
 
-      test("NPC barely misses a distant Player", () => {
+      test("NPC barely misses a distant User", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 2000,
@@ -86,7 +86,7 @@ describe("Utils Tests - ", () => {
     })
 
     describe("resister's A COLLISION when", () => {
-      test("NPC and Player are on the same path", () => {
+      test("NPC and User are on the same path", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 1000,
@@ -100,7 +100,7 @@ describe("Utils Tests - ", () => {
         expect(hasCollision).toBe(true)
       })
 
-      test("NPC barely catches a Player", () => {
+      test("NPC barely catches a User", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 1001,
@@ -114,7 +114,7 @@ describe("Utils Tests - ", () => {
         expect(hasCollision).toBe(true)
       })
 
-      test("NPC barely catches a distant Player", () => {
+      test("NPC barely catches a distant User", () => {
         const hasCollision = hasNpcUserCollision({
           userStartTimeMsAtTile: 0,
           userEndTimeMsAtTile: 2001,

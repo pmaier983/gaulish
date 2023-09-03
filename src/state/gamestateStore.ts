@@ -1,19 +1,19 @@
 import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
-import type { Npc, Path, Tile, City, Ship } from "schema"
+import type { Path, Tile, City, Ship } from "schema"
 import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
 import { getDirectionTowardsPrevTile, uniqueBy } from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
 import { shallow } from "zustand/shallow"
 
-export interface ShipComposite extends Ship {
-  path: Path
+type GetUserShipsOutput = RouterOutputs["ships"]["getUsersShips"][0]
+
+export interface ShipComposite extends GetUserShipsOutput {
+  path: NonNullable<Path>
 }
 
-export interface NpcComposite extends Npc {
-  path: Path
-}
+export type NpcComposite = RouterOutputs["map"]["getNpcs"][0]
 
 export interface TileComposite extends Tile {
   npc?: NpcComposite
@@ -41,14 +41,14 @@ export interface GamestateStore {
   selectedShipPathObject: SelectedShipPathObject
 
   mapArray: Tile[]
-  ships: ShipComposite[]
+  sailingShips: ShipComposite[]
   mapObject: MapObject
   /**
    * The Clean map object contains only the Tile data
    */
   cleanMapObject: GamestateStore["mapObject"]
   cityObject: CityObject
-  npcs: NpcComposite[]
+  npcs: RouterOutputs["map"]["getNpcs"]
 }
 
 interface GamestateStoreActions {
@@ -57,7 +57,7 @@ interface GamestateStoreActions {
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
   addShips: (ships: ShipComposite[]) => void
-  setShips: (ships: ShipComposite[]) => void
+  setSailingShips: (ships: ShipComposite[]) => void
 
   toggleShipSelection: (ship?: Ship) => void
   handleShipPath: (someFormOfTileId?: string | string[]) => void
@@ -73,7 +73,7 @@ const initialGamestate: GamestateStore = {
   cityObject: {},
   mapArray: [],
   npcs: [],
-  ships: [],
+  sailingShips: [],
   mapObject: {},
   cleanMapObject: {},
 }
@@ -88,15 +88,14 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
           acc[`${tile.x}:${tile.y}`] = tile
           return acc
         }, {}) ?? {}
-      return set((state) => ({
-        ...state,
+      return set({
         mapArray: map,
         cleanMapObject: cleanMapObject,
         mapObject: cleanMapObject,
-      }))
+      })
     },
 
-    setMapObject: (map) => set((state) => ({ ...state, mapObject: map })),
+    setMapObject: (map) => set({ mapObject: map }),
 
     setCities: (cityArray) => {
       const cityObject = cityArray?.reduce<CityObject>((acc, cur) => {
@@ -107,40 +106,29 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         acc[cur.id] = cur
         return acc
       }, {})
-      set((state) => ({ ...state, cityObject: cityObject }))
+      set({ cityObject: cityObject })
     },
 
-    setNpcs: (npcs) => {
-      const npcsComposite = npcs.map((npcAndPath) => {
-        return {
-          ...npcAndPath.npc,
-          path: npcAndPath.path,
-        }
-      })
-
-      set((state) => ({ ...state, npcs: npcsComposite }))
-    },
-
+    setNpcs: (npcs) => set({ npcs: npcs }),
     addShips: (newShips) => {
-      const ships = get().ships
+      const ships = get().sailingShips
 
       // ensure we don't get any duplicate ships
       const newShipsArray = uniqueBy([...ships, ...newShips], "id")
 
-      return set((state) => ({ ...state, ships: newShipsArray }))
+      return set({ sailingShips: newShipsArray })
     },
 
-    setShips: (newShips) => set((state) => ({ ...state, ships: newShips })),
+    setSailingShips: (newShips) => set({ sailingShips: newShips }),
 
     toggleShipSelection: (ship) => {
       // Toggle selected ship off
       if (!ship || ship.id === get().selectedShip?.id) {
-        return set((state) => ({
-          ...state,
+        return set({
           selectedShip: undefined,
           selectedShipPathArray: [],
           selectedShipPathObject: {},
-        }))
+        })
       }
 
       const citiesObject = get().cityObject
@@ -154,14 +142,13 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
 
       const selectedShipPathArray = [startingCity.xyTileId]
 
-      return set((state) => ({
-        ...state,
+      return set({
         selectedShip: ship,
         selectedShipPathArray: selectedShipPathArray,
         selectedShipPathObject: generateSelectedShipPathObject(
           selectedShipPathArray,
         ),
-      }))
+      })
     },
 
     /**
@@ -177,39 +164,36 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       if (Array.isArray(someFormOfTileId)) {
         const newShipPathArray = someFormOfTileId
 
-        return set((state) => ({
-          ...state,
+        return set({
           selectedShipPathArray: newShipPathArray,
           selectedShipPathObject:
             generateSelectedShipPathObject(newShipPathArray),
           // If you pass in an empty array, cancel ship selection
           selectedShip:
             someFormOfTileId.length === 0 ? undefined : get().selectedShip,
-        }))
+        })
       }
 
       // If a falsy value is passed into the array
       if (!someFormOfTileId) {
         // If there is nothing left to remove, cancel ship path selection
         if (get().selectedShipPathArray.length <= 1) {
-          return set((state) => ({
-            ...state,
+          return set({
             selectedShipPathArray: [],
             selectedShipPathObject: {},
             selectedShip: undefined,
-          }))
+          })
         }
 
         // newShipPathArray without its last tile
         const newShipPathArray = get().selectedShipPathArray.slice(0, -1)
 
         // Remove the last tile from the path
-        return set((state) => ({
-          ...state,
+        return set({
           selectedShipPathArray: newShipPathArray,
           selectedShipPathObject:
             generateSelectedShipPathObject(newShipPathArray),
-        }))
+        })
       }
 
       const newPathTile = someFormOfTileId
@@ -224,12 +208,11 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         someFormOfTileId,
       ]
 
-      return set((state) => ({
-        ...state,
+      return set({
         selectedShipPathArray: newShipPathArray,
         selectedShipPathObject:
           generateSelectedShipPathObject(newShipPathArray),
-      }))
+      })
     },
 
     restart: () => set(initialGamestate),

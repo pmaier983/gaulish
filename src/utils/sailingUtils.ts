@@ -8,7 +8,11 @@ import {
 } from "~/components/constants"
 import { type DatabaseType } from "~/server/db"
 import { type RouterOutputs, type QueryClient } from "~/utils/api"
-import { getXYFromXYTileId } from "~/utils/utils"
+import {
+  getShipCargoSum,
+  getXYFromXYTileId,
+  hasNpcUserCollision,
+} from "~/utils/utils"
 
 /**
  * Sailing Events
@@ -141,19 +145,28 @@ export const addToLogs = ({ queryClient, newLog }: AddToLogsProps) => {
   )
 }
 
+interface EnhancedShipPath {
+  x: number
+  y: number
+  xyTileId: string
+  timeMsAtTileEnd: number
+  timeMsAtTileStart: number
+}
+
 export const getEnhancedShipPath = (
   shipPath: string[],
   startTime: Date,
   ship: Ship,
 ) =>
-  shipPath.map((xyTileId, i) => {
+  shipPath.map<EnhancedShipPath>((xyTileId, i) => {
     const { x, y } = getXYFromXYTileId(xyTileId)
     const msPerTile = 1 / ship.speed
     return {
       x,
       y,
       xyTileId,
-      timeAtTileEnd: startTime.getTime() + msPerTile * (i + 1),
+      timeMsAtTileEnd: startTime.getTime() + msPerTile * (i + 1),
+      timeMsAtTileStart: startTime.getTime() + msPerTile * i,
     }
   })
 
@@ -167,6 +180,54 @@ export const getTileObject = (tiles: Tile[]) =>
     return acc
   }, {})
 
+interface SinkShipEventProps {
+  db: DatabaseType
+  logText: string
+  mutableEvents: SailEvent[]
+  userShip: Ship
+  userId: string
+  finalEnhancedTileIndex: number
+  mutableEnhancedShipPath: EnhancedShipPath[]
+}
+
+export const sinkShipEvent = async ({
+  db,
+  userShip,
+  logText,
+  userId,
+  mutableEvents,
+  finalEnhancedTileIndex,
+  mutableEnhancedShipPath,
+}: SinkShipEventProps) => {
+  const finalEnhancedTile = mutableEnhancedShipPath[finalEnhancedTileIndex]
+
+  if (!finalEnhancedTile)
+    throw Error("Wrong finalEnhancedTileIndex passed into sinkShipEvent")
+
+  const newLog = {
+    id: createId(),
+    userId,
+    shipId: userShip.id,
+    text: logText,
+    createdAt: new Date(finalEnhancedTile.timeMsAtTileEnd),
+  }
+
+  mutableEvents.push({
+    type: SAIL_EVENT_TYPES.SINK,
+    triggerTime: finalEnhancedTile.timeMsAtTileEnd,
+    log: newLog,
+  })
+
+  // Update the ship to be sunk
+  await db.update(ship).set({ isSunk: true }).where(eq(ship.id, userShip.id))
+
+  // remove all parts of the path after the sinking
+  mutableEnhancedShipPath.splice(finalEnhancedTileIndex + 1)
+
+  // Add sinking event to the logs
+  await db.insert(log).values(newLog)
+}
+
 export interface ValidationProps {
   tiles: Tile[]
   userShip: Ship
@@ -175,7 +236,7 @@ export interface ValidationProps {
   tilesObject: TilesObject
 
   mutableEvents: SailEvent[]
-  mutableEnhancedShipPath: ReturnType<typeof getEnhancedShipPath>
+  mutableEnhancedShipPath: EnhancedShipPath[]
 
   db: DatabaseType
   userId: string
@@ -222,31 +283,16 @@ export const validateTileConflicts = async ({
         userShip.name
       } sank after sailing into a ${tileType.toLocaleLowerCase()}!`
 
-      const newLog = {
-        id: createId(),
+      await sinkShipEvent({
+        db,
         userId,
-        shipId: userShip.id,
-        text: logText,
-        createdAt: new Date(enhancedShipPathTile.timeAtTileEnd),
-      }
-
-      mutableEvents.push({
-        type: SAIL_EVENT_TYPES.SINK,
-        triggerTime: enhancedShipPathTile.timeAtTileEnd,
-        log: newLog,
+        mutableEvents,
+        userShip,
+        finalEnhancedTileIndex: i,
+        logText,
+        mutableEnhancedShipPath,
       })
-
-      // Update the ship to be sunk
-      await db
-        .update(ship)
-        .set({ isSunk: true })
-        .where(eq(ship.id, userShip.id))
-
-      // remove all parts of the path after the sinking
-      mutableEnhancedShipPath.splice(i + 1)
-
-      // Add sinking event to the logs
-      await db.insert(log).values(newLog)
+      break
     }
   }
 }
@@ -267,28 +313,24 @@ export const validateFinalDestination = async ({
   })
 
   /**
-   * If there is no destination
+   * If there is no destination (& the ship is not already sunk)
    * - Sink the ship
    * - Update the logs
    */
   if (!destination) {
-    await db.update(ship).set({ isSunk: true }).where(eq(ship.id, userShip.id))
+    const isAlreadySunk = mutableEvents.some((event) => event.type === "SINK")
 
-    const newLog = {
-      id: createId(),
-      userId,
-      shipId: userShip.id,
-      text: `Your ship: ${userShip.name} had a final destination that wasn't a city!`,
-      createdAt: new Date(finalTile.timeAtTileEnd),
+    if (!isAlreadySunk) {
+      await sinkShipEvent({
+        db,
+        userId,
+        mutableEvents,
+        userShip,
+        finalEnhancedTileIndex: mutableEnhancedShipPath.length - 1,
+        logText: `Your ship: ${userShip.name} had a final destination that wasn't a city!`,
+        mutableEnhancedShipPath,
+      })
     }
-
-    mutableEvents.push({
-      type: SAIL_EVENT_TYPES.SINK,
-      triggerTime: finalTile.timeAtTileEnd,
-      log: newLog,
-    })
-
-    await db.insert(log).values(newLog)
 
     return userShip.cityId
   }
@@ -302,12 +344,12 @@ export const validateFinalDestination = async ({
     userId,
     shipId: userShip.id,
     text: `Your ship: ${userShip.name} Sailed from ${startingCity?.name} to ${destination.name}`,
-    createdAt: new Date(finalTile.timeAtTileEnd),
+    createdAt: new Date(finalTile.timeMsAtTileEnd),
   }
 
   mutableEvents.push({
     type: SAIL_EVENT_TYPES.LOG,
-    triggerTime: finalTile.timeAtTileEnd,
+    triggerTime: finalTile.timeMsAtTileEnd,
     log: newLog,
   })
 
@@ -318,6 +360,9 @@ export const validateFinalDestination = async ({
 
 export const validateNpcConflicts = async ({
   db,
+  userShip,
+  userId,
+  mutableEvents,
   mutableEnhancedShipPath,
 }: ValidationProps) => {
   const npcs = await db.query.npc.findMany({
@@ -327,11 +372,67 @@ export const validateNpcConflicts = async ({
   })
 
   for await (const [
-    i,
+    enhancedShipPathIndex,
     enhancedShipPathTile,
   ] of mutableEnhancedShipPath.entries()) {
-    for await (const [i, npc] of npcs.entries()) {
-      // TODO:
+    for await (const [, npc] of npcs.entries()) {
+      // if the npc has no path skip that npc
+      if (!npc.path) continue
+      const hasConflict = hasNpcUserCollision({
+        userStartTimeMsAtTile: enhancedShipPathTile.timeMsAtTileStart,
+        userEndTimeMsAtTile: enhancedShipPathTile.timeMsAtTileEnd,
+        userXYTileId: enhancedShipPathTile.xyTileId,
+        npc: npc,
+        npcPath: npc.path,
+      })
+
+      if (hasConflict) {
+        const userShipCargoSum = getShipCargoSum(userShip)
+
+        // If the user has nothing to steal, sink them
+        if (userShipCargoSum === 0) {
+          await sinkShipEvent({
+            db,
+            userId,
+            mutableEvents,
+            userShip,
+            finalEnhancedTileIndex: enhancedShipPathIndex,
+            logText: `Your ship: ${userShip.name} had nothing to steal so the: ${npc.name} sunk it!`,
+            mutableEnhancedShipPath,
+          })
+          break
+        }
+
+        // If the user has something to steal, steal it
+        const logText = `${npc.name} stole all the gold and half the cargo from your ship: ${userShip.name}!`
+
+        await db
+          .update(ship)
+          .set({
+            gold: 0,
+            stone: Math.floor(userShip.stone / 2),
+            wood: Math.floor(userShip.wood / 2),
+            wheat: Math.floor(userShip.wheat / 2),
+            wool: Math.floor(userShip.wool / 2),
+          })
+          .where(eq(ship.id, userShip.id))
+
+        const newLog = {
+          id: createId(),
+          userId,
+          shipId: userShip.id,
+          text: logText,
+          createdAt: new Date(enhancedShipPathTile.timeMsAtTileEnd),
+        }
+
+        mutableEvents.push({
+          type: SAIL_EVENT_TYPES.LOG,
+          triggerTime: enhancedShipPathTile.timeMsAtTileEnd,
+          log: newLog,
+        })
+
+        await db.insert(log).values(newLog)
+      }
     }
   }
 }

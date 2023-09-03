@@ -27,8 +27,19 @@ export const useSailingChannel = ({
   const { data } = useSession()
 
   const [channel] = useChannel(CHANNELS.SAILING, (sailingInfo: SailingInfo) => {
-    console.log("SET SAIL!", sailingInfo)
-    onReceiveSailingInfo(sailingInfo)
+    console.log("SET SAIL!", { sailingInfo })
+    // Ably converts my date into a string
+    const sailingInfoWith = {
+      ...sailingInfo,
+      data: {
+        ...sailingInfo.data,
+        path: {
+          ...sailingInfo.data.path,
+          createdAt: new Date(sailingInfo.data.path.createdAt!),
+        },
+      },
+    }
+    onReceiveSailingInfo(sailingInfoWith)
   })
 
   const publishSailingInfo = useCallback(

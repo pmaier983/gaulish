@@ -26,25 +26,25 @@ export const useGamestate = () => {
   const {
     setInitialMapState,
     setNpcs,
-    setShips,
+    setSailingShips,
     setCities,
     setMapObject,
     handleShipPath,
     cleanMapObject,
     npcs,
-    ships,
+    sailingShips,
     selectedShip,
     selectedShipPathArray,
   } = useGamestateStore((state) => ({
     setInitialMapState: state.setInitialMapState,
     setMapObject: state.setMapObject,
     setCities: state.setCities,
-    setShips: state.setShips,
+    setSailingShips: state.setSailingShips,
     setNpcs: state.setNpcs,
     handleShipPath: state.handleShipPath,
     cleanMapObject: state.cleanMapObject,
     npcs: state.npcs,
-    ships: state.ships,
+    sailingShips: state.sailingShips,
     selectedShip: state.selectedShip,
     selectedShipPathArray: state.selectedShipPathArray,
   }))
@@ -126,9 +126,9 @@ export const useGamestate = () => {
         })
 
         /**
-         * Adding player Ships to the map object
+         * Adding User Ships to the map object
          */
-        ships.forEach((ship) => {
+        sailingShips.forEach((ship) => {
           const {
             path: { createdAt, pathArray },
             speed,
@@ -143,7 +143,9 @@ export const useGamestate = () => {
           // If the ship has finished sailing, don't add it to the map object
           if (tilesMoved >= pathArray.length) {
             // Remove the ship from the ship list if it is finished sailing
-            setShips(ships.filter((currentShip) => currentShip.id !== ship.id))
+            setSailingShips(
+              sailingShips.filter((currentShip) => currentShip.id !== ship.id),
+            )
             return
           }
 
@@ -168,7 +170,7 @@ export const useGamestate = () => {
       setMapObject(newMapObject)
     }, 500)
     return () => clearInterval(intervalId)
-  }, [cleanMapObject, npcs, setMapObject, ships, setShips])
+  }, [cleanMapObject, npcs, setMapObject, sailingShips, setSailingShips])
 
   const shipNavigationHandler = useCallback(
     (e: KeyboardEvent) => {

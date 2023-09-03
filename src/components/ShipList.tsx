@@ -26,7 +26,7 @@ export const ShipList = () => {
       // when a new ship is added, update the ship list cache & invalidate the leaderboard
       queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
         const newData = produce(oldShipList, (draftShipList) => {
-          draftShipList?.push(data)
+          draftShipList?.push({ ...data, path: null })
           return
         })
         return newData
@@ -71,9 +71,9 @@ export const ShipList = () => {
 // TODO: rework this to actually fit and function all screen sizes
 export const ShipListItem = (ship: Ship) => {
   const queryClient = api.useContext()
-  const { ships, selectedShip, cityObject, toggleShipSelection } =
+  const { sailingShips, selectedShip, cityObject, toggleShipSelection } =
     useGamestateStore((state) => ({
-      ships: state.ships,
+      sailingShips: state.sailingShips,
       selectedShip: state.selectedShip,
       cityObject: state.cityObject,
       toggleShipSelection: state.toggleShipSelection,
@@ -87,7 +87,7 @@ export const ShipListItem = (ship: Ship) => {
           if (currentShip.id === newShipData.shipId) {
             return { ...currentShip, name: newShipData.newName }
           }
-          return ship
+          return currentShip
         })
         return newData
       })
@@ -96,7 +96,9 @@ export const ShipListItem = (ship: Ship) => {
 
   const isSelectedShip = selectedShip?.id === ship.id
 
-  const isSailing = ships.map((currentShip) => currentShip.id).includes(ship.id)
+  const isSailing = sailingShips
+    .map((currentShip) => currentShip.id)
+    .includes(ship.id)
 
   const cityName = cityObject[ship.cityId]?.name
 
