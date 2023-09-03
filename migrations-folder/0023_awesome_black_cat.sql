@@ -1,0 +1,1 @@
+ALTER TABLE `npc` DROP COLUMN `cargo_capacity`;

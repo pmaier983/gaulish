@@ -162,6 +162,13 @@
       "when": 1693448314532,
       "tag": "0022_lonely_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1693768014304,
+      "tag": "0023_awesome_black_cat",
+      "breakpoints": true
     }
   ]
 }

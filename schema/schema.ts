@@ -226,7 +226,6 @@ export const npc = mysqlTable("npc", {
   shipType: varchar("ship_type", { length: 191 }).notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
-  cargoCapacity: int("cargo_capacity").notNull(),
 })
 export type Npc = InferModel<typeof npc>
 export const npcRelations = relations(npc, ({ one }) => ({
