@@ -3,7 +3,11 @@ import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
-import { getTilesMoved, getXYFromXYTileId } from "~/utils/utils"
+import {
+  getNpcCurrentXYTileId,
+  getTilesMoved,
+  getXYFromXYTileId,
+} from "~/utils/utils"
 
 const VALID_KEYS = [
   "ArrowUp",
@@ -102,24 +106,23 @@ export const useGamestate = () => {
             speed,
           } = npc
 
-          const tilesMoved = getTilesMoved({ speed, createdAt })
+          const npcXYTileId = getNpcCurrentXYTileId({
+            createdAtTimeMs: createdAt?.getTime() ?? 0,
+            currentTimeMs: Date.now(),
+            speed,
+            pathArray,
+          })
 
-          const pathKey = pathArray[tilesMoved % pathArray.length]
+          const currentTile = draftMapObject[npcXYTileId]
 
-          if (!pathKey)
-            throw new Error(
-              `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
-                npc,
-              )}`,
-            )
-          const currentTile = draftMapObject[pathKey]
           if (!currentTile)
             throw new Error(
               `Tried to access a non-existent tile. Info: ${JSON.stringify(
                 npc,
               )}`,
             )
-          draftMapObject[pathKey] = { ...currentTile, npc }
+
+          draftMapObject[npcXYTileId] = { ...currentTile, npc }
         })
 
         /**
@@ -131,7 +134,11 @@ export const useGamestate = () => {
             speed,
           } = ship
 
-          const tilesMoved = getTilesMoved({ speed, createdAt })
+          const tilesMoved = getTilesMoved({
+            speed,
+            currentTimeMs: Date.now(),
+            createdAtTimeMs: createdAt?.getTime() ?? 0,
+          })
 
           // If the ship has finished sailing, don't add it to the map object
           if (tilesMoved >= pathArray.length) {

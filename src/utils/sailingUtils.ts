@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
-import { type Log, log, type Ship, ship, type Tile, city } from "schema"
+import { type Log, log, type Ship, ship, type Tile, city, path } from "schema"
 import {
   LOG_PAGE_SIZE,
   TILE_TYPES,
@@ -315,6 +315,27 @@ export const validateFinalDestination = async ({
 
   return destination.id
 }
+
+export const validateNpcConflicts = async ({
+  db,
+  mutableEnhancedShipPath,
+}: ValidationProps) => {
+  const npcs = await db.query.npc.findMany({
+    with: {
+      path: true,
+    },
+  })
+
+  for await (const [
+    i,
+    enhancedShipPathTile,
+  ] of mutableEnhancedShipPath.entries()) {
+    for await (const [i, npc] of npcs.entries()) {
+      // TODO:
+    }
+  }
+}
+
 export const validateShipCurrentSailingStatus = async ({
   db,
   userShip,

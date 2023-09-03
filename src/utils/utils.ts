@@ -1,5 +1,6 @@
 import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
+import { type Path, type Npc } from "schema"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 
 export const ABLY_CLIENT_ID = createId()
@@ -85,21 +86,82 @@ export const uniqueBy = <element>(
 }
 
 export const getTilesMoved = ({
-  createdAt,
+  createdAtTimeMs,
+  currentTimeMs,
   speed,
 }: {
-  createdAt?: string | Date | null
+  createdAtTimeMs: number
+  currentTimeMs: number
   speed: number
 }) => {
-  if (!createdAt) {
-    throw new Error("getTilesMoved called without a createdAt property")
-  }
-
-  const createdAtDate =
-    typeof createdAt === "string" ? new Date(createdAt) : createdAt
-
-  const timePassed = Date.now() - createdAtDate.getTime()
+  const timePassed = currentTimeMs - createdAtTimeMs
 
   // Debugged by Yijiao He
   return Math.floor(timePassed * speed)
+}
+
+export const getNpcCurrentXYTileId = ({
+  createdAtTimeMs,
+  currentTimeMs,
+  speed,
+  pathArray,
+}: {
+  createdAtTimeMs: number
+  currentTimeMs: number
+  speed: number
+  pathArray: string[]
+}) => {
+  const tilesMoved = getTilesMoved({ createdAtTimeMs, currentTimeMs, speed })
+
+  const currentXyTileId = pathArray[tilesMoved % pathArray.length]
+
+  if (!currentXyTileId)
+    throw Error("Can't seem to find the appropriate tile for that npc?")
+
+  return currentXyTileId
+}
+
+export const hasNpcUserCollision = ({
+  userStartTimeMsAtTile,
+  userEndTimeMsAtTile,
+  userXYTileId,
+  npc,
+  npcPath,
+}: {
+  userStartTimeMsAtTile: number
+  userEndTimeMsAtTile: number
+  userXYTileId: string
+  npc: Npc
+  npcPath: Path
+}) => {
+  let failsafe = 0
+  let currentNpcTime = userStartTimeMsAtTile
+  const msPerTile = 1 / npc.speed
+
+  while (currentNpcTime < userEndTimeMsAtTile) {
+    failsafe++
+    if (failsafe > 10000) {
+      throw Error("Infinite loop detected in hasNpcUserCollision")
+    }
+
+    const currentNpcTileId = getNpcCurrentXYTileId({
+      createdAtTimeMs: npcPath.createdAt?.getTime() ?? 0,
+      currentTimeMs: currentNpcTime,
+      speed: npc.speed,
+      pathArray: npcPath.pathArray,
+    })
+
+    if (currentNpcTileId === userXYTileId) {
+      return true
+    }
+
+    // Check the final position of the npc
+    if (currentNpcTime === userEndTimeMsAtTile) {
+      return false
+    }
+
+    currentNpcTime = Math.min(currentNpcTime + msPerTile, userEndTimeMsAtTile)
+  }
+
+  return false
 }

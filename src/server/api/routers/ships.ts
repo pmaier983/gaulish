@@ -14,7 +14,6 @@ import {
   getTileObject,
   validateTileConflicts,
   validateFinalDestination,
-  validateShipCurrentStatus,
   validateShipCurrentSailingStatus,
 } from "~/utils/sailingUtils"
 
