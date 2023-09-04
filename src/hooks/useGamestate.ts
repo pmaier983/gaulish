@@ -17,12 +17,15 @@ const VALID_KEYS = [
   "z",
 ]
 
+// TODO: is there a better way to manage syncing then with useEffects?
 export const useGamestate = () => {
   const {
     setInitialMapState,
     setNpcs,
+    setUserShips,
     setCities,
     calculateMapObject,
+    calculateVisibleTilesObject,
     handleShipPath,
     cleanMapObject,
     selectedShip,
@@ -30,8 +33,10 @@ export const useGamestate = () => {
   } = useGamestateStore((state) => ({
     setInitialMapState: state.setInitialMapState,
     calculateMapObject: state.calculateMapObject,
+    calculateVisibleTilesObject: state.calculateVisibleTilesObject,
     setCities: state.setCities,
     setNpcs: state.setNpcs,
+    setUserShips: state.setUserShips,
     handleShipPath: state.handleShipPath,
     cleanMapObject: state.cleanMapObject,
     selectedShip: state.selectedShip,
@@ -80,15 +85,30 @@ export const useGamestate = () => {
     setCities(cityData ?? [])
   }, [cityData, setCities])
 
+  const { data: userShipData } = api.ships.getUsersShips.useQuery(undefined, {
+    staleTime: Infinity,
+    meta: {
+      errorMessage: "Something went wrong when the users loaded their ships",
+    },
+  })
+
+  /**
+   * Sync the user's current ships with the gamestate
+   */
+  useEffect(() => {
+    setUserShips(userShipData ?? [])
+  }, [userShipData, setUserShips])
+
   /**
    * This use effect runs a game loop every 0.5s to update the map object
    */
   useEffect(() => {
     const intervalId = setInterval(() => {
       calculateMapObject()
+      calculateVisibleTilesObject()
     }, 500)
     return () => clearInterval(intervalId)
-  }, [calculateMapObject])
+  }, [calculateMapObject, calculateVisibleTilesObject])
 
   // TODO: add command Z functionality
   const shipNavigationHandler = useCallback(

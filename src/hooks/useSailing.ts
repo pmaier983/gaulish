@@ -10,11 +10,11 @@ import { haveLogsUpdatedAtom } from "~/state/atoms"
 export const useSailing = () => {
   const queryClient = api.useContext()
   const [, setHaveLogsUpdatedState] = useAtom(haveLogsUpdatedAtom)
-  const { selectedShip, cityObject, addShips, toggleShipSelection } =
+  const { selectedShip, cityObject, addSailingShips, toggleShipSelection } =
     useGamestateStore((state) => ({
       cityObject: state.cityObject,
       selectedShip: state.selectedShip,
-      addShips: state.addShips,
+      addSailingShips: state.addSailingShips,
       toggleShipSelection: state.toggleShipSelection,
     }))
 
@@ -22,7 +22,7 @@ export const useSailing = () => {
     onReceiveSailingInfo: (sailingInfo) => {
       const newShip = sailingInfo.data.ship
 
-      addShips([
+      addSailingShips([
         {
           ...newShip,
           path: sailingInfo.data.path,

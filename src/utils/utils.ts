@@ -2,6 +2,11 @@ import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
 import { type Path, type Npc, type Ship } from "schema"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
+import {
+  type ShipComposite,
+  type MapObject,
+  type CityObject,
+} from "~/state/gamestateStore"
 
 export const ABLY_CLIENT_ID = createId()
 
@@ -121,6 +126,45 @@ export const getNpcCurrentXYTileId = ({
   return currentXyTileId
 }
 
+export const getShipCurrentXYTileId = ({
+  ship,
+  cityObject,
+}: {
+  ship: ShipComposite
+  cityObject: CityObject
+}) => {
+  // if the ship has no path its at a city
+  if (!ship.path) {
+    const possibleCity = cityObject[ship.cityId]
+    if (!possibleCity) throw Error("Ship has an invalid CityId")
+    return possibleCity.xyTileId
+  }
+
+  const { createdAt, pathArray } = ship.path
+  const speed = ship.speed
+
+  const tilesMoved = getTilesMoved({
+    speed,
+    currentTimeMs: Date.now(),
+    // Debugged by Yijiao He (with help)
+    createdAtTimeMs: createdAt?.getTime() ?? 0,
+  })
+
+  // If the ship sailed past its final location, return it's city
+  if (tilesMoved >= pathArray.length) {
+    const possibleCity = cityObject[ship.cityId]
+    if (!possibleCity) throw Error("Ship has an invalid CityId")
+    return possibleCity.xyTileId
+  }
+
+  const shipXYTileId = pathArray[tilesMoved]
+
+  if (!shipXYTileId)
+    throw new Error(`The path array does not seem to contain 100% valid tiles?`)
+
+  return shipXYTileId
+}
+
 export const hasNpcUserCollision = ({
   userStartTimeMsAtTile,
   userEndTimeMsAtTile,
@@ -168,4 +212,48 @@ export const hasNpcUserCollision = ({
 
 export const getShipCargoSum = (ship: Ship) => {
   return ship.gold + ship.stone + ship.wood + ship.wheat + ship.wool
+}
+
+// TODO: turn into a bfs algorithm that scans an area
+export const getVisibleTilesFromXYTileId = ({
+  mapObject,
+  xyTileId,
+  visibilityStrength,
+}: {
+  mapObject: MapObject
+  xyTileId: string
+  visibilityStrength: number
+}) => {
+  if (!mapObject.hasOwnProperty(xyTileId)) {
+    throw Error("Invalid xyTileId passed into getVisibleTilesFromXYTileId")
+  }
+
+  const { x, y } = getXYFromXYTileId(xyTileId)
+
+  const visibleTiles = []
+
+  for (
+    let xIndex = x - visibilityStrength;
+    xIndex <= x + visibilityStrength;
+    xIndex++
+  ) {
+    for (
+      let yIndex = y - visibilityStrength;
+      yIndex <= y + visibilityStrength;
+      yIndex++
+    ) {
+      const currentXYTileId = `${xIndex}:${yIndex}`
+
+      // Written by Yijiao He
+      if (mapObject.hasOwnProperty(currentXYTileId)) {
+        const xDistance = Math.abs(x - xIndex)
+        const yDistance = Math.abs(y - yIndex)
+        if (xDistance + yDistance <= visibilityStrength) {
+          visibleTiles.push(currentXYTileId)
+        }
+      }
+    }
+  }
+
+  return visibleTiles
 }

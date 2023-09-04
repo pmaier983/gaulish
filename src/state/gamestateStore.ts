@@ -6,18 +6,16 @@ import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
 import {
   getDirectionTowardsPrevTile,
   getNpcCurrentXYTileId,
+  getShipCurrentXYTileId,
   getTilesMoved,
+  getVisibleTilesFromXYTileId,
   uniqueBy,
 } from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
 import { shallow } from "zustand/shallow"
 import { produce } from "immer"
 
-type GetUserShipsOutput = RouterOutputs["ships"]["getUsersShips"][0]
-
-export interface ShipComposite extends GetUserShipsOutput {
-  path: NonNullable<Path>
-}
+export type ShipComposite = RouterOutputs["ships"]["getUsersShips"][0]
 
 export type NpcComposite = RouterOutputs["map"]["getNpcs"][0]
 
@@ -37,6 +35,10 @@ export interface SelectedShipPath {
   isLastTileInPath: boolean
 }
 
+export interface VisibilityObject {
+  [xyTileId: string]: boolean
+}
+
 export type SelectedShipPathObject = {
   [xyTileId: string]: SelectedShipPath
 }
@@ -46,10 +48,11 @@ export interface GamestateStore {
   selectedShipPathArray: Path["pathArray"]
   selectedShipPathObject: SelectedShipPathObject
 
-  visibleTileObject: { [xyTileId: string]: boolean }
+  visibleTilesObject: VisibilityObject
 
   mapArray: Tile[]
   sailingShips: ShipComposite[]
+  userShips: ShipComposite[]
   mapObject: MapObject
   /**
    * The Clean map object contains only the Tile data
@@ -62,10 +65,15 @@ export interface GamestateStore {
 interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
   calculateMapObject: () => void
+  calculateVisibleTilesObject: () => void
+
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
-  addShips: (ships: ShipComposite[]) => void
+
+  addSailingShips: (ships: ShipComposite[]) => void
   setSailingShips: (ships: ShipComposite[]) => void
+
+  setUserShips: (ships: ShipComposite[]) => void
 
   toggleShipSelection: (ship?: Ship) => void
   handleShipPath: (someFormOfTileId?: string | string[]) => void
@@ -78,11 +86,12 @@ export type Gamestate = GamestateStore & GamestateStoreActions
 const initialGamestate: GamestateStore = {
   selectedShipPathArray: [],
   selectedShipPathObject: {},
-  visibleTileObject: {},
+  visibleTilesObject: {},
   cityObject: {},
   mapArray: [],
   npcs: [],
   sailingShips: [],
+  userShips: [],
   mapObject: {},
   cleanMapObject: {},
 }
@@ -105,13 +114,12 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
     },
 
     /**
-     * Called within the 0.5s game loop; Calculates the map object
+     * Called within the game loop; Calculates the map object
      *
      * Need to generate based off the clean map object to not pollute
      * the map with old state
      *
      * Mainly based off npc's and sailing ships data
-     *
      */
     calculateMapObject: () => {
       const cleanMapObject = get().cleanMapObject
@@ -153,10 +161,12 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
          * Adding User Ships to the map object
          */
         sailingShips.forEach((ship) => {
-          const {
-            path: { createdAt, pathArray },
-            speed,
-          } = ship
+          const { path, speed } = ship
+
+          // If the ship has no path, it's not sailing!
+          if (!path) return
+
+          const { createdAt, pathArray } = path
 
           const tilesMoved = getTilesMoved({
             speed,
@@ -173,26 +183,76 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
             return
           }
 
-          const pathKey = pathArray[tilesMoved]
+          const shipXYTileId = pathArray[tilesMoved]
 
-          if (!pathKey)
+          if (!shipXYTileId)
             throw new Error(
-              `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
+              `Math is wrong when calculating shipXYTileId. Info: ${JSON.stringify(
                 ship,
               )}`,
             )
-          const currentTile = draftMapObject[pathKey]
+
+          const currentTile = draftMapObject[shipXYTileId]
+
           if (!currentTile)
             throw new Error(
               `Tried to access a non-existent tile. Info: ${JSON.stringify(
                 ship,
               )}`,
             )
-          draftMapObject[pathKey] = { ...currentTile, ship }
+          draftMapObject[shipXYTileId] = { ...currentTile, ship }
         })
       })
 
       set({ mapObject: newMapObject })
+    },
+
+    /**
+     * Called within the game loop; Calculate which tiles are visible to the user
+     *
+     * - use city data & user sailingShip Data
+     */
+    calculateVisibleTilesObject: () => {
+      const sailingShips = get().sailingShips
+      const userShips = get().userShips
+      const cityObject = get().cityObject
+      const mapObject = get().mapObject
+
+      const userShipsNotSailing = userShips.filter(
+        (userShip) =>
+          !sailingShips.some((sailingShip) => sailingShip.id === userShip.id),
+      )
+
+      const newVisibleXYTileIds = [
+        ...sailingShips,
+        ...userShipsNotSailing,
+      ].reduce<string[]>((XYtileIds, ship) => {
+        const xyTileId = getShipCurrentXYTileId({
+          ship,
+          cityObject,
+        })
+
+        const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
+          xyTileId,
+          mapObject,
+          visibilityStrength: 3,
+        })
+
+        return [...XYtileIds, ...newVisibleXYTileIds]
+      }, [])
+
+      const deduplicatedVisibleXYTileIds = [...new Set(newVisibleXYTileIds)]
+
+      const newVisibleTilesObject =
+        deduplicatedVisibleXYTileIds.reduce<VisibilityObject>(
+          (acc, xyTileId) => {
+            acc[xyTileId] = true
+            return acc
+          },
+          {},
+        )
+
+      set({ visibleTilesObject: newVisibleTilesObject })
     },
 
     setCities: (cityArray) => {
@@ -208,7 +268,7 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
     },
 
     setNpcs: (npcs) => set({ npcs: npcs }),
-    addShips: (newShips) => {
+    addSailingShips: (newShips) => {
       const ships = get().sailingShips
 
       // ensure we don't get any duplicate ships
@@ -218,6 +278,8 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
     },
 
     setSailingShips: (newShips) => set({ sailingShips: newShips }),
+
+    setUserShips: (newShips) => set({ userShips: newShips }),
 
     toggleShipSelection: (ship) => {
       // Toggle selected ship off
