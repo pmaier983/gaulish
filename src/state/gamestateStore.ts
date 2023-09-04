@@ -65,7 +65,7 @@ export interface GamestateStore {
 interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
   calculateMapObject: () => void
-  calculateVisibleTilesObject: () => void
+  calculateVisibleTilesObject: (userId: string) => void
 
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
@@ -212,7 +212,7 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
      *
      * - use city data & user sailingShip Data
      */
-    calculateVisibleTilesObject: () => {
+    calculateVisibleTilesObject: (userId: string) => {
       const sailingShips = get().sailingShips
       const userShips = get().userShips
       const cityObject = get().cityObject
@@ -224,7 +224,7 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       )
 
       const newVisibleXYTileIds = [
-        ...sailingShips,
+        ...sailingShips.filter((ship) => ship.userId === userId),
         ...userShipsNotSailing,
       ].reduce<string[]>((XYtileIds, ship) => {
         const xyTileId = getShipCurrentXYTileId({

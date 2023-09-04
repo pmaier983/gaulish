@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react"
 import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
@@ -19,6 +20,7 @@ const VALID_KEYS = [
 
 // TODO: is there a better way to manage syncing then with useEffects?
 export const useGamestate = () => {
+  const { data } = useSession()
   const {
     setInitialMapState,
     setNpcs,
@@ -105,10 +107,10 @@ export const useGamestate = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       calculateMapObject()
-      calculateVisibleTilesObject()
+      calculateVisibleTilesObject(data?.user.id ?? "")
     }, 500)
     return () => clearInterval(intervalId)
-  }, [calculateMapObject, calculateVisibleTilesObject])
+  }, [calculateMapObject, calculateVisibleTilesObject, data?.user.id])
 
   // TODO: add command Z functionality
   const shipNavigationHandler = useCallback(
