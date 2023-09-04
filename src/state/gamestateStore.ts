@@ -3,9 +3,15 @@ import { devtools } from "zustand/middleware"
 
 import type { Path, Tile, City, Ship } from "schema"
 import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
-import { getDirectionTowardsPrevTile, uniqueBy } from "~/utils/utils"
+import {
+  getDirectionTowardsPrevTile,
+  getNpcCurrentXYTileId,
+  getTilesMoved,
+  uniqueBy,
+} from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
 import { shallow } from "zustand/shallow"
+import { produce } from "immer"
 
 type GetUserShipsOutput = RouterOutputs["ships"]["getUsersShips"][0]
 
@@ -40,6 +46,8 @@ export interface GamestateStore {
   selectedShipPathArray: Path["pathArray"]
   selectedShipPathObject: SelectedShipPathObject
 
+  visibleTileObject: { [xyTileId: string]: boolean }
+
   mapArray: Tile[]
   sailingShips: ShipComposite[]
   mapObject: MapObject
@@ -53,7 +61,7 @@ export interface GamestateStore {
 
 interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
-  setMapObject: (map: GamestateStore["mapObject"]) => void
+  calculateMapObject: () => void
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
   addShips: (ships: ShipComposite[]) => void
@@ -70,6 +78,7 @@ export type Gamestate = GamestateStore & GamestateStoreActions
 const initialGamestate: GamestateStore = {
   selectedShipPathArray: [],
   selectedShipPathObject: {},
+  visibleTileObject: {},
   cityObject: {},
   mapArray: [],
   npcs: [],
@@ -95,7 +104,96 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       })
     },
 
-    setMapObject: (map) => set({ mapObject: map }),
+    /**
+     * Called within the 0.5s game loop; Calculates the map object
+     *
+     * Need to generate based off the clean map object to not pollute
+     * the map with old state
+     *
+     * Mainly based off npc's and sailing ships data
+     *
+     */
+    calculateMapObject: () => {
+      const cleanMapObject = get().cleanMapObject
+      const npcs = get().npcs
+
+      const newMapObject = produce(cleanMapObject, (draftMapObject) => {
+        /**
+         * Adding NPCs to the map object
+         */
+        npcs.forEach((npc) => {
+          const {
+            path: { createdAt, pathArray },
+            speed,
+          } = npc
+
+          const npcXYTileId = getNpcCurrentXYTileId({
+            createdAtTimeMs: createdAt?.getTime() ?? 0,
+            currentTimeMs: Date.now(),
+            speed,
+            pathArray,
+          })
+
+          const currentTile = draftMapObject[npcXYTileId]
+
+          if (!currentTile)
+            throw new Error(
+              `Tried to access a non-existent tile. Info: ${JSON.stringify(
+                npc,
+              )}`,
+            )
+
+          draftMapObject[npcXYTileId] = { ...currentTile, npc }
+        })
+
+        const sailingShips = get().sailingShips
+        const setSailingShips = get().setSailingShips
+
+        /**
+         * Adding User Ships to the map object
+         */
+        sailingShips.forEach((ship) => {
+          const {
+            path: { createdAt, pathArray },
+            speed,
+          } = ship
+
+          const tilesMoved = getTilesMoved({
+            speed,
+            currentTimeMs: Date.now(),
+            createdAtTimeMs: createdAt?.getTime() ?? 0,
+          })
+
+          // If the ship has finished sailing, don't add it to the map object
+          if (tilesMoved >= pathArray.length) {
+            // Remove the ship from the ship list if it is finished sailing
+            setSailingShips(
+              sailingShips.filter((currentShip) => currentShip.id !== ship.id),
+            )
+            return
+          }
+
+          const pathKey = pathArray[tilesMoved]
+
+          if (!pathKey)
+            throw new Error(
+              `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
+                ship,
+              )}`,
+            )
+          const currentTile = draftMapObject[pathKey]
+          if (!currentTile)
+            throw new Error(
+              `Tried to access a non-existent tile. Info: ${JSON.stringify(
+                ship,
+              )}`,
+            )
+          draftMapObject[pathKey] = { ...currentTile, ship }
+        })
+      })
+
+      set({ mapObject: newMapObject })
+    },
 
     setCities: (cityArray) => {
       const cityObject = cityArray?.reduce<CityObject>((acc, cur) => {

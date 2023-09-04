@@ -358,6 +358,7 @@ export const validateFinalDestination = async ({
   return destination.id
 }
 
+// TODO: fix visually seeing ships overlap!
 export const validateNpcConflicts = async ({
   db,
   userShip,

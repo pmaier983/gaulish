@@ -1,13 +1,8 @@
-import { produce } from "immer"
 import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
-import {
-  getNpcCurrentXYTileId,
-  getTilesMoved,
-  getXYFromXYTileId,
-} from "~/utils/utils"
+import { getXYFromXYTileId } from "~/utils/utils"
 
 const VALID_KEYS = [
   "ArrowUp",
@@ -26,25 +21,19 @@ export const useGamestate = () => {
   const {
     setInitialMapState,
     setNpcs,
-    setSailingShips,
     setCities,
-    setMapObject,
+    calculateMapObject,
     handleShipPath,
     cleanMapObject,
-    npcs,
-    sailingShips,
     selectedShip,
     selectedShipPathArray,
   } = useGamestateStore((state) => ({
     setInitialMapState: state.setInitialMapState,
-    setMapObject: state.setMapObject,
+    calculateMapObject: state.calculateMapObject,
     setCities: state.setCities,
-    setSailingShips: state.setSailingShips,
     setNpcs: state.setNpcs,
     handleShipPath: state.handleShipPath,
     cleanMapObject: state.cleanMapObject,
-    npcs: state.npcs,
-    sailingShips: state.sailingShips,
     selectedShip: state.selectedShip,
     selectedShipPathArray: state.selectedShipPathArray,
   }))
@@ -96,82 +85,12 @@ export const useGamestate = () => {
    */
   useEffect(() => {
     const intervalId = setInterval(() => {
-      const newMapObject = produce(cleanMapObject, (draftMapObject) => {
-        /**
-         * Adding NPCs to the map object
-         */
-        npcs.forEach((npc) => {
-          const {
-            path: { createdAt, pathArray },
-            speed,
-          } = npc
-
-          const npcXYTileId = getNpcCurrentXYTileId({
-            createdAtTimeMs: createdAt?.getTime() ?? 0,
-            currentTimeMs: Date.now(),
-            speed,
-            pathArray,
-          })
-
-          const currentTile = draftMapObject[npcXYTileId]
-
-          if (!currentTile)
-            throw new Error(
-              `Tried to access a non-existent tile. Info: ${JSON.stringify(
-                npc,
-              )}`,
-            )
-
-          draftMapObject[npcXYTileId] = { ...currentTile, npc }
-        })
-
-        /**
-         * Adding User Ships to the map object
-         */
-        sailingShips.forEach((ship) => {
-          const {
-            path: { createdAt, pathArray },
-            speed,
-          } = ship
-
-          const tilesMoved = getTilesMoved({
-            speed,
-            currentTimeMs: Date.now(),
-            createdAtTimeMs: createdAt?.getTime() ?? 0,
-          })
-
-          // If the ship has finished sailing, don't add it to the map object
-          if (tilesMoved >= pathArray.length) {
-            // Remove the ship from the ship list if it is finished sailing
-            setSailingShips(
-              sailingShips.filter((currentShip) => currentShip.id !== ship.id),
-            )
-            return
-          }
-
-          const pathKey = pathArray[tilesMoved]
-
-          if (!pathKey)
-            throw new Error(
-              `Math is wrong when calculating pathKey. Info: ${JSON.stringify(
-                ship,
-              )}`,
-            )
-          const currentTile = draftMapObject[pathKey]
-          if (!currentTile)
-            throw new Error(
-              `Tried to access a non-existent tile. Info: ${JSON.stringify(
-                ship,
-              )}`,
-            )
-          draftMapObject[pathKey] = { ...currentTile, ship }
-        })
-      })
-      setMapObject(newMapObject)
+      calculateMapObject()
     }, 500)
     return () => clearInterval(intervalId)
-  }, [cleanMapObject, npcs, setMapObject, sailingShips, setSailingShips])
+  }, [calculateMapObject])
 
+  // TODO: add command Z functionality
   const shipNavigationHandler = useCallback(
     (e: KeyboardEvent) => {
       e.preventDefault()
