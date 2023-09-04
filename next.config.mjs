@@ -30,4 +30,5 @@ const config = {
 
 const enableRoutesTypes = withRoutes({ outDir: "types" })
 
+// eslint-disable-next-line import/no-default-export
 export default enableRoutesTypes(config)

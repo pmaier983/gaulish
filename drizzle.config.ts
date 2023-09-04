@@ -3,6 +3,7 @@ import type { Config } from "drizzle-kit"
 
 dotenv.config()
 
+// eslint-disable-next-line import/no-default-export
 export default {
   schema: "./schema/schema.ts",
   driver: "mysql2",
