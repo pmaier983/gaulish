@@ -49,3 +49,6 @@ one day it will be a great IO game with users!
 - [ ] Look into feature flags
 - [ ] make Admin a role permission and not just my email...
 - [ ] Setup Dark Mode
+- [ ] why does clicking "Tab" add a horizontal scroll bar?
+- [ ] Improve every Error message (also add error message to all trcp useQuery/useMutations)
+- [ ] Remove all the `createdAt?.getDate() ?? 0`

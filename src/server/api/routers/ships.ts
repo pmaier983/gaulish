@@ -117,6 +117,9 @@ export const shipsRouter = createTRPCRouter({
   }),
   /**
    * Adds a ship to a users profile
+   *
+   * - Add the tiles around that ship to the knowTiles list
+   *
    */
   addFreeShip: protectedProcedure.mutation(async ({ ctx }) => {
     return await ctx.db.transaction(async (trx) => {
@@ -161,6 +164,8 @@ export const shipsRouter = createTRPCRouter({
 
       if (!newShip)
         throw new Error("Ship was not found immediately after being inserted")
+
+      // TODO: Add the tiles around that ship to the knowTiles list
 
       return newShip
     })
