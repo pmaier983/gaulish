@@ -8,13 +8,19 @@ import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { useGamestateStore } from "~/state/gamestateStore"
 
 export const MapPixiTile = (tile: Tile) => {
-  const { mapObject, cityObject, selectedShipPathObject, visibleTilesObject } =
-    useGamestateStore((state) => ({
-      mapObject: state.mapObject,
-      cityObject: state.cityObject,
-      selectedShipPathObject: state.selectedShipPathObject,
-      visibleTilesObject: state.visibleTilesObject,
-    }))
+  const {
+    mapObject,
+    cityObject,
+    selectedShipPathObject,
+    visibleTilesObject,
+    knownTilesObject,
+  } = useGamestateStore((state) => ({
+    mapObject: state.mapObject,
+    cityObject: state.cityObject,
+    selectedShipPathObject: state.selectedShipPathObject,
+    visibleTilesObject: state.visibleTilesObject,
+    knownTilesObject: state.knownTilesObject,
+  }))
 
   const isTileVisible = visibleTilesObject[tile.xyTileId]
 
@@ -24,6 +30,11 @@ export const MapPixiTile = (tile: Tile) => {
 
   const city = cityObject[tile.xyTileId]
   const shipPath = selectedShipPathObject[tile.xyTileId]
+
+  // If the tile is unknown don't render it
+  if (!knownTilesObject.hasOwnProperty(tile.xyTileId)) {
+    return <DumbPixiOverlay tile={tile} opacity={1} />
+  }
 
   return (
     <>

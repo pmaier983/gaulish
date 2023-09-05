@@ -27,6 +27,7 @@ export const useGamestate = () => {
     setUserShips,
     setCities,
     calculateMapObject,
+    setKnownTilesObject,
     calculateVisibleTilesObject,
     handleShipPath,
     cleanMapObject,
@@ -38,6 +39,7 @@ export const useGamestate = () => {
     calculateVisibleTilesObject: state.calculateVisibleTilesObject,
     setCities: state.setCities,
     setNpcs: state.setNpcs,
+    setKnownTilesObject: state.setKnownTilesObject,
     setUserShips: state.setUserShips,
     handleShipPath: state.handleShipPath,
     cleanMapObject: state.cleanMapObject,
@@ -100,6 +102,21 @@ export const useGamestate = () => {
   useEffect(() => {
     setUserShips(userShipData ?? [])
   }, [userShipData, setUserShips])
+
+  const { data: knownTiles } = api.map.getKnownTiles.useQuery(undefined, {
+    staleTime: Infinity,
+    meta: {
+      errorMessage:
+        "Something went wrong when the users loaded their known Tiles",
+    },
+  })
+
+  /**
+   * Sync the user's known tiles with the gamestate
+   */
+  useEffect(() => {
+    setKnownTilesObject(knownTiles ?? [])
+  }, [knownTiles, setKnownTilesObject])
 
   /**
    * This use effect runs a game loop every 0.5s to update the map object

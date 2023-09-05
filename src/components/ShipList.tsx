@@ -3,7 +3,7 @@ import { type Ship } from "schema"
 
 import { Icon } from "~/components/Icon"
 import { Tooltip } from "~/components/Tooltip"
-import { MAX_SHIP_NAME_LENGTH, SHIP_TYPES } from "~/components/constants"
+import { MAX_SHIP_NAME_LENGTH } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
@@ -21,7 +21,7 @@ export const ShipList = () => {
     },
   })
 
-  const { mutate } = api.ships.addShip.useMutation({
+  const { mutate } = api.ships.addFreeShip.useMutation({
     onSuccess: async (data) => {
       // when a new ship is added, update the ship list cache & invalidate the leaderboard
       queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
@@ -41,7 +41,7 @@ export const ShipList = () => {
       <div className="flex-1">
         <button
           onClick={() => {
-            mutate({ ship_type: SHIP_TYPES.PLANK })
+            mutate()
           }}
         >
           Grab a Plank

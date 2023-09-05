@@ -4,6 +4,7 @@ import { path, ship, tile } from "schema"
 import { z } from "zod"
 import {
   MAX_SHIP_NAME_LENGTH,
+  SHIP_TYPES,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
 } from "~/components/constants"
 
@@ -117,59 +118,53 @@ export const shipsRouter = createTRPCRouter({
   /**
    * Adds a ship to a users profile
    */
-  addShip: protectedProcedure
-    .input(
-      z.object({
-        ship_type: z.string(),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.db.transaction(async (trx) => {
-        // TODO: properly choose a city!
-        const cityForNewShip = await trx.query.city.findFirst()
+  addFreeShip: protectedProcedure.mutation(async ({ ctx }) => {
+    return await ctx.db.transaction(async (trx) => {
+      // TODO: properly choose a city!
+      const cityForNewShip = await trx.query.city.findFirst()
 
-        if (!cityForNewShip) throw Error("No cities found for the new ship")
+      if (!cityForNewShip) throw Error("No cities found for the new ship")
 
-        const shipProperties = SHIP_TYPE_TO_SHIP_PROPERTIES[input.ship_type]
+      const shipProperties = SHIP_TYPE_TO_SHIP_PROPERTIES[SHIP_TYPES.PLANK]
 
-        if (!shipProperties)
-          throw Error("No ship properties found for that ship_type")
+      if (!shipProperties)
+        throw Error("No ship properties found for that ship_type")
 
-        const countOfShipType = parseInt(
-          (
-            await trx
-              .select({ count: sql<string>`count(*)` })
-              .from(ship)
-              .where(
-                and(
-                  eq(ship.userId, ctx.session.user.id),
-                  eq(ship.shipType, input.ship_type),
-                ),
-              )
-          ).at(0)?.count ?? "0",
-          10,
-        )
+      const countOfShipType = parseInt(
+        (
+          await trx
+            .select({ count: sql<string>`count(*)` })
+            .from(ship)
+            .where(
+              and(
+                eq(ship.userId, ctx.session.user.id),
+                eq(ship.shipType, SHIP_TYPES.PLANK),
+              ),
+            )
+        ).at(0)?.count ?? "0",
+        10,
+      )
 
-        const partialNewShip = {
-          id: createId(),
-          userId: ctx.session.user.id,
-          cityId: cityForNewShip.id,
-          ...shipProperties,
-          name: `${input.ship_type.toLowerCase()} ${countOfShipType + 1}`,
-        }
+      const partialNewShip = {
+        id: createId(),
+        userId: ctx.session.user.id,
+        cityId: cityForNewShip.id,
+        ...shipProperties,
+        name: `${SHIP_TYPES.PLANK.toLowerCase()} ${countOfShipType + 1}`,
+      }
 
-        await trx.insert(ship).values(partialNewShip)
+      await trx.insert(ship).values(partialNewShip)
 
-        const newShip = await trx.query.ship.findFirst({
-          where: eq(ship.id, partialNewShip.id),
-        })
-
-        if (!newShip)
-          throw new Error("Ship was not found immediately after being inserted")
-
-        return newShip
+      const newShip = await trx.query.ship.findFirst({
+        where: eq(ship.id, partialNewShip.id),
       })
-    }),
+
+      if (!newShip)
+        throw new Error("Ship was not found immediately after being inserted")
+
+      return newShip
+    })
+  }),
   /**
    * Update a specific ships name
    */

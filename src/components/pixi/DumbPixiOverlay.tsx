@@ -7,9 +7,14 @@ import { TILE_PERCENT_SIZE } from "~/components/constants"
 
 interface DumbPixiOverlayProps {
   tile: Tile
+  opacity?: number
 }
 
-export const DumbPixiOverlay = ({ tile, ...rest }: DumbPixiOverlayProps) => {
+export const DumbPixiOverlay = ({
+  tile,
+  opacity = 0.6,
+  ...rest
+}: DumbPixiOverlayProps) => {
   const app = useApp()
 
   const mapWidth = app.renderer.options.width ?? 0
@@ -24,11 +29,11 @@ export const DumbPixiOverlay = ({ tile, ...rest }: DumbPixiOverlayProps) => {
   const draw = useCallback(
     (g: PIXI.Graphics) => {
       g.clear()
-      g.beginFill(fill, 0.6)
+      g.beginFill(fill, opacity)
       g.drawRect(tileXPosition, tileYPosition, tileSize, tileSize)
       g.endFill()
     },
-    [tileSize, tileXPosition, tileYPosition],
+    [opacity, tileSize, tileXPosition, tileYPosition],
   )
 
   return <Graphics draw={draw} {...rest} />

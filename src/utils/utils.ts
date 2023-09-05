@@ -2,11 +2,7 @@ import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
 import { type Path, type Npc, type Ship } from "schema"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
-import {
-  type ShipComposite,
-  type MapObject,
-  type CityObject,
-} from "~/state/gamestateStore"
+import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
 
 export const ABLY_CLIENT_ID = createId()
 
@@ -220,7 +216,7 @@ export const getVisibleTilesFromXYTileId = ({
   xyTileId,
   visibilityStrength,
 }: {
-  mapObject: MapObject
+  mapObject: { [key: string]: unknown }
   xyTileId: string
   visibilityStrength: number
 }) => {

@@ -43,23 +43,8 @@ export type SelectedShipPathObject = {
   [xyTileId: string]: SelectedShipPath
 }
 
-export interface GamestateStore {
-  selectedShip?: Ship
-  selectedShipPathArray: Path["pathArray"]
-  selectedShipPathObject: SelectedShipPathObject
-
-  visibleTilesObject: VisibilityObject
-
-  mapArray: Tile[]
-  sailingShips: ShipComposite[]
-  userShips: ShipComposite[]
-  mapObject: MapObject
-  /**
-   * The Clean map object contains only the Tile data
-   */
-  cleanMapObject: GamestateStore["mapObject"]
-  cityObject: CityObject
-  npcs: RouterOutputs["map"]["getNpcs"]
+export interface KnownTilesObject {
+  [xyTileId: string]: boolean
 }
 
 interface GamestateStoreActions {
@@ -69,6 +54,7 @@ interface GamestateStoreActions {
 
   setCities: (cityObject: City[]) => void
   setNpcs: (npcs: RouterOutputs["map"]["getNpcs"]) => void
+  setKnownTilesObject: (knownTiles: string[]) => void
 
   addSailingShips: (ships: ShipComposite[]) => void
   setSailingShips: (ships: ShipComposite[]) => void
@@ -81,20 +67,43 @@ interface GamestateStoreActions {
   restart: () => void
 }
 
-export type Gamestate = GamestateStore & GamestateStoreActions
+export interface GamestateStore {
+  selectedShip?: Ship
+  selectedShipPathArray: Path["pathArray"]
+  selectedShipPathObject: SelectedShipPathObject
+
+  visibleTilesObject: VisibilityObject
+
+  mapArray: Tile[]
+  knownTilesObject: KnownTilesObject
+  sailingShips: ShipComposite[]
+  userShips: ShipComposite[]
+  mapObject: MapObject
+  /**
+   * The Clean map object contains only the Tile data
+   */
+  cleanMapObject: GamestateStore["mapObject"]
+  cityObject: CityObject
+  cityArray: City[]
+  npcs: RouterOutputs["map"]["getNpcs"]
+}
 
 const initialGamestate: GamestateStore = {
   selectedShipPathArray: [],
   selectedShipPathObject: {},
   visibleTilesObject: {},
   cityObject: {},
+  cityArray: [],
   mapArray: [],
+  knownTilesObject: {},
   npcs: [],
   sailingShips: [],
   userShips: [],
   mapObject: {},
   cleanMapObject: {},
 }
+
+export type Gamestate = GamestateStore & GamestateStoreActions
 
 export const useGamestateStore = createWithEqualityFn<Gamestate>()(
   devtools((set, get) => ({
@@ -216,6 +225,7 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       const sailingShips = get().sailingShips
       const userShips = get().userShips
       const cityObject = get().cityObject
+      const cityArray = get().cityArray
       const mapObject = get().mapObject
 
       const userShipsNotSailing = userShips.filter(
@@ -223,7 +233,7 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
           !sailingShips.some((sailingShip) => sailingShip.id === userShip.id),
       )
 
-      const newVisibleXYTileIds = [
+      const shipVisibleXYTileIds = [
         ...sailingShips.filter((ship) => ship.userId === userId),
         ...userShipsNotSailing,
       ].reduce<string[]>((XYtileIds, ship) => {
@@ -241,7 +251,22 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         return [...XYtileIds, ...newVisibleXYTileIds]
       }, [])
 
-      const deduplicatedVisibleXYTileIds = [...new Set(newVisibleXYTileIds)]
+      const cityVisibleXYTileIds = cityArray.reduce<string[]>(
+        (XYtileIds, city) => {
+          const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
+            xyTileId: city.xyTileId,
+            mapObject,
+            visibilityStrength: 2,
+          })
+
+          return [...XYtileIds, ...newVisibleXYTileIds]
+        },
+        [],
+      )
+
+      const deduplicatedVisibleXYTileIds = [
+        ...new Set([...shipVisibleXYTileIds, ...cityVisibleXYTileIds]),
+      ]
 
       const newVisibleTilesObject =
         deduplicatedVisibleXYTileIds.reduce<VisibilityObject>(
@@ -264,10 +289,22 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         acc[cur.id] = cur
         return acc
       }, {})
-      set({ cityObject: cityObject })
+      set({ cityObject: cityObject, cityArray })
     },
 
     setNpcs: (npcs) => set({ npcs: npcs }),
+
+    setKnownTilesObject: (newKnownTiles) => {
+      const newKnownTilesObject = newKnownTiles.reduce<KnownTilesObject>(
+        (acc, knownTile) => {
+          acc[knownTile] = true
+          return acc
+        },
+        {},
+      )
+      return set({ knownTilesObject: newKnownTilesObject })
+    },
+
     addSailingShips: (newShips) => {
       const ships = get().sailingShips
 
