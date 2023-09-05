@@ -169,6 +169,13 @@
       "when": 1693768014304,
       "tag": "0023_awesome_black_cat",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1693870704835,
+      "tag": "0024_lyrical_madelyne_pryor",
+      "breakpoints": true
     }
   ]
 }

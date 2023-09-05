@@ -1,0 +1,1 @@
+ALTER TABLE `users` ADD `known_tiles` json DEFAULT ('[]') NOT NULL;

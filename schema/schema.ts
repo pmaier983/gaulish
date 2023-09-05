@@ -105,6 +105,7 @@ export const users = mysqlTable(
       .onUpdateNow(),
     /* ********** START - CUSTOM USER COLUMNS ********** */
     username: varchar("username", { length: 191 }).default("Sailor").notNull(),
+    knownTiles: json("known_tiles").$type<string[]>().default([]).notNull(),
     /* ********** END - CUSTOM USER COLUMNS ********** */
   },
   (table) => {
