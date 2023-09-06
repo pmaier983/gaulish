@@ -225,7 +225,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       const sailingShips = get().sailingShips
       const userShips = get().userShips
       const cityObject = get().cityObject
-      const cityArray = get().cityArray
       const mapObject = get().mapObject
 
       const userShipsNotSailing = userShips.filter(
@@ -251,21 +250,22 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         return [...XYtileIds, ...newVisibleXYTileIds]
       }, [])
 
-      const cityVisibleXYTileIds = cityArray.reduce<string[]>(
-        (XYtileIds, city) => {
-          const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
-            xyTileId: city.xyTileId,
-            mapObject,
-            visibilityStrength: 2,
-          })
+      // TODO: at some point in the future consider adding default city visibility?
+      // const cityVisibleXYTileIds = cityArray.reduce<string[]>(
+      //   (XYtileIds, city) => {
+      //     const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
+      //       xyTileId: city.xyTileId,
+      //       mapObject,
+      //       visibilityStrength: 2,
+      //     })
 
-          return [...XYtileIds, ...newVisibleXYTileIds]
-        },
-        [],
-      )
+      //     return [...XYtileIds, ...newVisibleXYTileIds]
+      //   },
+      //   [],
+      // )
 
       const deduplicatedVisibleXYTileIds = [
-        ...new Set([...shipVisibleXYTileIds, ...cityVisibleXYTileIds]),
+        ...new Set([...shipVisibleXYTileIds]),
       ]
 
       const newVisibleTilesObject =

@@ -71,7 +71,7 @@ export const mapRouter = createTRPCRouter({
       const diamondAroundStarterCity = getVisibleTilesFromXYTileId({
         xyTileId: firstCity.xyTileId,
         mapObject,
-        visibilityStrength: 3,
+        visibilityStrength: 4,
       })
 
       const deduplicatedNewKnownTiles = [
