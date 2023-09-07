@@ -31,9 +31,16 @@ export const MapPixiTile = (tile: Tile) => {
   const city = cityObject[tile.xyTileId]
   const shipPath = selectedShipPathObject[tile.xyTileId]
 
-  // If the tile is unknown don't render it
+  // If the tile is unknown, only render the ship path
   if (!knownTilesObject.hasOwnProperty(tile.xyTileId)) {
-    return <DumbPixiOverlay tile={tile} opacity={1} />
+    return (
+      <>
+        <DumbPixiOverlay tile={tile} opacity={1} />
+        {shipPath && (
+          <DumbPixiShipPath tile={tile} selectedShipPath={shipPath} />
+        )}
+      </>
+    )
   }
 
   return (
@@ -46,8 +53,8 @@ export const MapPixiTile = (tile: Tile) => {
         <DumbPixiShip tile={tile} isEnemy={false} name={ship.name} />
       )}
       {city && <DumbPixiCity tile={tile} city={city} />}
-      {shipPath && <DumbPixiShipPath tile={tile} selectedShipPath={shipPath} />}
       {!isTileVisible && <DumbPixiOverlay tile={tile} />}
+      {shipPath && <DumbPixiShipPath tile={tile} selectedShipPath={shipPath} />}
     </>
   )
 }

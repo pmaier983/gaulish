@@ -119,7 +119,6 @@ export const handleSailingEvents = ({
         break
       }
       case SAIL_EVENT_TYPES.TILE_REVEAL: {
-        console.log("TILE_REVEAL", event)
         setTimeout(() => {
           // TODO: avoid asserting type here
           const tileRevealEvent = event as SailEventTileReveal
