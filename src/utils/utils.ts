@@ -211,40 +211,32 @@ export const getShipCargoSum = (ship: Ship) => {
 }
 
 // TODO: turn into a bfs algorithm that scans an area
-export const getVisibleTilesFromXYTileId = ({
-  mapObject,
+export const getDiamondAroundXYTileId = ({
+  tileListObject,
   xyTileId,
-  visibilityStrength,
+  tileRadius,
 }: {
-  mapObject: { [key: string]: unknown }
+  tileListObject: { [key: string]: unknown }
   xyTileId: string
-  visibilityStrength: number
+  tileRadius: number
 }) => {
-  if (!mapObject.hasOwnProperty(xyTileId)) {
-    throw Error("Invalid xyTileId passed into getVisibleTilesFromXYTileId")
+  if (!tileListObject.hasOwnProperty(xyTileId)) {
+    throw Error("Invalid xyTileId passed into getDiamondAroundXYTileId")
   }
 
   const { x, y } = getXYFromXYTileId(xyTileId)
 
   const visibleTiles = []
 
-  for (
-    let xIndex = x - visibilityStrength;
-    xIndex <= x + visibilityStrength;
-    xIndex++
-  ) {
-    for (
-      let yIndex = y - visibilityStrength;
-      yIndex <= y + visibilityStrength;
-      yIndex++
-    ) {
+  for (let xIndex = x - tileRadius; xIndex <= x + tileRadius; xIndex++) {
+    for (let yIndex = y - tileRadius; yIndex <= y + tileRadius; yIndex++) {
       const currentXYTileId = `${xIndex}:${yIndex}`
 
       // Written by Yijiao He
-      if (mapObject.hasOwnProperty(currentXYTileId)) {
+      if (tileListObject.hasOwnProperty(currentXYTileId)) {
         const xDistance = Math.abs(x - xIndex)
         const yDistance = Math.abs(y - yIndex)
-        if (xDistance + yDistance <= visibilityStrength) {
+        if (xDistance + yDistance <= tileRadius) {
           visibleTiles.push(currentXYTileId)
         }
       }
@@ -252,4 +244,38 @@ export const getVisibleTilesFromXYTileId = ({
   }
 
   return visibleTiles
+}
+
+interface GetNewKnownTilesInput {
+  centralXYTileId: string
+  visibilityStrength: number
+  tileListObject: { [xyTileId: string]: unknown }
+  knownTiles: string[]
+}
+
+export const getNewKnownTiles = ({
+  centralXYTileId,
+  visibilityStrength,
+  tileListObject,
+  knownTiles,
+}: GetNewKnownTilesInput) => {
+  const knownTilesObject = knownTiles.reduce<{ [key: string]: boolean }>(
+    (acc, xyTileId) => {
+      acc[xyTileId] = true
+      return acc
+    },
+    {},
+  )
+
+  const possibleNewKnownTiles = getDiamondAroundXYTileId({
+    xyTileId: centralXYTileId,
+    tileListObject,
+    tileRadius: visibilityStrength,
+  })
+
+  const newKnownTiles = possibleNewKnownTiles.filter(
+    (xyTileId) => !knownTilesObject.hasOwnProperty(xyTileId),
+  )
+
+  return newKnownTiles
 }

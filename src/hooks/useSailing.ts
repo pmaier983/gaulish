@@ -10,13 +10,19 @@ import { haveLogsUpdatedAtom } from "~/state/atoms"
 export const useSailing = () => {
   const queryClient = api.useContext()
   const [, setHaveLogsUpdatedState] = useAtom(haveLogsUpdatedAtom)
-  const { selectedShip, cityObject, addSailingShips, toggleShipSelection } =
-    useGamestateStore((state) => ({
-      cityObject: state.cityObject,
-      selectedShip: state.selectedShip,
-      addSailingShips: state.addSailingShips,
-      toggleShipSelection: state.toggleShipSelection,
-    }))
+  const {
+    selectedShip,
+    cityObject,
+    addSailingShips,
+    toggleShipSelection,
+    setKnownTilesObject,
+  } = useGamestateStore((state) => ({
+    cityObject: state.cityObject,
+    selectedShip: state.selectedShip,
+    addSailingShips: state.addSailingShips,
+    toggleShipSelection: state.toggleShipSelection,
+    setKnownTilesObject: state.setKnownTilesObject,
+  }))
 
   const { publishSailingInfo } = useSailingChannel({
     onReceiveSailingInfo: (sailingInfo) => {
@@ -44,6 +50,7 @@ export const useSailing = () => {
         data,
         queryClient,
         setHaveLogsUpdatedState,
+        setKnownTilesObject,
       })
 
       // Always update a ship to its next possible location

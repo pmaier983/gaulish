@@ -8,7 +8,7 @@ import {
   getNpcCurrentXYTileId,
   getShipCurrentXYTileId,
   getTilesMoved,
-  getVisibleTilesFromXYTileId,
+  getDiamondAroundXYTileId,
   uniqueBy,
 } from "~/utils/utils"
 import { type RouterOutputs } from "~/utils/api"
@@ -241,10 +241,10 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
           cityObject,
         })
 
-        const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
+        const newVisibleXYTileIds = getDiamondAroundXYTileId({
           xyTileId,
-          mapObject,
-          visibilityStrength: 3,
+          tileListObject: mapObject,
+          tileRadius: 3,
         })
 
         return [...XYtileIds, ...newVisibleXYTileIds]
@@ -253,10 +253,10 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       // TODO: at some point in the future consider adding default city visibility?
       // const cityVisibleXYTileIds = cityArray.reduce<string[]>(
       //   (XYtileIds, city) => {
-      //     const newVisibleXYTileIds = getVisibleTilesFromXYTileId({
+      //     const newVisibleXYTileIds = getDiamondAroundXYTileId({
       //       xyTileId: city.xyTileId,
-      //       mapObject,
-      //       visibilityStrength: 2,
+      //       tileListObject: mapObject,
+      //       tileRadius: 2,
       //     })
 
       //     return [...XYtileIds, ...newVisibleXYTileIds]

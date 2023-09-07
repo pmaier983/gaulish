@@ -1,6 +1,15 @@
 import { createId } from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
-import { type Log, log, type Ship, ship, type Tile, city, path } from "schema"
+import {
+  type Log,
+  log,
+  type Ship,
+  ship,
+  type Tile,
+  city,
+  path,
+  users,
+} from "schema"
 import {
   LOG_PAGE_SIZE,
   TILE_TYPES,
@@ -9,6 +18,7 @@ import {
 import { type DatabaseType } from "~/server/db"
 import { type RouterOutputs, type QueryClient } from "~/utils/api"
 import {
+  getNewKnownTiles,
   getShipCargoSum,
   getXYFromXYTileId,
   hasNpcUserCollision,
@@ -49,7 +59,9 @@ interface SailEventSink extends SailEventBase {
   log: Log
 }
 
-interface SailEventTileReveal extends SailEventBase {}
+interface SailEventTileReveal extends SailEventBase {
+  newKnownTiles: string[]
+}
 
 export type SailEvent = SailEventLog | SailEventSink | SailEventTileReveal
 
@@ -57,12 +69,14 @@ interface handleSailingEventsProps {
   data: RouterOutputs["ships"]["sail"]
   queryClient: QueryClient
   setHaveLogsUpdatedState: (newUpdatedState: boolean) => void
+  setKnownTilesObject: (tiles: string[]) => void
 }
 
 export const handleSailingEvents = ({
   data,
   queryClient,
   setHaveLogsUpdatedState,
+  setKnownTilesObject,
 }: handleSailingEventsProps) => {
   data.events.forEach((event) => {
     switch (event.type) {
@@ -105,6 +119,13 @@ export const handleSailingEvents = ({
         break
       }
       case SAIL_EVENT_TYPES.TILE_REVEAL: {
+        console.log("TILE_REVEAL", event)
+        setTimeout(() => {
+          // TODO: avoid asserting type here
+          const tileRevealEvent = event as SailEventTileReveal
+
+          setKnownTilesObject(tileRevealEvent.newKnownTiles)
+        }, event.triggerTime - Date.now())
         break
       }
       default:
@@ -174,7 +195,7 @@ interface TilesObject {
   [key: string]: Tile
 }
 
-export const getTileObject = (tiles: Tile[]) =>
+export const getTilesObject = (tiles: Tile[]) =>
   tiles.reduce<TilesObject>((acc, tile) => {
     acc[tile.xyTileId] = tile
     return acc
@@ -356,6 +377,56 @@ export const validateFinalDestination = async ({
   await db.insert(log).values(newLog)
 
   return destination.id
+}
+
+export const validateKnownTiles = async ({
+  db,
+  mutableEnhancedShipPath,
+  mutableEvents,
+  tilesObject,
+  userId,
+}: ValidationProps) => {
+  const knownTiles =
+    (
+      await db.query.users.findFirst({
+        where: eq(users.id, userId),
+        columns: {
+          knownTiles: true,
+        },
+      })
+    )?.knownTiles ?? []
+
+  let mutableNewKnownTiles = [...knownTiles]
+
+  for await (const [
+    ,
+    enhancedShipPathTile,
+  ] of mutableEnhancedShipPath.entries()) {
+    const possibleNewKnowTiles = getNewKnownTiles({
+      centralXYTileId: enhancedShipPathTile.xyTileId,
+      visibilityStrength: 3,
+      tileListObject: tilesObject,
+      knownTiles: knownTiles,
+    })
+
+    if (possibleNewKnowTiles.length > 0) {
+      mutableNewKnownTiles = [
+        ...new Set([...possibleNewKnowTiles, ...mutableNewKnownTiles]),
+      ]
+
+      mutableEvents.push({
+        type: SAIL_EVENT_TYPES.TILE_REVEAL,
+        // TODO: figure out why this is a bit stilted?
+        triggerTime: enhancedShipPathTile.timeMsAtTileStart,
+        newKnownTiles: mutableNewKnownTiles,
+      })
+    }
+  }
+
+  await db
+    .update(users)
+    .set({ knownTiles: mutableNewKnownTiles })
+    .where(eq(users.id, userId))
 }
 
 // TODO: fix visually seeing ships overlap!

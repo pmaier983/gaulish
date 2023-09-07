@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2"
-import { and, eq, inArray, sql } from "drizzle-orm"
-import { path, ship, tile } from "schema"
+import { and, eq, sql } from "drizzle-orm"
+import { path, ship } from "schema"
 import { z } from "zod"
 import {
   MAX_SHIP_NAME_LENGTH,
@@ -12,11 +12,12 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import {
   type ValidationProps,
   getEnhancedShipPath,
-  getTileObject,
+  getTilesObject,
   validateTileConflicts,
   validateFinalDestination,
   validateShipCurrentSailingStatus,
   validateNpcConflicts,
+  validateKnownTiles,
 } from "~/utils/sailingUtils"
 
 export const shipsRouter = createTRPCRouter({
@@ -41,9 +42,7 @@ export const shipsRouter = createTRPCRouter({
 
         if (!userShip) throw new Error("No ship found with that id")
 
-        const tiles = await trx.query.tile.findMany({
-          where: inArray(tile.xyTileId, shipPath),
-        })
+        const tiles = await trx.query.tile.findMany({})
 
         const mutableEvents: ValidationProps["mutableEvents"] = []
         const mutableEnhancedShipPath = getEnhancedShipPath(
@@ -54,11 +53,11 @@ export const shipsRouter = createTRPCRouter({
         const userId = ctx.session.user.id
 
         const validationProps: ValidationProps = {
-          tiles,
+          tiles: tiles,
           userShip,
           shipPath,
           startTime,
-          tilesObject: getTileObject(tiles),
+          tilesObject: getTilesObject(tiles),
 
           mutableEvents,
           mutableEnhancedShipPath,
@@ -77,6 +76,9 @@ export const shipsRouter = createTRPCRouter({
 
         // Check for enemy interceptions
         await validateNpcConflicts(validationProps)
+
+        // Add the known tiles to the ships events
+        await validateKnownTiles(validationProps)
 
         // Validate if the ship is going to a city
         const destinationId = await validateFinalDestination(validationProps)

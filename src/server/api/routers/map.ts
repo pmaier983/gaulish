@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm"
 import { type Npc, type Path, users } from "schema"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
-import { getVisibleTilesFromXYTileId } from "~/utils/utils"
+import { getDiamondAroundXYTileId } from "~/utils/utils"
 
 interface NpcWithPath extends Npc {
   path: Path
@@ -62,16 +62,16 @@ export const mapRouter = createTRPCRouter({
 
       if (!firstCity) throw Error("No cities found!")
 
-      const mapObject =
-        mapArray?.reduce<{ [key: string]: boolean }>((acc, tile) => {
+      const tileListObject =
+        mapArray?.reduce<{ [key: string]: unknown }>((acc, tile) => {
           acc[`${tile.x}:${tile.y}`] = true
           return acc
         }, {}) ?? {}
 
-      const diamondAroundStarterCity = getVisibleTilesFromXYTileId({
+      const diamondAroundStarterCity = getDiamondAroundXYTileId({
         xyTileId: firstCity.xyTileId,
-        mapObject,
-        visibilityStrength: 4,
+        tileListObject,
+        tileRadius: 4,
       })
 
       const deduplicatedNewKnownTiles = [
