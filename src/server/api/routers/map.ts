@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm"
-import { type Npc, type Path, users } from "schema"
+import { type Npc, type Path, users, city } from "schema"
+import { z } from "zod"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { getDiamondAroundXYTileId } from "~/utils/utils"
@@ -22,6 +23,21 @@ export const mapRouter = createTRPCRouter({
   getCities: protectedProcedure.query(({ ctx }) => {
     return ctx.db.query.city.findMany({})
   }),
+
+  /**
+   * Fetch a city based on its id
+   */
+  getCityById: protectedProcedure
+    .input(
+      z.object({
+        cityId: z.number(),
+      }),
+    )
+    .query(({ ctx, input: { cityId } }) => {
+      return ctx.db.query.city.findFirst({
+        where: eq(city.id, cityId),
+      })
+    }),
 
   /**
    * Fetch a list of NPCs with their ships & paths attached
