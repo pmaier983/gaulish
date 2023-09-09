@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { type AppType } from "next/app"
 import { type Session } from "next-auth"
 import { SessionProvider, useSession } from "next-auth/react"
-import { Poppins } from "next/font/google"
+import { Alegreya } from "next/font/google"
 import { useRouter } from "next/router"
 import { configureAbly } from "@ably-labs/react-hooks"
 import { Toaster } from "react-hot-toast"
@@ -15,10 +15,8 @@ import { api } from "~/utils/api"
 import "~/styles/globals.css"
 import { ABLY_CLIENT_ID } from "~/utils/utils"
 
-const poppins = Poppins({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-})
+// This is a variable font https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide
+const poppins = Alegreya({ subsets: ["latin"] })
 
 // See: https://github1s.com/vercel/next.js/blob/canary/examples/with-ably
 
