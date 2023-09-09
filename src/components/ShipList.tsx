@@ -1,5 +1,6 @@
 import { produce } from "immer"
 import { type Ship } from "schema"
+import * as Dialog from "@radix-ui/react-dialog"
 
 import { Icon } from "~/components/Icon"
 import { Tooltip } from "~/components/Tooltip"
@@ -9,6 +10,7 @@ import { api } from "~/utils/api"
 
 import styles from "./shipList.module.css"
 import { TooltipEditText } from "~/components/TooltipTextEditor"
+import { CityDialog } from "~/components/dialogs/CityDialog"
 
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
@@ -135,12 +137,17 @@ export const ShipListItem = (ship: Ship) => {
         <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
       </td>
       <td className="flex flex-col gap-2">
-        <button
-          disabled={isSelectedShip}
-          className="flex w-full justify-center rounded outline outline-1"
-        >
-          Trade
-        </button>
+        <Dialog.Root>
+          <Dialog.Trigger>
+            <button
+              disabled={isSelectedShip}
+              className="flex w-full justify-center rounded outline outline-1"
+            >
+              Trade
+            </button>
+            <CityDialog />
+          </Dialog.Trigger>
+        </Dialog.Root>
         <button
           onClick={() => toggleShipSelection(ship)}
           className="flex w-full justify-center rounded outline outline-1"
