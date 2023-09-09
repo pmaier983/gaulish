@@ -138,15 +138,15 @@ export const ShipListItem = (ship: Ship) => {
       </td>
       <td className="flex flex-col gap-2">
         <Dialog.Root>
-          <Dialog.Trigger>
+          <Dialog.Trigger asChild>
             <button
               disabled={isSelectedShip}
               className="flex w-full justify-center rounded outline outline-1"
             >
               Trade
             </button>
-            <CityDialog />
           </Dialog.Trigger>
+          <CityDialog />
         </Dialog.Root>
         <button
           onClick={() => toggleShipSelection(ship)}
