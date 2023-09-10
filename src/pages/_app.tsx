@@ -16,7 +16,7 @@ import "~/styles/globals.css"
 import { ABLY_CLIENT_ID } from "~/utils/utils"
 
 // This is a variable font https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide
-const poppins = Alegreya({ subsets: ["latin"] })
+const Font = Alegreya({ subsets: ["latin"] })
 
 // See: https://github1s.com/vercel/next.js/blob/canary/examples/with-ably
 
@@ -59,7 +59,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   ...rest
 }) => (
   <SessionProvider session={session}>
-    <div className={`flex h-full flex-col ${poppins.className}`}>
+    <div className={`flex h-full flex-col ${Font.className}`}>
       <AuthWrapper>
         <Toaster position="bottom-center" />
         <Component {...rest} />
