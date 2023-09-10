@@ -118,6 +118,23 @@ export const shipsRouter = createTRPCRouter({
     })
   }),
   /**
+   * Get a Ship by its ID
+   */
+  getShipById: protectedProcedure
+    .input(
+      z.object({
+        shipId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.query.ship.findFirst({
+        where: eq(ship.id, input.shipId),
+        with: {
+          path: true,
+        },
+      })
+    }),
+  /**
    * Adds a ship to a users profile
    *
    * - Add the tiles around that ship to the knowTiles list
@@ -135,27 +152,30 @@ export const shipsRouter = createTRPCRouter({
       if (!shipProperties)
         throw Error("No ship properties found for that ship_type")
 
-      const countOfShipType = parseInt(
-        (
-          await trx
-            .select({ count: sql<string>`count(*)` })
-            .from(ship)
-            .where(
-              and(
-                eq(ship.userId, ctx.session.user.id),
-                eq(ship.shipType, SHIP_TYPES.PLANK),
-              ),
-            )
-        ).at(0)?.count ?? "0",
-        10,
-      )
+      const allUserShips = await trx.query.ship.findMany({
+        where: and(eq(ship.userId, ctx.session.user.id)),
+        columns: {
+          isSunk: true,
+          shipType: true,
+        },
+      })
+
+      const currentUserShips = allUserShips.filter((ship) => !ship.isSunk)
+
+      if (currentUserShips.length > 0) {
+        throw Error("You already have a ship, No Freebies!")
+      }
+
+      const countOfPlanks = currentUserShips.filter(
+        (ship) => ship.shipType === SHIP_TYPES.PLANK,
+      ).length
 
       const partialNewShip = {
         id: createId(),
         userId: ctx.session.user.id,
         cityId: cityForNewShip.id,
         ...shipProperties,
-        name: `${SHIP_TYPES.PLANK.toLowerCase()} ${countOfShipType + 1}`,
+        name: `${SHIP_TYPES.PLANK.toLowerCase()} ${countOfPlanks + 1}`,
       }
 
       await trx.insert(ship).values(partialNewShip)
