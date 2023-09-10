@@ -52,3 +52,4 @@ one day it will be a great IO game with users!
 - [ ] why does clicking "Tab" add a horizontal scroll bar?
 - [ ] Improve every Error message (also add error message to all trcp useQuery/useMutations)
 - [ ] Remove all the `createdAt?.getDate() ?? 0`
+- [ ] Setup a better Icon management system (The Dynamically imports Icon's and doesn't require babel)

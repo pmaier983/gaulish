@@ -6,6 +6,7 @@ import { type SVGAttributes } from "react"
 export const ICONS = {
   x: "x",
   arrowRight: "arrow-right",
+  arrowLeft: "arrow-left",
   "edit-3": "edit-3",
 } as const
 
