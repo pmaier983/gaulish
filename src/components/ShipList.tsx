@@ -146,7 +146,7 @@ export const ShipListItem = (ship: Ship) => {
               Trade
             </button>
           </Dialog.Trigger>
-          <CityDialog cityId={ship.cityId} />
+          <CityDialog initialCityId={ship.cityId} />
         </Dialog.Root>
         <button
           onClick={() => toggleShipSelection(ship)}

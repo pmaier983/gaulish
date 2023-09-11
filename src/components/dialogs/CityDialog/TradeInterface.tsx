@@ -1,6 +1,6 @@
-import { type InterfaceProps } from "~/components/dialogs/CityDialog"
+import { type BaseInterfaceProps } from "~/components/dialogs/CityDialog"
 
-interface TradeInterfaceProps extends InterfaceProps {}
+export interface TradeInterfaceProps extends BaseInterfaceProps {}
 
 export const TradeInterface = ({
   setCityDialogInterface,

@@ -1,6 +1,6 @@
 import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
-import { type Path, type Npc, type Ship } from "schema"
+import { type Path, type Npc, type Ship, type City } from "schema"
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
 
@@ -278,4 +278,54 @@ export const getNewKnownTiles = ({
   )
 
   return newKnownTiles
+}
+
+export interface CitySummary {
+  id: number
+  name: string
+  shipCount: number
+  gold: number
+  cargo: {
+    currentCargo: number
+    cargoCapacity: number
+  }
+}
+
+export const getCitySummaries = (
+  cities: City[],
+  ships: Ship[],
+): CitySummary[] => {
+  const cityIdToShipObject = ships.reduce<{ [key: string]: Ship[] }>(
+    (acc, ship) => {
+      const currentShip = acc[ship.cityId]
+      if (currentShip) {
+        acc[ship.cityId] = [...currentShip, ship]
+      } else {
+        acc[ship.cityId] = [ship]
+      }
+      return acc
+    },
+    {},
+  )
+
+  return cities.map((city) => {
+    const shipsAtCity = cityIdToShipObject[city.id] ?? []
+
+    return {
+      id: city.id,
+      name: city.name,
+      shipCount: shipsAtCity.length,
+      gold: shipsAtCity.reduce((acc, ship) => acc + ship.gold, 0),
+      cargo: {
+        currentCargo: shipsAtCity.reduce(
+          (acc, ship) => acc + getShipCargoSum(ship),
+          0,
+        ),
+        cargoCapacity: shipsAtCity.reduce(
+          (acc, ship) => acc + ship.cargoCapacity,
+          0,
+        ),
+      },
+    }
+  })
 }
