@@ -1,31 +1,39 @@
 import Image from "next/image"
 import { useState } from "react"
-import { type ImagesResponse } from "openai/resources"
+import {
+  type Image as OpenAIImage,
+  type ImageGenerateParams,
+  type ImagesResponse,
+} from "openai/resources"
 
 export const ImageGeneration = () => {
   // TODO: use useQuery for all of this.
   const [userPrompt, setUserPrompt] = useState(
-    "A set of gold, silver and bronze coins. Pixelated. Fully visible. Video Game Sailing Viking aesthetic. All similar, a weird symbol instead of a dollar sign.",
+    "24px by 24px, No Text, Pixelated, Fully visible, White background, Video Game Sailing aesthetic.",
   )
   const [isLoading, setIsLoading] = useState(false)
-  const [imageSrc, setImageSrc] = useState<string>()
+  const [imageCount, setImageCount] = useState(1)
+  const [images, setImages] = useState<OpenAIImage[]>([])
 
   const fetchData = async () => {
     setIsLoading(true)
     try {
+      const request: ImageGenerateParams = {
+        prompt: userPrompt,
+        n: imageCount,
+      }
+
       const rawResponse = await fetch("/api/openai/dalle", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          prompt: userPrompt,
-        }),
+        body: JSON.stringify(request),
       })
-      const response = (await rawResponse.json()) as ImagesResponse
+      const response = (await rawResponse.json()) as ImagesResponse["data"]
 
-      if (response.data) {
-        setImageSrc(response.data.at(0)?.url)
+      if (response) {
+        setImages(response)
       }
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -50,16 +58,24 @@ export const ImageGeneration = () => {
         >
           Query Dall-e
         </button>
+        <input
+          type="number"
+          value={imageCount}
+          onChange={(e) => setImageCount(parseInt(e.target.value, 10))}
+        />
       </div>
       {isLoading ? "Loading..." : null}
-      {imageSrc && (
-        <Image
-          src={imageSrc}
-          alt="random generated images from openai"
-          width={100}
-          height={100}
-        />
-      )}
+      <div className="flex flex-row">
+        {images.map((image, i) => (
+          <Image
+            key={i}
+            src={image.url ?? ""}
+            width={100}
+            height={100}
+            alt="openai generated image"
+          />
+        ))}
+      </div>
     </>
   )
 }

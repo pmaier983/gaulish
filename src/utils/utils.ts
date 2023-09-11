@@ -23,7 +23,7 @@ export const getTileImageString = (typeId: number) => {
     const TileType = TILE_TYPE_ID_TO_TYPE[typeId]
     if (!TileType)
       throw Error("Invalid Tile type_id passed into TILE_TYPE_ID_TO_TYPE")
-    return `/${TileType.toLocaleLowerCase()}.webp`
+    return `/assets/tiles/${TileType.toLocaleLowerCase()}.webp`
   } else {
     throw new Error("Invalid Tile type_id passed into Tile")
   }
