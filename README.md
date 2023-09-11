@@ -14,29 +14,28 @@ one day it will be a great IO game with users!
 - **URL**: [gaulish.io](https://gaulish.io/)
 - **Branch**: [main](https://github.com/pmaier983/gaulish/tree/main)
 
+## -------------- NOTES --------------
+
+_NOTE_ We can probably do bigger then this art wise and scale down
+
+- Standard Icons are 24px x 24px
+- Ship Type Icons are 32px x 32px (To give more room for detail)
+
 ## ------------- TODO List -------------
 
 ### High Priority
 
 - [ ] Build MVP and deploy
-- [ ] Make it possible to sign out
+- [ ] Provide more valuable info in the error messages? (or otherwise figure out debugging)
 - [ ] Setup Monitoring & error logging
 - [ ] Setup a method for A/B testing
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
-- [ ] Plan MVP Components
+- [ ]
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Collect Data on what size screen users are using
 - [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
-- [ ] Core User Journey
-  - [ ] Sailing
-    - Ship Selection
-    - User plans a route
-      - P0 arrow keys to nav
-      - P2 drag and drop
-      - P2 Select city to auto nav (A* pathing https://en.wikipedia.org/wiki/A*\_search_algorithm)
-  - [ ] Plan out User Economy/MVP
-  - [ ] Setup an Icon Library
+- [ ] Plan out User Economy/MVP
 
 ### Low Priority
 
@@ -52,4 +51,7 @@ one day it will be a great IO game with users!
 - [ ] why does clicking "Tab" add a horizontal scroll bar?
 - [ ] Improve every Error message (also add error message to all trcp useQuery/useMutations)
 - [ ] Remove all the `createdAt?.getDate() ?? 0`
+- [ ] Add some indicator to the user that they have no ships!
+- [ ] Add visibility strength to ship properties!
+- [ ] Consider converting all date fields to ms since epoch
 - [ ] Setup a better Icon management system (The Dynamically imports Icon's and doesn't require babel)
