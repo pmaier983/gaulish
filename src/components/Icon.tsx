@@ -20,11 +20,7 @@ interface IconProps extends SVGAttributes<SVGSVGElement> {
 // Inspired by this article: https://benadam.me/thoughts/react-svg-sprites/
 // TODO: decide if this is the best svg method, or another way would be better?
 export const Icon = (props: IconProps) => (
-  <svg
-    height={props.size ?? props.width ?? 24}
-    width={props.size ?? props.height ?? 24}
-    {...props}
-  >
+  <svg height={props.size ?? 24} width={props.size ?? 24} {...props}>
     <use href={`/icons.svg#${ICONS[props.id]}`} />
   </svg>
 )
