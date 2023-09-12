@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2"
-import { and, eq, sql } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { path, ship } from "schema"
 import { z } from "zod"
 import {

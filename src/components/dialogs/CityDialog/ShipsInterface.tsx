@@ -3,9 +3,7 @@ import { api } from "~/utils/api"
 
 export interface ShipsInterfaceProps extends BaseInterfaceProps {}
 
-export const ShipsInterface = ({
-  setCityDialogInterface,
-}: ShipsInterfaceProps) => {
+export const ShipsInterface = ({}: ShipsInterfaceProps) => {
   const queryClient = api.useContext()
 
   const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
