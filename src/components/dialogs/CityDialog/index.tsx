@@ -124,74 +124,95 @@ interface CityDialogCommonContentProps {
 
 const CityDialogCommonContent = ({
   setCityDialogInterface,
+  setSelectedCityId,
   cityDialogInterface: currentCityDialogInterface,
   selectedCity,
   citySummaries,
   children,
-}: CityDialogCommonContentProps) => (
-  <DialogWrapper>
-    <div className="flex w-full flex-row justify-between gap-2">
-      {/* Sidebar */}
-      <nav className="flex flex-col gap-2">
-        <button>
-          <h3 className="h-8 rounded-md bg-blue-300 text-2xl outline outline-1 outline-black">
-            <Dialog.Title>{selectedCity.name}</Dialog.Title>
-          </h3>
-        </button>
-        {citySummaries
-          .filter((citySummary) => citySummary.id !== selectedCity.id)
-          .map((citySummary) => (
-            <button
-              key={citySummary.id}
-              className="flex flex-col items-center rounded-md p-2 outline outline-1 outline-black"
-            >
-              <h3 className="text-xl">{citySummary.name}</h3>
-              {/* TODO: test these when the numbers get large! */}
-              <div className="flex flex-row items-center gap-2">
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="SHIP" /> {citySummary.shipCount}
+}: CityDialogCommonContentProps) => {
+  const selectedCitySummary = citySummaries.find(
+    (citySummary) => citySummary.id === selectedCity.id,
+  )!
+  return (
+    // TODO: configure using react grid for mobile!
+    <DialogWrapper>
+      <div className="flex w-full flex-row justify-between gap-2">
+        {/* Sidebar */}
+        <nav className="flex flex-col gap-2">
+          <Dialog.Title className="flex h-8 justify-center rounded-md bg-blue-300 text-2xl outline outline-1 outline-black">
+            {selectedCity.name}
+          </Dialog.Title>
+          {citySummaries
+            .filter((citySummary) => citySummary.id !== selectedCity.id)
+            .map((citySummary) => (
+              <button
+                key={citySummary.id}
+                onClick={() => setSelectedCityId(citySummary.id)}
+                className="flex flex-col items-center rounded-md p-2 outline outline-1 outline-black"
+              >
+                <h3 className="text-xl">{citySummary.name}</h3>
+                {/* TODO: test these when the numbers get large! */}
+                <div className="flex flex-row items-center gap-2">
+                  <div className="flex flex-row gap-1">
+                    <ImageIcon id="SHIP" /> {citySummary.shipCount}
+                  </div>
+                  <div className="flex flex-row gap-1">
+                    <ImageIcon id="GOLD" /> {citySummary.gold}
+                  </div>
+                  <div className="flex flex-row gap-1">
+                    <ImageIcon id="CARGO" /> {citySummary.cargo.currentCargo}/
+                    {citySummary.cargo.cargoCapacity}
+                  </div>
                 </div>
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="GOLD" /> {citySummary.gold}
-                </div>
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="CARGO" /> {citySummary.cargo.currentCargo}/
-                  {citySummary.cargo.cargoCapacity}
-                </div>
-              </div>
-            </button>
-          ))}
-      </nav>
-      {/* Header */}
-      <div className="flex flex-col">
-        <nav className="flex h-8 gap-2" aria-label="Interaction Methods">
-          <Dialog.Description className="sr-only">
-            A Modal that allows you to interact with your ships docked at a
-            specific city, as well as Trade with the city exchange and buy more
-            ships
-          </Dialog.Description>
-          {Object.values(CITY_DIALOG_INTERFACES).map((cityDialogInterface) => (
-            <button
-              key={cityDialogInterface}
-              className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
-                cityDialogInterface === currentCityDialogInterface &&
-                "bg-blue-300"
-              }`}
-              onClick={() => setCityDialogInterface(cityDialogInterface)}
-            >
-              {cityDialogInterface.toLocaleLowerCase()}
-            </button>
-          ))}
-          <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
-            <Icon id="x" />
-            <span className="sr-only">Close</span>
-          </Dialog.Close>
+              </button>
+            ))}
         </nav>
-        {children}
+        {/* Header */}
+        <div className="flex flex-col">
+          <nav className="flex h-8 gap-2" aria-label="Interaction Methods">
+            <Dialog.Description className="sr-only">
+              A Modal that allows you to interact with your ships docked at a
+              specific city, as well as Trade with the city exchange and buy
+              more ships
+            </Dialog.Description>
+            {Object.values(CITY_DIALOG_INTERFACES).map(
+              (cityDialogInterface) => (
+                <button
+                  key={cityDialogInterface}
+                  className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
+                    cityDialogInterface === currentCityDialogInterface &&
+                    "bg-blue-300"
+                  }`}
+                  onClick={() => setCityDialogInterface(cityDialogInterface)}
+                >
+                  {cityDialogInterface.toLocaleLowerCase()}
+                </button>
+              ),
+            )}
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
+              </div>
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="GOLD" /> {selectedCitySummary.gold}
+              </div>
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="CARGO" />{" "}
+                {selectedCitySummary.cargo.currentCargo}/
+                {selectedCitySummary.cargo.cargoCapacity}
+              </div>
+            </div>
+            <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+              <Icon id="x" />
+              <span className="sr-only">Close</span>
+            </Dialog.Close>
+          </nav>
+          {children}
+        </div>
       </div>
-    </div>
-  </DialogWrapper>
-)
+    </DialogWrapper>
+  )
+}
 
 type CityDialogInterfaceProps = JointInterfaceProps & {
   cityDialogInterface: CityDialogInterface

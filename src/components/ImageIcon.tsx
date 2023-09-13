@@ -93,13 +93,19 @@ interface ImageIconProps
 
 export const ImageIcon = ({ id, size }: ImageIconProps) => {
   const details = IMAGE_ICONS_TO_DETAILS[id]
+  const widthAndHeight = size ?? details.defaultSize
   return (
     <Image
-      className="rounded-md outline outline-1 outline-black"
+      // TODO: handle the min width and height size better then this!
+      className={`rounded-md outline outline-1 outline-black ${
+        widthAndHeight === 32
+          ? `min-h-[32px] min-w-[32px]`
+          : `min-h-[24px] min-w-[24px]`
+      }`}
       src={details.path}
       alt={details.alt}
-      width={size ?? details.defaultSize}
-      height={size ?? details.defaultSize}
+      width={widthAndHeight}
+      height={widthAndHeight}
     />
   )
 }
