@@ -55,3 +55,4 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Add visibility strength to ship properties!
 - [ ] Consider converting all date fields to ms since epoch
 - [ ] Setup a better Icon management system (The Dynamically imports Icon's and doesn't require babel)
+- [ ] Handle mobile better? (font resizing, modal management?)

@@ -139,9 +139,25 @@ const CityDialogCommonContent = ({
       <div className="flex w-full flex-row justify-between gap-2">
         {/* Sidebar */}
         <nav className="flex flex-col gap-2">
-          <Dialog.Title className="flex h-8 justify-center rounded-md bg-blue-300 text-2xl outline outline-1 outline-black">
-            {selectedCity.name}
-          </Dialog.Title>
+          <div className="flex flex-col items-center rounded-md bg-blue-400 p-2 outline outline-1 outline-black">
+            <Dialog.Title className="text-2xl">
+              {selectedCity.name}
+            </Dialog.Title>
+            {/* TODO: test these when the numbers get large! */}
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
+              </div>
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="GOLD" /> {selectedCitySummary.gold}
+              </div>
+              <div className="flex flex-row gap-1">
+                <ImageIcon id="CARGO" />{" "}
+                {selectedCitySummary.cargo.currentCargo}/
+                {selectedCitySummary.cargo.cargoCapacity}
+              </div>
+            </div>
+          </div>
           {citySummaries
             .filter((citySummary) => citySummary.id !== selectedCity.id)
             .map((citySummary) => (
@@ -168,39 +184,31 @@ const CityDialogCommonContent = ({
             ))}
         </nav>
         {/* Header */}
-        <div className="flex flex-col">
-          <nav className="flex h-8 gap-2" aria-label="Interaction Methods">
+        <div className="flex flex-1 flex-col">
+          <nav
+            className="flex h-8 justify-between"
+            aria-label="Interaction Methods"
+          >
             <Dialog.Description className="sr-only">
               A Modal that allows you to interact with your ships docked at a
               specific city, as well as Trade with the city exchange and buy
               more ships
             </Dialog.Description>
-            {Object.values(CITY_DIALOG_INTERFACES).map(
-              (cityDialogInterface) => (
-                <button
-                  key={cityDialogInterface}
-                  className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
-                    cityDialogInterface === currentCityDialogInterface &&
-                    "bg-blue-300"
-                  }`}
-                  onClick={() => setCityDialogInterface(cityDialogInterface)}
-                >
-                  {cityDialogInterface.toLocaleLowerCase()}
-                </button>
-              ),
-            )}
-            <div className="flex flex-row items-center gap-2">
-              <div className="flex flex-row gap-1">
-                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
-              </div>
-              <div className="flex flex-row gap-1">
-                <ImageIcon id="GOLD" /> {selectedCitySummary.gold}
-              </div>
-              <div className="flex flex-row gap-1">
-                <ImageIcon id="CARGO" />{" "}
-                {selectedCitySummary.cargo.currentCargo}/
-                {selectedCitySummary.cargo.cargoCapacity}
-              </div>
+            <div className="flex gap-2">
+              {Object.values(CITY_DIALOG_INTERFACES).map(
+                (cityDialogInterface) => (
+                  <button
+                    key={cityDialogInterface}
+                    className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
+                      cityDialogInterface === currentCityDialogInterface &&
+                      "bg-blue-300"
+                    }`}
+                    onClick={() => setCityDialogInterface(cityDialogInterface)}
+                  >
+                    {cityDialogInterface.toLocaleLowerCase()}
+                  </button>
+                ),
+              )}
             </div>
             <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
               <Icon id="x" />
