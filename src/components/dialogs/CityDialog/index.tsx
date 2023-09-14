@@ -24,6 +24,8 @@ import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { api } from "~/utils/api"
 import { type CitySummary, getCitySummaries } from "~/utils/utils"
 
+import styles from "./index.module.css"
+
 const CITY_DIALOG_INTERFACES = {
   SHIPS: "SHIPS",
   TRADE: "TRADE",
@@ -135,16 +137,16 @@ const CityDialogCommonContent = ({
   )!
   return (
     // TODO: configure using react grid for mobile!
-    <DialogWrapper>
-      <div className="flex w-full flex-row justify-between gap-2">
+    <DialogWrapper className="min-w-[330px]">
+      <div className={styles.container}>
         {/* Sidebar */}
-        <nav className="flex flex-col gap-2">
+        <nav className="flex flex-col gap-3">
           <div className="flex flex-col items-center rounded-md bg-blue-400 p-2 outline outline-1 outline-black">
-            <Dialog.Title className="text-2xl">
+            <Dialog.Title className="text-2xl max-sm:text-base">
               {selectedCity.name}
             </Dialog.Title>
             {/* TODO: test these when the numbers get large! */}
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-row items-center gap-2 max-sm:sr-only">
               <div className="flex flex-row gap-1">
                 <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
               </div>
@@ -166,9 +168,9 @@ const CityDialogCommonContent = ({
                 onClick={() => setSelectedCityId(citySummary.id)}
                 className="flex flex-col items-center rounded-md p-2 outline outline-1 outline-black"
               >
-                <h3 className="text-xl">{citySummary.name}</h3>
+                <h3 className="text-xl max-sm:text-base">{citySummary.name}</h3>
                 {/* TODO: test these when the numbers get large! */}
-                <div className="flex flex-row items-center gap-2">
+                <div className="flex flex-row items-center gap-2 max-sm:sr-only">
                   <div className="flex flex-row gap-1">
                     <ImageIcon id="SHIP" /> {citySummary.shipCount}
                   </div>
