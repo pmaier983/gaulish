@@ -25,6 +25,7 @@ import { api } from "~/utils/api"
 import { type CitySummary, getCitySummaries } from "~/utils/utils"
 
 import styles from "./index.module.css"
+import { renderFormattedNumber } from "~/utils/formatUtils"
 
 const CITY_DIALOG_INTERFACES = {
   SHIPS: "SHIPS",
@@ -148,10 +149,11 @@ const CityDialogCommonContent = ({
             {/* TODO: test these when the numbers get large! */}
             <div className="flex flex-row items-center gap-2 max-sm:sr-only">
               <div className="flex flex-row gap-1">
-                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
+                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount + 100}
               </div>
               <div className="flex flex-row gap-1">
-                <ImageIcon id="GOLD" /> {selectedCitySummary.gold}
+                <ImageIcon id="GOLD" />{" "}
+                {renderFormattedNumber(selectedCitySummary.gold + 1998)}
               </div>
               <div className="flex flex-row gap-1">
                 <ImageIcon id="CARGO" />{" "}
@@ -175,7 +177,8 @@ const CityDialogCommonContent = ({
                     <ImageIcon id="SHIP" /> {citySummary.shipCount}
                   </div>
                   <div className="flex flex-row gap-1">
-                    <ImageIcon id="GOLD" /> {citySummary.gold}
+                    <ImageIcon id="GOLD" />{" "}
+                    {renderFormattedNumber(citySummary.gold)}
                   </div>
                   <div className="flex flex-row gap-1">
                     <ImageIcon id="CARGO" /> {citySummary.cargo.currentCargo}/

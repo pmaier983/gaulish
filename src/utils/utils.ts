@@ -1,8 +1,9 @@
-import { DIRECTIONS } from "./../components/constants"
 import { createId } from "@paralleldrive/cuid2"
 import { type Path, type Npc, type Ship, type City } from "schema"
+
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
+import { DIRECTIONS } from "~/components/constants"
 
 export const ABLY_CLIENT_ID = createId()
 
