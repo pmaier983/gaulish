@@ -15,6 +15,7 @@ import {
   boolean,
 } from "drizzle-orm/mysql-core"
 import { type AdapterAccount } from "next-auth/adapters"
+import { type ShipType } from "~/components/constants"
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
@@ -143,7 +144,7 @@ export const ship = mysqlTable("ship", {
   wool: int("wool").default(0).notNull(),
   stone: int("stone").default(0).notNull(),
   wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
-  shipType: varchar("ship_type", { length: 191 }).notNull(),
+  shipType: varchar("ship_type", { length: 191 }).$type<ShipType>().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
   cargoCapacity: int("cargo_capacity").notNull(),
@@ -224,7 +225,7 @@ export const cityRelations = relations(city, ({ one, many }) => ({
 export const npc = mysqlTable("npc", {
   id: serial("id").primaryKey().notNull(),
   pathId: varchar("path_id", { length: 191 }),
-  shipType: varchar("ship_type", { length: 191 }).notNull(),
+  shipType: varchar("ship_type", { length: 191 }).$type<ShipType>().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
 })

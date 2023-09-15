@@ -66,11 +66,17 @@ export interface ShipProperties {
 export const SHIP_TYPES = {
   PLANK: "PLANK",
   RAFT: "RAFT",
-}
+  SLOOP: "SLOOP",
+  LONGSHIP: "LONGSHIP",
+  FRIGATE: "FRIGATE",
+} as const
 
 export type ShipType = keyof typeof SHIP_TYPES
 
-export const SHIP_TYPE_TO_SHIP_PROPERTIES: { [key: string]: ShipProperties } = {
+// TODO: balancing
+export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
+  [key in ShipType]: ShipProperties
+} = {
   [SHIP_TYPES.PLANK]: {
     shipType: SHIP_TYPES.PLANK,
     cargoCapacity: 1,
@@ -79,6 +85,21 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: { [key: string]: ShipProperties } = {
   [SHIP_TYPES.RAFT]: {
     shipType: SHIP_TYPES.RAFT,
     cargoCapacity: 10,
+    speed: 1 / 2500, // 1 tile every 2.5 seconds
+  },
+  [SHIP_TYPES.SLOOP]: {
+    shipType: SHIP_TYPES.SLOOP,
+    cargoCapacity: 100,
+    speed: 1 / 2500, // 1 tile every 2.5 seconds
+  },
+  [SHIP_TYPES.LONGSHIP]: {
+    shipType: SHIP_TYPES.LONGSHIP,
+    cargoCapacity: 1000,
+    speed: 1 / 2500, // 1 tile every 2.5 seconds
+  },
+  [SHIP_TYPES.FRIGATE]: {
+    shipType: SHIP_TYPES.FRIGATE,
+    cargoCapacity: 10000,
     speed: 1 / 2500, // 1 tile every 2.5 seconds
   },
 }

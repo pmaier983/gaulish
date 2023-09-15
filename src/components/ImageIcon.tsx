@@ -1,6 +1,7 @@
 import Image, { type ImageProps } from "next/image"
+import { SHIP_TYPES } from "~/components/constants"
 
-export const IMAGE_ICONS = {
+const IMAGE_ICONS_PURE = {
   CARGO: "CARGO",
   GOLD: "GOLD",
   SHIP: "SHIP",
@@ -8,16 +9,19 @@ export const IMAGE_ICONS = {
   WHEAT: "WHEAT",
   WOOD: "WOOD",
   WOOL: "WOOL",
-  FRIGATE: "FRIGATE",
-  LONGSHIP: "LONGSHIP",
-  PLANK: "PLANK",
-  RAFT: "RAFT",
-  SLOOP: "SLOOP",
 } as const
+
+const IMAGE_ICONS = { ...IMAGE_ICONS_PURE, ...SHIP_TYPES } as const
 
 export type IMAGE_ICON = keyof typeof IMAGE_ICONS
 
-export const IMAGE_ICONS_TO_DETAILS = {
+export const IMAGE_ICONS_TO_DETAILS: {
+  [key in IMAGE_ICON]: {
+    path: string
+    alt: string
+    defaultSize: number
+  }
+} = {
   [IMAGE_ICONS.CARGO]: {
     path: "/assets/icons/cargo.webp",
     alt: "Barrel icon indicating Cargo",
@@ -94,6 +98,7 @@ interface ImageIconProps
 export const ImageIcon = ({ id, size }: ImageIconProps) => {
   const details = IMAGE_ICONS_TO_DETAILS[id]
   const widthAndHeight = size ?? details.defaultSize
+  console.log({ widthAndHeight })
   return (
     <Image
       // TODO: handle the min width and height size better then this!
