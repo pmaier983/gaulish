@@ -138,10 +138,10 @@ const CityDialogCommonContent = ({
   )!
   return (
     // TODO: configure using react grid for mobile!
-    <DialogWrapper className="min-w-[330px]">
+    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] overflow-hidden">
       <div className={styles.container}>
         {/* Sidebar */}
-        <nav className="flex flex-col gap-3">
+        <nav className="flex flex-col gap-3 overflow-y-auto p-2">
           <div className="flex flex-col items-center rounded-md bg-blue-400 p-2 outline outline-1 outline-black">
             <Dialog.Title className="text-2xl max-sm:text-base">
               {selectedCity.name}
@@ -188,8 +188,8 @@ const CityDialogCommonContent = ({
               </button>
             ))}
         </nav>
-        {/* Header */}
-        <div className="flex flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col">
+          {/* Header */}
           <nav
             className="flex h-8 justify-between"
             aria-label="Interaction Methods"
@@ -220,6 +220,7 @@ const CityDialogCommonContent = ({
               <span className="sr-only">Close</span>
             </Dialog.Close>
           </nav>
+          {/* Main Content */}
           {children}
         </div>
       </div>
