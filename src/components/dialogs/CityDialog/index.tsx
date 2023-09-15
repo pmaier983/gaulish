@@ -138,7 +138,7 @@ const CityDialogCommonContent = ({
   )!
   return (
     // TODO: configure using react grid for mobile!
-    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] overflow-hidden">
+    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%]">
       <div className={styles.container}>
         {/* Sidebar */}
         <nav className="flex flex-col gap-3 overflow-y-auto p-2">
@@ -149,11 +149,11 @@ const CityDialogCommonContent = ({
             {/* TODO: test these when the numbers get large! */}
             <div className="flex flex-row items-center gap-2 max-sm:sr-only">
               <div className="flex flex-row gap-1">
-                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount + 100}
+                <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
               </div>
               <div className="flex flex-row gap-1">
                 <ImageIcon id="GOLD" />{" "}
-                {renderFormattedNumber(selectedCitySummary.gold + 1998)}
+                {renderFormattedNumber(selectedCitySummary.gold)}
               </div>
               <div className="flex flex-row gap-1">
                 <ImageIcon id="CARGO" />{" "}
@@ -188,10 +188,11 @@ const CityDialogCommonContent = ({
               </button>
             ))}
         </nav>
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-w-0 flex-1 flex-col p-2">
           {/* Header */}
           <nav
-            className="flex h-8 justify-between"
+            // TODO: what are these paddings required to avoid border being cut off?
+            className="flex h-8 justify-between pl-2 pr-2"
             aria-label="Interaction Methods"
           >
             <Dialog.Description className="sr-only">
