@@ -57,12 +57,6 @@ export const TILE_TYPE_TO_TYPE_ID = {
   [TILE_TYPES.OCEAN]: 4,
 }
 
-export interface ShipProperties {
-  shipType: string
-  cargoCapacity: number
-  speed: number
-}
-
 export const SHIP_TYPES = {
   PLANK: "PLANK",
   RAFT: "RAFT",
@@ -72,6 +66,12 @@ export const SHIP_TYPES = {
 } as const
 
 export type ShipType = keyof typeof SHIP_TYPES
+
+export interface ShipProperties {
+  shipType: ShipType
+  cargoCapacity: number
+  speed: number
+}
 
 // TODO: balancing
 export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
