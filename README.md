@@ -36,6 +36,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Collect Data on what size screen users are using
 - [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Plan out User Economy/MVP
+- [ ] Setup an error page (/\_error?)
 
 ### Low Priority
 
