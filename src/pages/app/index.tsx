@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic"
+import * as Dialog from "@radix-ui/react-dialog"
 
 import { useElementSize } from "~/hooks/useElementSize"
 
@@ -12,6 +13,8 @@ import { ProfilePicture } from "~/components/ProfilePicture"
 import { MapFooter } from "~/components/MapFooter"
 import { DevNavBar } from "~/components/DevNavBar"
 import { Footer } from "~/components/Footer"
+import { CityDialog } from "~/components/dialogs/CityDialog"
+import { useCityDialogStore } from "~/state/cityDialogStore"
 
 const Map = dynamic(() => import("~/components/Map"), {
   ssr: false,
@@ -33,6 +36,11 @@ const App = () => {
     isSidebarDisabled: state.isSidebarDisabled,
     isChatDisabled: state.isChatDisabled,
     isMapDisabled: state.isMapDisabled,
+  }))
+
+  const { isOpen, toggleOpenState } = useCityDialogStore((state) => ({
+    isOpen: state.isOpen,
+    toggleOpenState: state.toggleOpenState,
   }))
 
   useGamestate()
@@ -63,6 +71,9 @@ const App = () => {
         {isChatDisabled && <div className={styles.isDisabledOverlay} />}
         <Footer />
       </div>
+      <Dialog.Root open={isOpen} onOpenChange={toggleOpenState}>
+        <CityDialog />
+      </Dialog.Root>
     </div>
   )
 }

@@ -1,8 +1,7 @@
 import { ShipCard } from "~/components/ShipCard"
-import { type BaseInterfaceProps } from "~/components/dialogs/CityDialog"
 import { api } from "~/utils/api"
 
-export interface ShipsInterfaceProps extends BaseInterfaceProps {}
+export interface ShipsInterfaceProps {}
 
 export const ShipsInterface = ({}: ShipsInterfaceProps) => {
   const queryClient = api.useContext()
@@ -16,9 +15,9 @@ export const ShipsInterface = ({}: ShipsInterfaceProps) => {
   })
 
   return (
-    <div className="flex flex-1 gap-2 overflow-x-auto pb-2 pt-2">
+    <div className="flex flex-1 gap-2 overflow-x-auto p-2">
       {ships.map((ship) => (
-        <ShipCard key={ship.id} ship={ship} />
+        <ShipCard key={ship.id} ship={ship} type="LARGE" />
       ))}
     </div>
   )

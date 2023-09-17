@@ -1,6 +1,5 @@
 import { produce } from "immer"
 import { type Ship } from "schema"
-import * as Dialog from "@radix-ui/react-dialog"
 
 import { Icon } from "~/components/Icon"
 import { Tooltip } from "~/components/Tooltip"
@@ -8,9 +7,10 @@ import { MAX_SHIP_NAME_LENGTH } from "~/components/constants"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
-import styles from "./shipList.module.css"
 import { TooltipEditText } from "~/components/TooltipTextEditor"
-import { CityDialog } from "~/components/dialogs/CityDialog"
+import { useCityDialogStore } from "~/state/cityDialogStore"
+
+import styles from "./shipList.module.css"
 
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
@@ -81,6 +81,10 @@ export const ShipListItem = (ship: Ship) => {
       toggleShipSelection: state.toggleShipSelection,
     }))
 
+  const { toggleOpenState } = useCityDialogStore((state) => ({
+    toggleOpenState: state.toggleOpenState,
+  }))
+
   const { mutate } = api.ships.updateShipName.useMutation({
     onSuccess: (newShipData) => {
       // when the ship name is updated update the ship list!
@@ -137,17 +141,13 @@ export const ShipListItem = (ship: Ship) => {
         <span>{ship.stone + ship.wheat + ship.wood + ship.wool}</span>
       </td>
       <td className="flex flex-col gap-2">
-        <Dialog.Root>
-          <Dialog.Trigger asChild>
-            <button
-              disabled={isSelectedShip}
-              className="flex w-full justify-center rounded outline outline-1"
-            >
-              Trade
-            </button>
-          </Dialog.Trigger>
-          <CityDialog initialCityId={ship.cityId} />
-        </Dialog.Root>
+        <button
+          onClick={() => toggleOpenState()}
+          disabled={isSelectedShip}
+          className="flex w-full justify-center rounded outline outline-1"
+        >
+          Trade
+        </button>
         <button
           onClick={() => toggleShipSelection(ship)}
           className="flex w-full justify-center rounded outline outline-1"
