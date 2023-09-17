@@ -138,11 +138,12 @@ const CityDialogCommonContent = ({
   )!
   return (
     // TODO: configure using react grid for mobile!
-    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%]">
-      <div className={styles.container}>
+    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] p-3">
+      <div className="flex flex-1 flex-row justify-between gap-2 max-sm:flex-col">
         {/* Sidebar */}
-        <nav className="flex flex-col gap-3 overflow-y-auto p-2">
-          <div className="flex flex-col items-center rounded-md bg-blue-400 p-2 outline outline-1 outline-black">
+        <nav className="flex flex-col gap-3 overflow-y-auto">
+          {/* We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll) */}
+          <div className="flex flex-col items-center rounded-md border border-black bg-blue-400 p-2">
             <Dialog.Title className="text-2xl max-sm:text-base">
               {selectedCity.name}
             </Dialog.Title>
@@ -168,7 +169,8 @@ const CityDialogCommonContent = ({
               <button
                 key={citySummary.id}
                 onClick={() => setSelectedCityId(citySummary.id)}
-                className="flex flex-col items-center rounded-md p-2 outline outline-1 outline-black"
+                // We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll)
+                className="flex flex-col items-center rounded-md border border-black p-2"
               >
                 <h3 className="text-xl max-sm:text-base">{citySummary.name}</h3>
                 {/* TODO: test these when the numbers get large! */}
@@ -188,11 +190,11 @@ const CityDialogCommonContent = ({
               </button>
             ))}
         </nav>
-        <div className="flex min-w-0 flex-1 flex-col p-2">
+        <div className="flex min-w-0 flex-1 flex-col">
           {/* Header */}
           <nav
             // TODO: what are these paddings required to avoid border being cut off?
-            className="flex h-8 justify-between pl-2 pr-2"
+            className="flex justify-between "
             aria-label="Interaction Methods"
           >
             <Dialog.Description className="sr-only">

@@ -16,7 +16,7 @@ export const ShipsInterface = ({}: ShipsInterfaceProps) => {
   })
 
   return (
-    <div className="flex flex-1 gap-2 overflow-visible overflow-x-auto p-2">
+    <div className="flex flex-1 gap-2 overflow-x-auto pb-2 pt-2">
       {ships.map((ship) => (
         <ShipCard key={ship.id} ship={ship} />
       ))}
