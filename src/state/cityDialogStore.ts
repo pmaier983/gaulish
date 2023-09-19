@@ -14,6 +14,11 @@ export type CityDialogInterface = keyof typeof CITY_DIALOG_INTERFACES
 interface CityDialogStoreActions {
   restart: () => void
 
+  // TODO: consider removing this and setting up specific actions
+  setCityDialogStoreState: (newState: Partial<CityDialogStoreState>) => void
+
+  setCityDialogInterface: (newInterface: CityDialogInterface) => void
+
   toggleOpenState: (newOpenState?: boolean) => void
   toggleSelectedCityId: (newSelectedCityId?: number) => void
 }
@@ -36,6 +41,14 @@ export type CityDialogStoreState = CityDialogStore & CityDialogStoreActions
 export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
   devtools((set, get) => ({
     ...initialCityDialogStoreState,
+
+    setCityDialogStoreState: (newState) => {
+      set((state) => ({ ...state, ...newState }))
+    },
+
+    setCityDialogInterface: (newInterface) => {
+      set({ cityDialogInterface: newInterface })
+    },
 
     toggleOpenState: (newOpenState) => {
       if (newOpenState !== undefined) {

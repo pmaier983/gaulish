@@ -34,8 +34,8 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
       toggleShipSelection: state.toggleShipSelection,
     }))
 
-  const { toggleOpenState } = useCityDialogStore((state) => ({
-    toggleOpenState: state.toggleOpenState,
+  const { setCityDialogStoreState } = useCityDialogStore((state) => ({
+    setCityDialogStoreState: state.setCityDialogStoreState,
   }))
 
   const { mutate } = api.ships.updateShipName.useMutation({
@@ -64,7 +64,11 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
   switch (type) {
     case "SMALL": {
       return (
-        <article className="flex w-full max-w-[20rem] flex-col gap-2 rounded p-2 outline outline-1 outline-black">
+        <article
+          className={`flex w-full max-w-[20rem] flex-col gap-2 rounded p-2 outline outline-1 outline-black ${
+            isSelectedShip ? "outline-4 outline-red-600" : ""
+          }`}
+        >
           <div className="flex flex-row items-center justify-between">
             <div className="flex flex-row">
               <ImageIcon id={ship.shipType} />
@@ -103,9 +107,22 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
               currentCargo={ship.stone + ship.wheat + ship.wood + ship.wool}
               cargoCapacity={ship.cargoCapacity}
             />
-            <ExchangeButton disabled={isSailing} />
+            <ExchangeButton
+              disabled={isSailing}
+              onClick={() =>
+                setCityDialogStoreState({
+                  isOpen: true,
+                  cityDialogInterface: "EXCHANGE",
+                })
+              }
+            />
             <TradeButton
-              onClick={() => toggleOpenState()}
+              onClick={() =>
+                setCityDialogStoreState({
+                  isOpen: true,
+                  cityDialogInterface: "TRADE",
+                })
+              }
               disabled={isSailing}
             />
           </div>

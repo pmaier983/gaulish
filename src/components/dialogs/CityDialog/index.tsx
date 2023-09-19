@@ -24,12 +24,17 @@ export interface BaseInterfaceProps {
 // Much of the tailwind css in this file was copied from here:
 // https://github1s.com/shadcn-ui/ui/blob/HEAD/apps/www/registry/default/ui/dialog.tsx
 export const CityDialog = () => {
-  const { selectedCityId, cityDialogInterface, toggleSelectedCityId } =
-    useCityDialogStore((state) => ({
-      selectedCityId: state.selectedCityId,
-      cityDialogInterface: state.cityDialogInterface,
-      toggleSelectedCityId: state.toggleSelectedCityId,
-    }))
+  const {
+    selectedCityId,
+    cityDialogInterface,
+    toggleSelectedCityId,
+    setCityDialogInterface,
+  } = useCityDialogStore((state) => ({
+    selectedCityId: state.selectedCityId,
+    cityDialogInterface: state.cityDialogInterface,
+    toggleSelectedCityId: state.toggleSelectedCityId,
+    setCityDialogInterface: state.setCityDialogInterface,
+  }))
 
   const queryClient = api.useContext()
 
@@ -66,6 +71,7 @@ export const CityDialog = () => {
     <CityDialogCommonContent
       selectedCity={selectedCity}
       toggleSelectedCityId={toggleSelectedCityId}
+      setCityDialogInterface={setCityDialogInterface}
       cityDialogInterface={cityDialogInterface}
       citySummaries={getCitySummaries(knownCities, ships)}
     >
@@ -77,6 +83,7 @@ export const CityDialog = () => {
 interface CityDialogCommonContentProps {
   selectedCity?: City
   toggleSelectedCityId: (newSelectedCityId?: number) => void
+  setCityDialogInterface: (newCityDialogInterface: CityDialogInterface) => void
   cityDialogInterface: CityDialogInterface
   citySummaries: CitySummary[]
 
@@ -86,6 +93,7 @@ interface CityDialogCommonContentProps {
 const CityDialogCommonContent = ({
   selectedCity,
   toggleSelectedCityId,
+  setCityDialogInterface,
   cityDialogInterface: currentCityDialogInterface,
   citySummaries,
   children,
@@ -130,6 +138,7 @@ const CityDialogCommonContent = ({
                     cityDialogInterface === currentCityDialogInterface &&
                     "bg-blue-300"
                   }`}
+                  onClick={() => setCityDialogInterface(cityDialogInterface)}
                 >
                   {cityDialogInterface.toLocaleLowerCase()}
                 </button>
