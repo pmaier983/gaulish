@@ -1,7 +1,6 @@
 import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 import { shallow } from "zustand/shallow"
-import { type City } from "schema"
 
 export const CITY_DIALOG_INTERFACES = {
   SHIPS: "SHIPS",
@@ -16,12 +15,13 @@ interface CityDialogStoreActions {
   restart: () => void
 
   toggleOpenState: (newOpenState?: boolean) => void
+  toggleSelectedCityId: (newSelectedCityId?: number) => void
 }
 
 export interface CityDialogStore {
   isOpen: boolean
 
-  selectedCity?: City
+  selectedCityId?: number
   cityDialogInterface: CityDialogInterface
 }
 
@@ -34,7 +34,7 @@ const initialCityDialogStoreState: CityDialogStore = {
 export type CityDialogStoreState = CityDialogStore & CityDialogStoreActions
 
 export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     ...initialCityDialogStoreState,
 
     toggleOpenState: (newOpenState) => {
@@ -42,6 +42,15 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
         set(() => ({ isOpen: newOpenState }))
       } else {
         set((state) => ({ isOpen: !state.isOpen }))
+      }
+    },
+
+    toggleSelectedCityId: (newSelectedCityId) => {
+      // when selecting a city that is already selected, unselect the city
+      if (newSelectedCityId === get().selectedCityId) {
+        set({ selectedCityId: undefined })
+      } else {
+        set({ selectedCityId: newSelectedCityId })
       }
     },
 

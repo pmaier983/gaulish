@@ -1,5 +1,14 @@
+import { ExchangeButton } from "~/components/buttons/ExchangeButton"
 import { ImageIcon } from "~/components/ImageIcon"
-import { type ShipComposite } from "~/state/gamestateStore"
+import { Tooltip } from "~/components/Tooltip"
+import { TooltipEditText } from "~/components/TooltipTextEditor"
+import { MAX_SHIP_NAME_LENGTH } from "~/components/constants"
+import { useCityDialogStore } from "~/state/cityDialogStore"
+import { useGamestateStore, type ShipComposite } from "~/state/gamestateStore"
+import { api } from "~/utils/api"
+import { TradeButton } from "~/components/buttons/TradeButton"
+import { SailButton } from "~/components/buttons/SailButton"
+import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 
 const SHIP_CARD_TYPES = {
   SMALL: "SMALL",
@@ -14,9 +23,94 @@ interface ShipCardProps {
 }
 
 export const ShipCard = ({ ship, type }: ShipCardProps) => {
+  const queryClient = api.useContext()
+
+  const { sailingShips, selectedShip, cityObject, toggleShipSelection } =
+    useGamestateStore((state) => ({
+      sailingShips: state.sailingShips,
+      selectedShip: state.selectedShip,
+      // TODO: should i use useGamestateStore as a source of truth outside map, or react-query only?
+      cityObject: state.cityObject,
+      toggleShipSelection: state.toggleShipSelection,
+    }))
+
+  const { toggleOpenState } = useCityDialogStore((state) => ({
+    toggleOpenState: state.toggleOpenState,
+  }))
+
+  const { mutate } = api.ships.updateShipName.useMutation({
+    onSuccess: (newShipData) => {
+      // when the ship name is updated update the ship list!
+      queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
+        const newData = oldShipList?.map((currentShip) => {
+          if (currentShip.id === newShipData.shipId) {
+            return { ...currentShip, name: newShipData.newName }
+          }
+          return currentShip
+        })
+        return newData
+      })
+    },
+  })
+
+  const isSelectedShip = selectedShip?.id === ship.id
+
+  const isSailing = sailingShips
+    .map((currentShip) => currentShip.id)
+    .includes(ship.id)
+
+  const cityName = cityObject[ship.cityId]?.name
+
   switch (type) {
     case "SMALL": {
-      return <article className="">TODO</article>
+      return (
+        <article className="flex w-full max-w-[20rem] flex-col gap-2 rounded p-2 outline outline-1 outline-black">
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row">
+              <ImageIcon id={ship.shipType} />
+              <div className="flex flex-col pl-2">
+                <Tooltip
+                  interactive
+                  content={
+                    <TooltipEditText
+                      text={ship.name}
+                      maxNewTextLength={MAX_SHIP_NAME_LENGTH}
+                      onSubmit={(newName) => {
+                        mutate({ shipId: ship.id, newName: newName })
+                      }}
+                    />
+                  }
+                >
+                  {/* TODO: what proper html tag to use for prominence within articles? h4 or what */}
+                  <span className="h-5 whitespace-nowrap text-xl leading-5">
+                    {ship.name}
+                  </span>
+                </Tooltip>
+                <div className="h-5 whitespace-nowrap leading-5">
+                  {isSailing ? "Sailing" : cityName}
+                </div>
+              </div>
+            </div>
+            <SailButton
+              onClick={() => toggleShipSelection(ship)}
+              className=" justify-center"
+              disabled={isSailing}
+            />
+          </div>
+          <div className="flex flex-row items-center justify-between">
+            <ImageIconCount id="GOLD" count={ship.gold} />
+            <CargoCount
+              currentCargo={ship.stone + ship.wheat + ship.wood + ship.wool}
+              cargoCapacity={ship.cargoCapacity}
+            />
+            <ExchangeButton disabled={isSailing} />
+            <TradeButton
+              onClick={() => toggleOpenState()}
+              disabled={isSailing}
+            />
+          </div>
+        </article>
+      )
     }
     default:
     case "LARGE": {
