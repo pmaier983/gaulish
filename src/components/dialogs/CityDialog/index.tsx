@@ -2,7 +2,6 @@ import * as Dialog from "@radix-ui/react-dialog"
 import { type City } from "schema"
 
 import { Icon } from "~/components/Icon"
-import { ImageIcon } from "~/components/ImageIcon"
 import { DockyardInterface } from "~/components/dialogs/CityDialog/DockyardInterface"
 import { ExchangeInterface } from "~/components/dialogs/CityDialog/ExchangeInterface"
 import { ShipsInterface } from "~/components/dialogs/CityDialog/ShipsInterface"
@@ -11,12 +10,12 @@ import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { api } from "~/utils/api"
 import { type CitySummary, getCitySummaries } from "~/utils/utils"
 
-import { renderFormattedNumber } from "~/utils/formatUtils"
 import {
   CityDialogInterface,
   CITY_DIALOG_INTERFACES,
   useCityDialogStore,
 } from "~/state/cityDialogStore"
+import { CityCard } from "~/components/CityCard"
 
 export interface BaseInterfaceProps {
   setCityDialogInterface: (newCityDialogInterface: CityDialogInterface) => void
@@ -25,10 +24,12 @@ export interface BaseInterfaceProps {
 // Much of the tailwind css in this file was copied from here:
 // https://github1s.com/shadcn-ui/ui/blob/HEAD/apps/www/registry/default/ui/dialog.tsx
 export const CityDialog = () => {
-  const { selectedCity, cityDialogInterface } = useCityDialogStore((state) => ({
-    selectedCity: state.selectedCity,
-    cityDialogInterface: state.cityDialogInterface,
-  }))
+  const { selectedCityId, cityDialogInterface, toggleSelectedCityId } =
+    useCityDialogStore((state) => ({
+      selectedCityId: state.selectedCityId,
+      cityDialogInterface: state.cityDialogInterface,
+      toggleSelectedCityId: state.toggleSelectedCityId,
+    }))
 
   const queryClient = api.useContext()
 
@@ -59,9 +60,12 @@ export const CityDialog = () => {
     knownTiles.includes(city.xyTileId),
   )
 
+  const selectedCity = cities.find((city) => city.id === selectedCityId)
+
   return (
     <CityDialogCommonContent
       selectedCity={selectedCity}
+      toggleSelectedCityId={toggleSelectedCityId}
       cityDialogInterface={cityDialogInterface}
       citySummaries={getCitySummaries(knownCities, ships)}
     >
@@ -72,6 +76,7 @@ export const CityDialog = () => {
 
 interface CityDialogCommonContentProps {
   selectedCity?: City
+  toggleSelectedCityId: (newSelectedCityId?: number) => void
   cityDialogInterface: CityDialogInterface
   citySummaries: CitySummary[]
 
@@ -80,110 +85,71 @@ interface CityDialogCommonContentProps {
 
 const CityDialogCommonContent = ({
   selectedCity,
+  toggleSelectedCityId,
   cityDialogInterface: currentCityDialogInterface,
   citySummaries,
   children,
-}: CityDialogCommonContentProps) => {
-  const selectedCitySummary = citySummaries.find(
-    (citySummary) => citySummary.id === selectedCity?.id,
-  )
-  return (
-    // TODO: configure using react grid for mobile!
-    <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] p-3">
-      <div className="flex flex-1 flex-row justify-between gap-2 max-sm:flex-col">
-        {/* Sidebar */}
-        <nav className="flex flex-col gap-3 overflow-y-auto">
-          {/* We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll) */}
-          {selectedCitySummary && (
-            <div className="flex flex-col items-center rounded-md border border-black bg-blue-400 p-2">
-              <Dialog.Title className="text-2xl max-sm:text-base">
-                {selectedCitySummary.name}
-              </Dialog.Title>
-              {/* TODO: test these when the numbers get large! */}
-              <div className="flex flex-row items-center gap-2 max-sm:sr-only">
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="SHIP" /> {selectedCitySummary.shipCount}
-                </div>
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="GOLD" />{" "}
-                  {renderFormattedNumber(selectedCitySummary.gold)}
-                </div>
-                <div className="flex flex-row gap-1">
-                  <ImageIcon id="CARGO" />{" "}
-                  {selectedCitySummary.cargo.currentCargo}/
-                  {selectedCitySummary.cargo.cargoCapacity}
-                </div>
-              </div>
-            </div>
-          )}
-          {citySummaries
-            .filter((citySummary) => citySummary.id !== selectedCity?.id)
-            .map((citySummary) => (
-              <button
-                key={citySummary.id}
-                // We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll)
-                className="flex flex-col items-center rounded-md border border-black p-2"
-              >
-                <h3 className="text-xl max-sm:text-base">{citySummary.name}</h3>
-                {/* TODO: test these when the numbers get large! */}
-                <div className="flex flex-row items-center gap-2 max-sm:sr-only">
-                  <div className="flex flex-row gap-1">
-                    <ImageIcon id="SHIP" /> {citySummary.shipCount}
-                  </div>
-                  <div className="flex flex-row gap-1">
-                    <ImageIcon id="GOLD" />{" "}
-                    {renderFormattedNumber(citySummary.gold)}
-                  </div>
-                  <div className="flex flex-row gap-1">
-                    <ImageIcon id="CARGO" /> {citySummary.cargo.currentCargo}/
-                    {citySummary.cargo.cargoCapacity}
-                  </div>
-                </div>
-              </button>
-            ))}
-        </nav>
-        <div className="flex min-w-0 flex-1 flex-col">
-          {/* Header */}
-          <nav
-            // TODO: what are these paddings required to avoid border being cut off?
-            className="flex justify-between "
-            aria-label="Interaction Methods"
-          >
-            <Dialog.Description className="sr-only">
-              A Modal that allows you to interact with your ships docked at a
-              specific city, as well as Trade with the city exchange and buy
-              more ships
-            </Dialog.Description>
-            <div className="flex gap-2">
-              {Object.values(CITY_DIALOG_INTERFACES).map(
-                (cityDialogInterface) => (
-                  <button
-                    key={cityDialogInterface}
-                    className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
-                      cityDialogInterface === currentCityDialogInterface &&
-                      "bg-blue-300"
-                    }`}
-                  >
-                    {cityDialogInterface.toLocaleLowerCase()}
-                  </button>
-                ),
-              )}
-            </div>
-            <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
-              <Icon id="x" />
-              <span className="sr-only">Close</span>
-            </Dialog.Close>
-          </nav>
-          {/* Main Content */}
-          <div className="h-2" />
-          <div className="rounded-md outline-dashed outline-1 outline-black">
-            {children}
+}: CityDialogCommonContentProps) => (
+  // TODO: configure using react grid for mobile!
+  <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] p-3">
+    <div className="flex flex-1 flex-row justify-between gap-2 max-sm:flex-col">
+      {/* Sidebar */}
+      <nav className="flex flex-col gap-3 overflow-y-auto">
+        {citySummaries
+          // TODO: is there a better way to sort cities? By name?
+          .sort((cityA, cityB) => cityB.shipCount - cityA.shipCount)
+          .map((citySummary) => (
+            <CityCard
+              key={citySummary.name}
+              {...citySummary}
+              className={
+                selectedCity?.name == citySummary.name ? "bg-blue-300" : ""
+              }
+              onClick={() => toggleSelectedCityId(citySummary.id)}
+            />
+          ))}
+      </nav>
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Header */}
+        <nav
+          // TODO: what are these paddings required to avoid border being cut off?
+          className="flex justify-between"
+          aria-label="Interaction Methods"
+        >
+          <Dialog.Description className="sr-only">
+            A Modal that allows you to interact with your ships docked at a
+            specific city, as well as Trade with the city exchange and buy more
+            ships
+          </Dialog.Description>
+          <div className="flex gap-2">
+            {Object.values(CITY_DIALOG_INTERFACES).map(
+              (cityDialogInterface) => (
+                <button
+                  key={cityDialogInterface}
+                  className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
+                    cityDialogInterface === currentCityDialogInterface &&
+                    "bg-blue-300"
+                  }`}
+                >
+                  {cityDialogInterface.toLocaleLowerCase()}
+                </button>
+              ),
+            )}
           </div>
+          <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+            <Icon id="x" />
+            <span className="sr-only">Close</span>
+          </Dialog.Close>
+        </nav>
+        {/* Main Content */}
+        <div className="h-2" />
+        <div className="rounded-md outline-dashed outline-1 outline-black">
+          {children}
         </div>
       </div>
-    </DialogWrapper>
-  )
-}
+    </div>
+  </DialogWrapper>
+)
 
 type CityDialogInterfaceProps = {
   cityDialogInterface: CityDialogInterface
