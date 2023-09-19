@@ -99,7 +99,7 @@ const CityDialogCommonContent = ({
   children,
 }: CityDialogCommonContentProps) => (
   // TODO: configure using react grid for mobile!
-  <DialogWrapper className="flex max-h-[500px] min-w-[330px] max-w-[100%] p-3">
+  <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] p-3">
     <div className="flex flex-1 flex-row justify-between gap-2 max-sm:flex-col">
       {/* Sidebar */}
       <nav className="flex flex-col gap-3 overflow-y-auto">
@@ -152,7 +152,7 @@ const CityDialogCommonContent = ({
         </nav>
         {/* Main Content */}
         <div className="h-2" />
-        <div className="rounded-md outline-dashed outline-1 outline-black">
+        <div className="flex flex-1 rounded-md outline-dashed outline-1 outline-black">
           {children}
         </div>
       </div>
