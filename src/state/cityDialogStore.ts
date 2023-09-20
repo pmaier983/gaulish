@@ -11,11 +11,11 @@ export const CITY_DIALOG_INTERFACES = {
 
 export type CityDialogInterface = keyof typeof CITY_DIALOG_INTERFACES
 
-interface CityDialogStoreActions {
+export interface CityDialogStoreActions {
   restart: () => void
 
-  // TODO: consider removing this and setting up specific actions
-  setCityDialogStoreState: (newState: Partial<CityDialogStoreState>) => void
+  shipTradeClick: () => void
+  shipExchangeClick: () => void
 
   setCityDialogInterface: (newInterface: CityDialogInterface) => void
 
@@ -42,8 +42,12 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
   devtools((set, get) => ({
     ...initialCityDialogStoreState,
 
-    setCityDialogStoreState: (newState) => {
-      set((state) => ({ ...state, ...newState }))
+    shipTradeClick: () => {
+      set({ cityDialogInterface: "TRADE", isOpen: true })
+    },
+
+    shipExchangeClick: () => {
+      set({ cityDialogInterface: "EXCHANGE", isOpen: true })
     },
 
     setCityDialogInterface: (newInterface) => {

@@ -47,7 +47,7 @@ export interface KnownTilesObject {
   [xyTileId: string]: boolean
 }
 
-interface GamestateStoreActions {
+export interface GamestateStoreActions {
   setInitialMapState: (map: GamestateStore["mapArray"]) => void
   calculateMapObject: () => void
   calculateVisibleTilesObject: (userId: string) => void
