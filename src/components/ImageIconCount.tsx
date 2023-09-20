@@ -13,7 +13,9 @@ export const ImageIconCount = ({
   className,
 }: ImageIconCountProps) => {
   return (
-    <div className={`flex flex-row gap-2 text-xl leading-5 ${className}`}>
+    <div
+      className={`flex flex-row items-center justify-center gap-2 text-xl leading-5 ${className}`}
+    >
       <ImageIcon id={id} />
       <div>{renderFormattedNumber(count)}</div>
     </div>

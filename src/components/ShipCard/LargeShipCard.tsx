@@ -72,6 +72,12 @@ export const LargeShipCard = ({
         />
       </div>
       <div className="h-[2px] w-full bg-black" />
+      <div className="grid grid-cols-2 gap-2">
+        <ImageIconCount id="STONE" count={ship.cargo.stone} />
+        <ImageIconCount id="WHEAT" count={ship.cargo.wheat} />
+        <ImageIconCount id="WOOL" count={ship.cargo.wool} />
+        <ImageIconCount id="WOOD" count={ship.cargo.wood} />
+      </div>
     </article>
   )
 }
