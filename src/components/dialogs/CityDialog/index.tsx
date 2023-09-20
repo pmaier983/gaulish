@@ -18,7 +18,7 @@ import {
 import { CityCard } from "~/components/CityCard"
 
 export interface BaseInterfaceProps {
-  setCityDialogInterface: (newCityDialogInterface: CityDialogInterface) => void
+  selectedCity?: City
 }
 
 // Much of the tailwind css in this file was copied from here:
@@ -75,7 +75,10 @@ export const CityDialog = () => {
       cityDialogInterface={cityDialogInterface}
       citySummaries={getCitySummaries(knownCities, ships)}
     >
-      <CityDialogInterface cityDialogInterface={cityDialogInterface} />
+      <CityDialogInterface
+        cityDialogInterface={cityDialogInterface}
+        selectedCity={selectedCity}
+      />
     </CityDialogCommonContent>
   )
 }
@@ -162,7 +165,7 @@ const CityDialogCommonContent = ({
 
 type CityDialogInterfaceProps = {
   cityDialogInterface: CityDialogInterface
-}
+} & BaseInterfaceProps
 
 const CityDialogInterface = ({
   cityDialogInterface,

@@ -11,7 +11,7 @@ const IMAGE_ICONS_PURE = {
   WOOL: "WOOL",
 } as const
 
-const IMAGE_ICONS = { ...IMAGE_ICONS_PURE, ...SHIP_TYPES } as const
+export const IMAGE_ICONS = { ...IMAGE_ICONS_PURE, ...SHIP_TYPES } as const
 
 export type IMAGE_ICON = keyof typeof IMAGE_ICONS
 
