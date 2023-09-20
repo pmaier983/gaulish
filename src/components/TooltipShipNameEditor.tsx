@@ -1,18 +1,35 @@
 import { type FormEvent, useState, useEffect } from "react"
 
 import { Icon } from "~/components/Icon"
+import { MAX_SHIP_NAME_LENGTH } from "~/components/constants"
+import { api } from "~/utils/api"
 
 interface TooltipEditTextProps {
+  shipId: string
   text: string
-  onSubmit: (newText: string) => void
-  maxNewTextLength: number
 }
 
-export const TooltipEditText = ({
+export const TooltipShipNameEditor = ({
+  shipId,
   text,
-  maxNewTextLength,
-  onSubmit,
 }: TooltipEditTextProps) => {
+  const queryClient = api.useContext()
+
+  const { mutate } = api.ships.updateShipName.useMutation({
+    onSuccess: (newShipData) => {
+      // when the ship name is updated update the ship list!
+      queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
+        const newData = oldShipList?.map((currentShip) => {
+          if (currentShip.id === newShipData.shipId) {
+            return { ...currentShip, name: newShipData.newName }
+          }
+          return currentShip
+        })
+        return newData
+      })
+    },
+  })
+
   const [inputText, setInputText] = useState(text)
   const [isEditing, setIsEditing] = useState(false)
 
@@ -21,7 +38,7 @@ export const TooltipEditText = ({
     setIsEditing(false)
 
     if (inputText && inputText !== text) {
-      onSubmit(inputText)
+      mutate({ shipId: shipId, newName: inputText })
     }
   }
 
@@ -51,7 +68,7 @@ export const TooltipEditText = ({
             setInputText(e.target.value)
           }}
           min={1}
-          max={maxNewTextLength}
+          max={MAX_SHIP_NAME_LENGTH}
         />
         <button
           type="submit"
@@ -59,7 +76,7 @@ export const TooltipEditText = ({
           disabled={
             !inputText ||
             inputText === text ||
-            inputText.length >= maxNewTextLength
+            inputText.length >= MAX_SHIP_NAME_LENGTH
           }
         >
           <Icon id={"arrowRight"} size="1rem" />
