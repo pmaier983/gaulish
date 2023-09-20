@@ -15,7 +15,10 @@ import {
   boolean,
 } from "drizzle-orm/mysql-core"
 import { type AdapterAccount } from "next-auth/adapters"
-import { type ShipType } from "~/components/constants"
+import {
+  FAKE_INITIAL_SHIP_PATH_ID,
+  type ShipType,
+} from "~/components/constants"
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
@@ -137,13 +140,10 @@ export const ship = mysqlTable("ship", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
   userId: varchar("user_id", { length: 191 }).notNull(),
   cityId: int("city_id").notNull(),
-  pathId: varchar("path_id", { length: 191 }),
-  // Ship's Cargo - consider moving this to a separate table?
-  gold: int("gold").default(0).notNull(),
-  wheat: int("wheat").default(0).notNull(),
-  wool: int("wool").default(0).notNull(),
-  stone: int("stone").default(0).notNull(),
-  wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
+  pathId: varchar("path_id", { length: 191 })
+    .notNull()
+    .default(FAKE_INITIAL_SHIP_PATH_ID),
+  cargoId: varchar("cargo_id", { length: 191 }).notNull(),
   shipType: varchar("ship_type", { length: 191 }).$type<ShipType>().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
@@ -163,6 +163,10 @@ export const shipRelations = relations(ship, ({ one, many }) => ({
   city: one(city, {
     fields: [ship.cityId],
     references: [city.id],
+  }),
+  cargo: one(cargo, {
+    fields: [ship.cargoId],
+    references: [cargo.id],
   }),
   log: many(log),
 }))
@@ -253,5 +257,21 @@ export const logRelations = relations(log, ({ one }) => ({
   ship: one(ship, {
     fields: [log.shipId],
     references: [ship.id],
+  }),
+}))
+
+export const cargo = mysqlTable("cargo", {
+  id: varchar("id", { length: 191 }).primaryKey().notNull(),
+  gold: int("gold").default(0).notNull(),
+  wheat: int("wheat").default(0).notNull(),
+  wool: int("wool").default(0).notNull(),
+  stone: int("stone").default(0).notNull(),
+  wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
+})
+export type Cargo = InferModel<typeof cargo>
+export const cargoRelations = relations(cargo, ({ one }) => ({
+  ship: one(ship, {
+    fields: [cargo.id],
+    references: [ship.cargoId],
   }),
 }))

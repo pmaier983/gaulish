@@ -1,8 +1,9 @@
 import { createId } from "@paralleldrive/cuid2"
 import { and, eq } from "drizzle-orm"
-import { path, ship } from "schema"
+import { type Ship, cargo, path, ship } from "schema"
 import { z } from "zod"
 import {
+  FAKE_INITIAL_SHIP_PATH_ID,
   MAX_SHIP_NAME_LENGTH,
   SHIP_TYPES,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
@@ -24,6 +25,7 @@ export const shipsRouter = createTRPCRouter({
   /**
    * Let a user sail their ship
    */
+  // TODO: time this query to see how long it takes & if it needs optimization?
   sail: protectedProcedure
     .input(
       z.object({
@@ -38,6 +40,10 @@ export const shipsRouter = createTRPCRouter({
 
         const userShip = await trx.query.ship.findFirst({
           where: eq(ship.id, shipId),
+          with: {
+            cargo: true,
+            path: true,
+          },
         })
 
         if (!userShip) throw new Error("No ship found with that id")
@@ -96,12 +102,22 @@ export const shipsRouter = createTRPCRouter({
         await trx
           .update(ship)
           // If there is no destination city, don't update the location of the ship
-          .set({ cityId: destinationId })
+          .set({ cityId: destinationId, pathId: newPath.id })
           .where(eq(ship.id, shipId))
 
+        // TODO: we can probably skip this if need be
+        const updateShip = await trx.query.ship.findFirst({
+          where: eq(ship.id, shipId),
+          with: {
+            path: true,
+            cargo: true,
+          },
+        })
+
+        if (!updateShip) throw new Error("No valid ship found mid sail?!")
+
         return {
-          path: newPath,
-          ship: userShip,
+          ship: updateShip,
           events: mutableEvents,
         }
       })
@@ -114,6 +130,7 @@ export const shipsRouter = createTRPCRouter({
       where: and(eq(ship.userId, ctx.session.user.id), eq(ship.isSunk, false)),
       with: {
         path: true,
+        cargo: true,
       },
     })
   }),
@@ -131,6 +148,7 @@ export const shipsRouter = createTRPCRouter({
         where: eq(ship.id, input.shipId),
         with: {
           path: true,
+          cargo: true,
         },
       })
     }),
@@ -170,11 +188,18 @@ export const shipsRouter = createTRPCRouter({
         (ship) => ship.shipType === SHIP_TYPES.PLANK,
       ).length
 
-      const partialNewShip = {
+      const newCargoId = createId()
+
+      await trx.insert(cargo).values({ id: newCargoId })
+
+      const partialNewShip: Ship = {
         id: createId(),
         userId: ctx.session.user.id,
         cityId: cityForNewShip.id,
         ...shipProperties,
+        cargoId: newCargoId,
+        isSunk: false,
+        pathId: FAKE_INITIAL_SHIP_PATH_ID, // TODO: is there a better way to do this?
         name: `${SHIP_TYPES.PLANK.toLowerCase()} ${countOfPlanks + 1}`,
       }
 
@@ -182,6 +207,10 @@ export const shipsRouter = createTRPCRouter({
 
       const newShip = await trx.query.ship.findFirst({
         where: eq(ship.id, partialNewShip.id),
+        with: {
+          path: true,
+          cargo: true,
+        },
       })
 
       if (!newShip)

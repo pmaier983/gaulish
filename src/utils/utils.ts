@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2"
-import { type Path, type Npc, type Ship, type City } from "schema"
+import { type Path, type Npc, type City, type Cargo } from "schema"
 
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
@@ -207,8 +207,8 @@ export const hasNpcUserCollision = ({
   return false
 }
 
-export const getShipCargoSum = (ship: Ship) => {
-  return ship.gold + ship.stone + ship.wood + ship.wheat + ship.wool
+export const getCargoSum = (cargo: Cargo) => {
+  return cargo.gold + cargo.stone + cargo.wood + cargo.wheat + cargo.wool
 }
 
 // TODO: turn into a bfs algorithm that scans an area
@@ -294,9 +294,9 @@ export interface CitySummary {
 
 export const getCitySummaries = (
   cities: City[],
-  ships: Ship[],
+  ships: ShipComposite[],
 ): CitySummary[] => {
-  const cityIdToShipObject = ships.reduce<{ [key: string]: Ship[] }>(
+  const cityIdToShipObject = ships.reduce<{ [key: string]: ShipComposite[] }>(
     (acc, ship) => {
       const currentShip = acc[ship.cityId]
       if (currentShip) {
@@ -316,10 +316,10 @@ export const getCitySummaries = (
       id: city.id,
       name: city.name,
       shipCount: shipsAtCity.length,
-      gold: shipsAtCity.reduce((acc, ship) => acc + ship.gold, 0),
+      gold: shipsAtCity.reduce((acc, ship) => acc + ship.cargo.gold, 0),
       cargo: {
         currentCargo: shipsAtCity.reduce(
-          (acc, ship) => acc + getShipCargoSum(ship),
+          (acc, ship) => acc + getCargoSum(ship.cargo),
           0,
         ),
         cargoCapacity: shipsAtCity.reduce(

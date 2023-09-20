@@ -11,7 +11,6 @@ interface LargeShipCardProps extends CommonShipCardProps {}
 
 export const LargeShipCard = ({
   ship,
-  isSelectedShip,
   isSailing,
   city,
   toggleOpenState,
@@ -61,9 +60,14 @@ export const LargeShipCard = ({
         />
       </div>
       <div className="flex flex-row items-center justify-around">
-        <ImageIconCount id="GOLD" count={ship.gold} />
+        <ImageIconCount id="GOLD" count={ship.cargo.gold} />
         <CargoCount
-          currentCargo={ship.stone + ship.wheat + ship.wood + ship.wool}
+          currentCargo={
+            ship.cargo.stone +
+            ship.cargo.wheat +
+            ship.cargo.wood +
+            ship.cargo.wool
+          }
           cargoCapacity={ship.cargoCapacity}
         />
       </div>

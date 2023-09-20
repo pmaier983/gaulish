@@ -22,7 +22,7 @@ export const ShipList = () => {
       // when a new ship is added, update the ship list cache & invalidate the leaderboard
       queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
         const newData = produce(oldShipList, (draftShipList) => {
-          draftShipList?.push({ ...data, path: null })
+          draftShipList?.push(data)
           return
         })
         return newData

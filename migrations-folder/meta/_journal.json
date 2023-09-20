@@ -176,6 +176,20 @@
       "when": 1693870704835,
       "tag": "0024_lyrical_madelyne_pryor",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1695170568161,
+      "tag": "0025_wise_black_cat",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1695174111904,
+      "tag": "0026_third_zombie",
+      "breakpoints": true
     }
   ]
 }

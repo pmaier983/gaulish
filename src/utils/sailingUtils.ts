@@ -9,17 +9,20 @@ import {
   city,
   path,
   users,
+  cargo,
 } from "schema"
 import {
+  FAKE_INITIAL_SHIP_PATH_ID,
   LOG_PAGE_SIZE,
   TILE_TYPES,
   TILE_TYPE_ID_TO_TYPE,
 } from "~/components/constants"
 import { type DatabaseType } from "~/server/db"
+import { type ShipComposite } from "~/state/gamestateStore"
 import { type RouterOutputs, type QueryClient } from "~/utils/api"
 import {
   getNewKnownTiles,
-  getShipCargoSum,
+  getCargoSum,
   getXYFromXYTileId,
   hasNpcUserCollision,
 } from "~/utils/utils"
@@ -250,7 +253,7 @@ export const sinkShipEvent = async ({
 
 export interface ValidationProps {
   tiles: Tile[]
-  userShip: Ship
+  userShip: ShipComposite
   shipPath: string[]
   startTime: Date
   tilesObject: TilesObject
@@ -458,7 +461,7 @@ export const validateNpcConflicts = async ({
       })
 
       if (hasConflict) {
-        const userShipCargoSum = getShipCargoSum(userShip)
+        const userShipCargoSum = getCargoSum(userShip.cargo)
 
         // If the user has nothing to steal, sink them
         if (userShipCargoSum === 0) {
@@ -478,15 +481,15 @@ export const validateNpcConflicts = async ({
         const logText = `${npc.name} stole all the gold and half the cargo from your ship: ${userShip.name}!`
 
         await db
-          .update(ship)
+          .update(cargo)
           .set({
             gold: 0,
-            stone: Math.floor(userShip.stone / 2),
-            wood: Math.floor(userShip.wood / 2),
-            wheat: Math.floor(userShip.wheat / 2),
-            wool: Math.floor(userShip.wool / 2),
+            stone: Math.floor(userShip.cargo.stone / 2),
+            wood: Math.floor(userShip.cargo.wood / 2),
+            wheat: Math.floor(userShip.cargo.wheat / 2),
+            wool: Math.floor(userShip.cargo.wool / 2),
           })
-          .where(eq(ship.id, userShip.id))
+          .where(eq(cargo.id, userShip.cargoId))
 
         const newLog = {
           id: createId(),
@@ -514,6 +517,12 @@ export const validateShipCurrentSailingStatus = async ({
 }: ValidationProps) => {
   // If the ship has no prev pathId it cannot be sailing, so just return
   if (!userShip.pathId) return
+
+  // TODO: Please tell me a better way to do this...
+  // It is not sailing for sure if this is its path...
+  if (userShip.pathId === FAKE_INITIAL_SHIP_PATH_ID) {
+    return
+  }
 
   const possibleCurrentShipPath = await db.query.path.findFirst({
     where: eq(path.id, userShip.pathId),

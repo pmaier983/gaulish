@@ -28,12 +28,7 @@ export const useSailing = () => {
     onReceiveSailingInfo: (sailingInfo) => {
       const newShip = sailingInfo.data.ship
 
-      addSailingShips([
-        {
-          ...newShip,
-          path: sailingInfo.data.path,
-        },
-      ])
+      addSailingShips([newShip])
     },
   })
 
@@ -60,7 +55,7 @@ export const useSailing = () => {
           (draftUserShipList) => {
             draftUserShipList?.forEach((ship) => {
               if (ship.id === selectedShip?.id) {
-                const finalTile = data.path.pathArray.at(-1)
+                const finalTile = data.ship.path.pathArray.at(-1)
                 if (!finalTile)
                   throw new Error("No final tile in returned ship sailing path")
                 const destinationCity = cityObject[finalTile]

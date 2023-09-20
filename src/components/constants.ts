@@ -10,6 +10,8 @@ export const LOG_PAGE_SIZE = 10
 
 export const MAX_SHIP_NAME_LENGTH = 20
 
+export const FAKE_INITIAL_SHIP_PATH_ID = "FAKE_INITIAL_SHIP_PATH_ID"
+
 export const CHANNELS = {
   MESSAGE: "MESSAGE",
   SAILING: "SAILING",

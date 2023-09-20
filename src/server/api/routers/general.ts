@@ -50,22 +50,29 @@ export const generalRouter = createTRPCRouter({
         return acc
       }, {})
 
-      const usersShips = await ctx.db
-        .select({ userId: ship.userId, gold: ship.gold })
-        .from(ship)
-        .where(
-          inArray(
-            ship.userId,
-            leaderboardUsers.map((user) => user.userId),
-          ),
-        )
+      const usersShips = await ctx.db.query.ship.findMany({
+        where: inArray(
+          ship.userId,
+          leaderboardUsers.map((user) => user.userId),
+        ),
+        with: {
+          cargo: {
+            columns: {
+              gold: true,
+            },
+          },
+        },
+        columns: {
+          userId: true,
+        },
+      })
 
       const userIdToGold = usersShips.reduce<{ [key: string]: number }>(
         (acc, cur) => {
           if (acc[cur.userId]) {
-            acc[cur.userId] += cur.gold
+            acc[cur.userId] += cur.cargo.gold
           } else {
-            acc[cur.userId] = cur.gold
+            acc[cur.userId] = cur.cargo.gold
           }
           return acc
         },

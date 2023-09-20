@@ -4,12 +4,11 @@ import { type Session } from "next-auth"
 import { useSession } from "next-auth/react"
 import { useCallback } from "react"
 
-import { type Path, type Ship } from "schema"
 import { CHANNELS } from "~/components/constants"
+import { type ShipComposite } from "~/state/gamestateStore"
 
 export interface SailingInfoData {
-  ship: Ship
-  path: Path
+  ship: ShipComposite
   user: Session["user"]
 }
 
@@ -33,9 +32,12 @@ export const useSailingChannel = ({
       ...sailingInfo,
       data: {
         ...sailingInfo.data,
-        path: {
-          ...sailingInfo.data.path,
-          createdAt: new Date(sailingInfo.data.path.createdAt!),
+        ship: {
+          ...sailingInfo.data.ship,
+          path: {
+            ...sailingInfo.data.ship.path,
+            createdAt: new Date(sailingInfo.data.ship.path.createdAt!),
+          },
         },
       },
     }
