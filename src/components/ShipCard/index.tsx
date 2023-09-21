@@ -10,10 +10,12 @@ import {
 } from "~/state/gamestateStore"
 import { LargeShipCard } from "~/components/ShipCard/LargeShipCard"
 import { SmallShipCard } from "~/components/ShipCard/SmallShipCard"
+import { TinyShipCard } from "~/components/ShipCard/TinyCard"
 
 const SHIP_CARD_TYPES = {
   SMALL: "SMALL",
   LARGE: "LARGE",
+  TINY: "TINY",
 }
 
 export type ShipCardType = keyof typeof SHIP_CARD_TYPES
@@ -27,6 +29,7 @@ export interface CommonShipCardProps extends Omit<ShipCardProps, "type"> {
   isSelectedShip: boolean
   isSailing: boolean
   city?: City
+  className?: string
   toggleShipSelection: GamestateStoreActions["toggleShipSelection"]
   shipTradeClick: CityDialogStoreActions["shipTradeClick"]
   shipExchangeClick: CityDialogStoreActions["shipExchangeClick"]
@@ -34,14 +37,14 @@ export interface CommonShipCardProps extends Omit<ShipCardProps, "type"> {
 }
 
 export const ShipCard = ({ ship, type }: ShipCardProps) => {
-  const { sailingShips, selectedShip, cityObject, toggleShipSelection } =
-    useGamestateStore((state) => ({
+  const { sailingShips, selectedShip, toggleShipSelection } = useGamestateStore(
+    (state) => ({
       sailingShips: state.sailingShips,
       selectedShip: state.selectedShip,
       // TODO: should i use useGamestateStore as a source of truth outside map, or react-query only?
-      cityObject: state.cityObject,
       toggleShipSelection: state.toggleShipSelection,
-    }))
+    }),
+  )
 
   const { toggleOpenState, shipTradeClick, shipExchangeClick } =
     useCityDialogStore((state) => ({
@@ -56,13 +59,10 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
     .map((currentShip) => currentShip.id)
     .includes(ship.id)
 
-  const city = cityObject[ship.cityId]
-
   const commonShipCardProps: CommonShipCardProps = {
     ship,
     isSelectedShip,
     isSailing,
-    city,
     toggleOpenState,
     toggleShipSelection,
     shipExchangeClick,
@@ -72,6 +72,9 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
   switch (type) {
     case "SMALL": {
       return <SmallShipCard {...commonShipCardProps} />
+    }
+    case "TINY": {
+      return <TinyShipCard {...commonShipCardProps} />
     }
     default:
     case "LARGE": {

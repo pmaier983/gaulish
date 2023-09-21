@@ -1,8 +1,6 @@
-import { ImageIcon } from "~/components/ImageIcon"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { type CommonShipCardProps } from "~/components/ShipCard"
-import { Tooltip } from "~/components/Tooltip"
-import { TooltipShipNameEditor } from "~/components/TooltipShipNameEditor"
+import { ShipHeader } from "~/components/ShipHeader"
 import { ExchangeButton } from "~/components/buttons/ExchangeButton"
 import { SailButton } from "~/components/buttons/SailButton"
 import { TradeButton } from "~/components/buttons/TradeButton"
@@ -13,7 +11,6 @@ export const SmallShipCard = ({
   ship,
   isSelectedShip,
   isSailing,
-  city,
   toggleShipSelection,
   shipExchangeClick,
   shipTradeClick,
@@ -25,25 +22,7 @@ export const SmallShipCard = ({
       }`}
     >
       <div className="flex flex-row items-center justify-between">
-        <div className="flex flex-row">
-          <ImageIcon id={ship.shipType} />
-          <div className="flex flex-col pl-2">
-            <Tooltip
-              interactive
-              content={
-                <TooltipShipNameEditor text={ship.name} shipId={ship.id} />
-              }
-            >
-              {/* TODO: what proper html tag to use for prominence within articles? h4 or what */}
-              <span className="h-5 whitespace-nowrap text-xl leading-5">
-                {ship.name}
-              </span>
-            </Tooltip>
-            <div className="h-5 whitespace-nowrap leading-5">
-              {isSailing ? "Sailing" : city?.name ?? "Loading..."}
-            </div>
-          </div>
-        </div>
+        <ShipHeader shipId={ship.id} />
         <SailButton
           onClick={() => toggleShipSelection(ship)}
           className=" justify-center"
