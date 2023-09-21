@@ -2,10 +2,22 @@ import * as Dialog from "@radix-ui/react-dialog"
 import { type City } from "schema"
 
 import { Icon } from "~/components/Icon"
-import { DockyardInterface } from "~/components/dialogs/CityDialog/DockyardInterface"
-import { ExchangeInterface } from "~/components/dialogs/CityDialog/ExchangeInterface"
-import { ShipsInterface } from "~/components/dialogs/CityDialog/ShipsInterface"
-import { TradeInterface } from "~/components/dialogs/CityDialog/TradeInterface"
+import {
+  DockyardInterface,
+  type DockyardInterfaceProps,
+} from "~/components/dialogs/CityDialog/DockyardInterface"
+import {
+  ExchangeInterface,
+  type ExchangeInterfaceProps,
+} from "~/components/dialogs/CityDialog/ExchangeInterface"
+import {
+  ShipsInterface,
+  type ShipsInterfaceProps,
+} from "~/components/dialogs/CityDialog/ShipsInterface"
+import {
+  TradeInterface,
+  type TradeInterfaceProps,
+} from "~/components/dialogs/CityDialog/TradeInterface"
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { api } from "~/utils/api"
 import { type CitySummary, getCitySummaries } from "~/utils/utils"
@@ -27,11 +39,15 @@ export const CityDialog = () => {
   const {
     selectedCityId,
     cityDialogInterface,
+    selectedTradeShipId,
+    selectedExchangeShipIds,
     toggleSelectedCityId,
     setCityDialogInterface,
   } = useCityDialogStore((state) => ({
     selectedCityId: state.selectedCityId,
     cityDialogInterface: state.cityDialogInterface,
+    selectedTradeShipId: state.selectedTradeShipId,
+    selectedExchangeShipIds: state.selectedExchangeShipIds,
     toggleSelectedCityId: state.toggleSelectedCityId,
     setCityDialogInterface: state.setCityDialogInterface,
   }))
@@ -67,6 +83,12 @@ export const CityDialog = () => {
 
   const selectedCity = cities.find((city) => city.id === selectedCityId)
 
+  const tradeShip = ships.find((ship) => ship.id === selectedTradeShipId)
+
+  const selectedExchangeShips = ships.filter((ship) =>
+    selectedExchangeShipIds.includes(ship.id),
+  )
+
   return (
     <CityDialogCommonContent
       selectedCity={selectedCity}
@@ -76,8 +98,11 @@ export const CityDialog = () => {
       citySummaries={getCitySummaries(knownCities, ships)}
     >
       <CityDialogInterface
+        // TODO consider if its better to separate props to avoid re-renders here
         cityDialogInterface={cityDialogInterface}
         selectedCity={selectedCity}
+        tradeShip={tradeShip}
+        selectedExchangeShips={selectedExchangeShips}
       />
     </CityDialogCommonContent>
   )
@@ -103,7 +128,7 @@ const CityDialogCommonContent = ({
 }: CityDialogCommonContentProps) => (
   // TODO: configure using react grid for mobile!
   <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] p-3">
-    <div className="flex flex-1 flex-row justify-between gap-2 max-sm:flex-col">
+    <div className="flex max-w-full flex-1 flex-row justify-between gap-2 max-sm:flex-col">
       {/* Sidebar */}
       <nav className="flex flex-col gap-3 overflow-y-auto">
         {citySummaries
@@ -165,7 +190,11 @@ const CityDialogCommonContent = ({
 
 type CityDialogInterfaceProps = {
   cityDialogInterface: CityDialogInterface
-} & BaseInterfaceProps
+} & BaseInterfaceProps &
+  DockyardInterfaceProps &
+  TradeInterfaceProps &
+  ExchangeInterfaceProps &
+  ShipsInterfaceProps
 
 const CityDialogInterface = ({
   cityDialogInterface,

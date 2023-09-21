@@ -16,7 +16,7 @@ export const ShipsInterface = ({ selectedCity }: ShipsInterfaceProps) => {
   })
 
   return (
-    <div className="flex flex-1 gap-2 overflow-x-auto p-2">
+    <div className="flex max-w-full flex-1 gap-2 overflow-x-auto p-2">
       {ships
         .filter((ship) => {
           if (!selectedCity) return true

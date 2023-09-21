@@ -14,19 +14,27 @@ export type CityDialogInterface = keyof typeof CITY_DIALOG_INTERFACES
 export interface CityDialogStoreActions {
   restart: () => void
 
+  toggleOpenState: (newOpenState?: boolean) => void
+  setCityDialogInterface: (newInterface: CityDialogInterface) => void
+
   shipTradeClick: () => void
   shipExchangeClick: () => void
 
-  setCityDialogInterface: (newInterface: CityDialogInterface) => void
-
-  toggleOpenState: (newOpenState?: boolean) => void
   toggleSelectedCityId: (newSelectedCityId?: number) => void
+  toggleSelectedTradeShipId: (newSelectedTradeShipId?: string) => void
+
+  addSelectedExchangeShipId: (newSelectedExchangeShipId: string) => void
+  removeSelectedExchangeShipId: (newSelectedExchangeShipId: string) => void
 }
 
 export interface CityDialogStore {
   isOpen: boolean
 
   selectedCityId?: number
+  selectedTradeShipId?: string
+
+  selectedExchangeShipIds: string[]
+
   cityDialogInterface: CityDialogInterface
 }
 
@@ -34,6 +42,8 @@ const initialCityDialogStoreState: CityDialogStore = {
   isOpen: false,
 
   cityDialogInterface: "SHIPS",
+
+  selectedExchangeShipIds: [],
 }
 
 export type CityDialogStoreState = CityDialogStore & CityDialogStoreActions
@@ -69,6 +79,45 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
       } else {
         set({ selectedCityId: newSelectedCityId })
       }
+    },
+
+    toggleSelectedTradeShipId: (newSelectedTradeShipId) => {
+      // when selecting a ship that is already selected, unselect the ship
+      if (newSelectedTradeShipId === get().selectedTradeShipId) {
+        set({ selectedTradeShipId: undefined })
+      } else {
+        set({ selectedTradeShipId: newSelectedTradeShipId })
+      }
+    },
+
+    addSelectedExchangeShipId: (newSelectedExchangeShipId: string) => {
+      const currentSelectedExchangeShipIds = get().selectedExchangeShipIds
+
+      // Replace the second ship when adding a third ship
+      if (currentSelectedExchangeShipIds.length >= 2) {
+        const [firstShipId] = currentSelectedExchangeShipIds
+        set({
+          selectedExchangeShipIds: [firstShipId!, newSelectedExchangeShipId],
+        })
+      } else {
+        // Otherwise just shove the new shipId onto the array
+        set({
+          selectedExchangeShipIds: [
+            ...currentSelectedExchangeShipIds,
+            newSelectedExchangeShipId,
+          ],
+        })
+      }
+    },
+
+    removeSelectedExchangeShipId: (newSelectedExchangeShipId: string) => {
+      const currentSelectedExchangeShipIds = get().selectedExchangeShipIds
+
+      set({
+        selectedExchangeShipIds: currentSelectedExchangeShipIds.filter(
+          (shipId) => shipId !== newSelectedExchangeShipId,
+        ),
+      })
     },
 
     restart: () => {},
