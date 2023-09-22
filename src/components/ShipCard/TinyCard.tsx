@@ -14,12 +14,12 @@ export const TinyShipCard = ({
 }: TinyShipCardProps) => {
   return (
     <article
-      className={`flex w-full max-w-[25rem] flex-row justify-between gap-2 rounded p-2 outline outline-1 outline-black ${
+      className={`flex w-full max-w-[25rem] flex-row justify-between gap-3 rounded p-2 outline outline-1 outline-black ${
         isSelectedShip ? "outline-4 outline-red-600" : ""
       } ${className}`}
     >
       <ShipHeader shipId={ship.id} />
-      <div className="flex flex-1 flex-row justify-end gap-5">
+      <div className="flex-2 flex flex-row justify-end gap-5">
         <ImageIconCount id="GOLD" count={ship.cargo.gold} />
         <CargoCount
           currentCargo={
