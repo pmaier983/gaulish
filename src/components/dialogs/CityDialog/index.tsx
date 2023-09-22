@@ -145,7 +145,7 @@ const CityDialogCommonContent = ({
             />
           ))}
       </nav>
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
         {/* Header */}
         <nav
           // TODO: what are these paddings required to avoid border being cut off?
@@ -179,8 +179,7 @@ const CityDialogCommonContent = ({
           </Dialog.Close>
         </nav>
         {/* Main Content */}
-        <div className="h-2" />
-        <div className="flex flex-1 rounded-md outline-dashed outline-1 outline-black">
+        <div className="flex flex-1 overflow-y-auto rounded-md outline-dashed outline-1 outline-black">
           {children}
         </div>
       </div>
