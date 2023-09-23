@@ -330,3 +330,43 @@ export const getCitySummaries = (
     }
   })
 }
+
+// Thank you Tommy Ettinger
+// https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
+function randomNumberWithSeed(seed: number) {
+  let t = (seed += 0x6d2b79f5)
+  t = Math.imul(t ^ (t >>> 15), t | 1)
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+}
+
+interface getPiceInput {
+  // Controls the
+  amplitude: number
+  // Controls the core number the price fluctuates around
+  core: number
+  timeMs: number
+  seed: number
+}
+
+export const getPrice = ({ amplitude, core, timeMs, seed }: getPiceInput) => {
+  const timeMin = timeMs / 60000
+
+  // const of sin & cos values
+  const countOfVales = 4
+
+  const innerValue =
+    Math.sin(timeMin * randomNumberWithSeed(seed + 1)) +
+    Math.cos(timeMin * randomNumberWithSeed(seed + 2)) +
+    Math.cos(timeMin * randomNumberWithSeed(seed + 3)) +
+    Math.sin(timeMin * randomNumberWithSeed(seed + 4))
+
+  const finalValue = Math.round(
+    amplitude * ((innerValue * 1) / countOfVales) + core,
+  )
+
+  const minValue = 1
+  const maxValue = core + amplitude
+
+  return Math.min(Math.max(finalValue, minValue), maxValue)
+}
