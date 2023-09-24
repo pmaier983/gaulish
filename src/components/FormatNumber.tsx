@@ -1,11 +1,23 @@
 import { type ComponentPropsWithRef } from "react"
 import { Tooltip } from "~/components/Tooltip"
 
-export const getFormattedNumber = (number: number) => {
+interface GetFormattedNumberInputs {
+  number: number
+  isGold?: boolean
+}
+
+export const getFormattedNumber = ({
+  number,
+  isGold,
+}: GetFormattedNumberInputs) => {
   const compactNumber = Intl.NumberFormat("en-US", {
     notation: "compact",
-    maximumFractionDigits: 1,
+    maximumFractionDigits: 2,
   }).format(number)
+
+  if (isGold) {
+    return compactNumber + "g"
+  }
 
   return compactNumber
 }
@@ -20,23 +32,15 @@ export const FormatNumber = ({
   isGold,
   className,
 }: FormatNumberProps) => {
-  const compactNumber = getFormattedNumber(number)
+  const compactNumber = getFormattedNumber({ number, isGold })
 
   if (compactNumber === number.toString()) {
-    return (
-      <div className={`${className}`}>
-        {compactNumber}
-        {isGold ? "gp" : ""}
-      </div>
-    )
+    return <div className={`${className}`}>{compactNumber}</div>
   }
 
   return (
     <Tooltip content={number}>
-      <div className={`${className}`}>
-        {compactNumber}
-        {isGold ? "gp" : ""}
-      </div>
+      <div className={`${className}`}>{compactNumber}</div>
     </Tooltip>
   )
 }

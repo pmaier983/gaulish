@@ -13,7 +13,7 @@ export const TradeFocusedCityCard = ({
   onClick,
 }: TradeFocusedCityCardProps) => {
   return (
-    <div className="flex min-w-[14.5rem] max-w-[25rem] flex-row flex-wrap items-center gap-2 rounded-md p-2 outline outline-1 outline-black">
+    <div className="flex max-w-[23rem] flex-row flex-wrap items-center gap-y-2 rounded-md p-2 pr-0 outline outline-1 outline-black">
       <button
         onClick={onClick}
         className="rounded bg-blue-400 p-2 text-white outline outline-1 outline-black hover:text-blue-800 active:bg-blue-500"
@@ -22,16 +22,19 @@ export const TradeFocusedCityCard = ({
         <span className="sr-only">Select City</span>
       </button>
       <Tooltip content={city.name}>
-        <div className="w-[7rem] overflow-hidden text-ellipsis text-2xl">
+        <div className="w-[6.5rem] overflow-hidden text-ellipsis pl-1 pr-1 text-xl">
           {city.name}
         </div>
       </Tooltip>
       {city.cityCargo
         .sort((cargoA, cargoB) => cargoA.midline - cargoB.midline)
         .map((cargo) => (
-          <div key={cargo.type} className="flex w-[3rem] flex-row gap-1">
+          <div key={cargo.type} className="flex w-[4.5rem] flex-row gap-1">
             <ImageIcon id={cargo.type} className="min-w-[24px]" />
-            <FormatNumber number={getPrice({ ...cargo, seed: city.id })} />
+            <FormatNumber
+              number={getPrice({ ...cargo, seed: city.id })}
+              isGold
+            />
           </div>
         ))}
     </div>
