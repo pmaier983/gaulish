@@ -136,8 +136,9 @@ const CityDialogCommonContent = ({
           .sort((cityA, cityB) => cityB.shipCount - cityA.shipCount)
           .map((citySummary) => (
             <CityCard
+              type="SHIP_FOCUSED"
               key={citySummary.name}
-              {...citySummary}
+              cityId={citySummary.id}
               className={
                 selectedCity?.name == citySummary.name ? "bg-blue-300" : ""
               }
