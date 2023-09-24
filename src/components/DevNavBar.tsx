@@ -24,8 +24,8 @@ export const DevNavBar = () => {
       >
         Hide
       </button>
-      <Link href="/app" className="rounded-sm bg-slate-400 px-3">
-        App
+      <Link href="/app/dev" className="rounded-sm bg-slate-400 px-3">
+        Dev
       </Link>
       <button
         className="rounded-sm bg-blue-400 px-3"

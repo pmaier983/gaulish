@@ -6,6 +6,7 @@ import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 import { ImageGeneration } from "~/components/ImageGeneration"
+import Link from "next/link"
 
 const MapCreation = dynamic(() => import("~/components/MapCreation"), {
   ssr: false,
@@ -17,7 +18,10 @@ const Dev = () => {
     isUserAdmin: state.isUserAdmin,
   }))
   const [isDevMapCreationVisible, setDevMapCreationVisibility] = useState(false)
-  const { mutate } = api.general.setupDefaultGamestate.useMutation()
+  const { mutate: setupDefaultGamestate } =
+    api.admin.setupDefaultGamestate.useMutation()
+  const { mutate: clearDefaultGamestate } =
+    api.admin.clearDefaultGamestate.useMutation()
 
   if (!isUserAdmin) {
     return <FullPageRedirect />
@@ -25,13 +29,23 @@ const Dev = () => {
 
   return (
     <>
+      <Link
+        href="/app"
+        className="h-10 rounded-sm bg-slate-400 px-3 text-center"
+      >
+        App
+      </Link>
       <button
-        className="pt-8"
-        onClick={() => {
-          mutate()
-        }}
+        className="bg-green-300 pt-8"
+        onClick={() => setupDefaultGamestate()}
       >
         Setup Default Gamestate
+      </button>
+      <button
+        onClick={() => clearDefaultGamestate()}
+        className="bg-red-400 pt-8"
+      >
+        Remove Default Gamestate
       </button>
       <button
         onClick={() => {

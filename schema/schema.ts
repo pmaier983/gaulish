@@ -276,7 +276,7 @@ export const cargoRelations = relations(cargo, ({ one }) => ({
   }),
 }))
 
-export type CargoTypes = Exclude<keyof Cargo, "id" | "gold">
+export type CargoTypes = Uppercase<Exclude<keyof Cargo, "id" | "gold">>
 export type CityCargo = {
   type: CargoTypes
   amplitude: number

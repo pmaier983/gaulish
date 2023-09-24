@@ -1,32 +1,14 @@
 import { inArray } from "drizzle-orm"
-import { path, tile, users, ship, city, npc } from "schema"
+import { users, ship } from "schema"
 import { z } from "zod"
 
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  adminProcedure,
-} from "~/server/api/trpc"
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { ADMINS } from "~/server/auth"
-import {
-  DEFAULT_CITIES,
-  DEFAULT_MAP,
-  DEFAULT_NPCS,
-  DEFAULT_PATHS,
-} from "~/server/defaults"
 
 // TODO: use relational queries for things?
 export const generalRouter = createTRPCRouter({
   isUserAdmin: protectedProcedure.query(({ ctx }) => {
     return ADMINS.includes(ctx.session.user.email ?? "")
-  }),
-  setupDefaultGamestate: adminProcedure.mutation(async ({ ctx }) => {
-    await ctx.db.transaction(async (trx) => {
-      await trx.insert(tile).values(DEFAULT_MAP)
-      await trx.insert(npc).values(DEFAULT_NPCS)
-      await trx.insert(path).values(DEFAULT_PATHS)
-      await trx.insert(city).values(DEFAULT_CITIES)
-    })
   }),
   /**
    * Given a list of emails, return a sorted leaderboard of {usernames, gold}
