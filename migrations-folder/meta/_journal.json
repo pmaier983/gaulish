@@ -190,6 +190,13 @@
       "when": 1695174111904,
       "tag": "0026_third_zombie",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1695518913268,
+      "tag": "0027_acoustic_pretty_boy",
+      "breakpoints": true
     }
   ]
 }

@@ -341,15 +341,20 @@ function randomNumberWithSeed(seed: number) {
 }
 
 interface getPiceInput {
-  // Controls the
+  // Controls the max variation around the midline
   amplitude: number
-  // Controls the core number the price fluctuates around
-  core: number
+  // Controls the number the price fluctuates around
+  midline: number
   timeMs: number
   seed: number
 }
 
-export const getPrice = ({ amplitude, core, timeMs, seed }: getPiceInput) => {
+export const getPrice = ({
+  amplitude,
+  midline,
+  timeMs,
+  seed,
+}: getPiceInput) => {
   const timeMin = timeMs / 60000
 
   // const of sin & cos values
@@ -362,11 +367,11 @@ export const getPrice = ({ amplitude, core, timeMs, seed }: getPiceInput) => {
     Math.sin(timeMin * randomNumberWithSeed(seed + 4))
 
   const finalValue = Math.round(
-    amplitude * ((innerValue * 1) / countOfVales) + core,
+    amplitude * ((innerValue * 1) / countOfVales) + midline,
   )
 
   const minValue = 1
-  const maxValue = core + amplitude
+  const maxValue = midline + amplitude
 
   return Math.min(Math.max(finalValue, minValue), maxValue)
 }

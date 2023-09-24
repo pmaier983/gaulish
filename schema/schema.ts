@@ -215,7 +215,7 @@ export const city = mysqlTable("city", {
   id: serial("id").primaryKey().notNull(),
   name: varchar("name", { length: 191 }).notNull(),
   xyTileId: varchar("xy_tile_id", { length: 191 }).notNull(),
-  level: json("level"),
+  cityCargo: json("city_cargo").$type<CityCargo[]>().notNull().default([]),
 })
 export type City = InferModel<typeof city>
 export const cityRelations = relations(city, ({ one, many }) => ({
@@ -275,3 +275,10 @@ export const cargoRelations = relations(cargo, ({ one }) => ({
     references: [ship.cargoId],
   }),
 }))
+
+export type CargoTypes = Exclude<keyof Cargo, "id" | "gold">
+export type CityCargo = {
+  type: CargoTypes
+  amplitude: number
+  midline: number
+}
