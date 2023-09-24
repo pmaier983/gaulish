@@ -17,8 +17,13 @@ export interface CityDialogStoreActions {
   toggleOpenState: (newOpenState?: boolean) => void
   setCityDialogInterface: (newInterface: CityDialogInterface) => void
 
-  shipTradeClick: () => void
-  shipExchangeClick: () => void
+  shipTradeClick: ({
+    newTradeShipId,
+  }: {
+    newTradeShipId?: string
+    newSelectedCityId?: number
+  }) => void
+  shipExchangeClick: (newExchangeShipIds: string[]) => void
 
   toggleSelectedCityId: (newSelectedCityId?: number) => void
   toggleSelectedTradeShipId: (newSelectedTradeShipId?: string) => void
@@ -52,12 +57,24 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
   devtools((set, get) => ({
     ...initialCityDialogStoreState,
 
-    shipTradeClick: () => {
-      set({ cityDialogInterface: "TRADE", isOpen: true })
+    shipTradeClick: ({ newTradeShipId, newSelectedCityId }) => {
+      set({
+        cityDialogInterface: "TRADE",
+        isOpen: true,
+        selectedTradeShipId: newTradeShipId,
+        selectedCityId:
+          newSelectedCityId !== undefined
+            ? newSelectedCityId
+            : get().selectedCityId,
+      })
     },
 
-    shipExchangeClick: () => {
-      set({ cityDialogInterface: "EXCHANGE", isOpen: true })
+    shipExchangeClick: (newExchangeShipIds) => {
+      set({
+        cityDialogInterface: "EXCHANGE",
+        isOpen: true,
+        selectedExchangeShipIds: newExchangeShipIds,
+      })
     },
 
     setCityDialogInterface: (newInterface) => {

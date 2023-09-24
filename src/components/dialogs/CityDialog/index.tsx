@@ -85,6 +85,8 @@ export const CityDialog = () => {
 
   const tradeShip = ships.find((ship) => ship.id === selectedTradeShipId)
 
+  console.log({ tradeShip })
+
   const selectedExchangeShips = ships.filter((ship) =>
     selectedExchangeShipIds.includes(ship.id),
   )
@@ -103,6 +105,7 @@ export const CityDialog = () => {
         selectedCity={selectedCity}
         tradeShip={tradeShip}
         selectedExchangeShips={selectedExchangeShips}
+        toggleSelectedCityId={toggleSelectedCityId}
       />
     </CityDialogCommonContent>
   )
@@ -162,7 +165,7 @@ const CityDialogCommonContent = ({
               (cityDialogInterface) => (
                 <button
                   key={cityDialogInterface}
-                  className={`flex items-center rounded pl-2 pr-2 capitalize outline outline-1 ${
+                  className={`flex items-center rounded pl-2 pr-2 text-2xl capitalize outline outline-1 ${
                     cityDialogInterface === currentCityDialogInterface &&
                     "bg-blue-300"
                   }`}

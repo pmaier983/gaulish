@@ -42,9 +42,17 @@ export const SmallShipCard = ({
         />
         <ExchangeButton
           disabled={isSailing}
-          onClick={() => shipExchangeClick()}
+          onClick={() => shipExchangeClick([ship.id])}
         />
-        <TradeButton onClick={() => shipTradeClick()} disabled={isSailing} />
+        <TradeButton
+          onClick={() =>
+            shipTradeClick({
+              newTradeShipId: ship.id,
+              newSelectedCityId: ship.cityId,
+            })
+          }
+          disabled={isSailing}
+        />
       </div>
     </article>
   )

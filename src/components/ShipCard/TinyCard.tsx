@@ -30,7 +30,15 @@ export const TinyShipCard = ({
           }
           cargoCapacity={ship.cargoCapacity}
         />
-        <TradeButton disabled={isSailing} onClick={() => shipTradeClick()} />
+        <TradeButton
+          disabled={isSailing}
+          onClick={() =>
+            shipTradeClick({
+              newTradeShipId: ship.id,
+              newSelectedCityId: ship.cityId,
+            })
+          }
+        />
       </div>
     </article>
   )

@@ -34,7 +34,7 @@ export const ShipHeader = ({ shipId }: ShipHeaderProps) => {
 
   const ship = ships?.find((ship) => ship.id === shipId)
 
-  // TODO: implement a bette loading state here
+  // TODO: implement a better loading state here
   if (!ship) return null
 
   const city = cityObject[ship?.cityId]
