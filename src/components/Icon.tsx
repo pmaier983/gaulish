@@ -10,6 +10,7 @@ export const ICONS = {
   "edit-3": "edit-3",
   map: "map",
   trade: "trade",
+  arrowRightCircle: "arrow-right-circle",
 } as const
 
 export type ICON = keyof typeof ICONS
