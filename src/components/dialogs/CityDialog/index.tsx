@@ -27,7 +27,7 @@ import {
   CITY_DIALOG_INTERFACES,
   useCityDialogStore,
 } from "~/state/cityDialogStore"
-import { CityCard } from "~/components/CityCard"
+import { ShipFocusedCityCard } from "~/components/CityCard/ShipFocusedCityCard"
 
 export interface BaseInterfaceProps {
   selectedCity?: City
@@ -135,10 +135,9 @@ const CityDialogCommonContent = ({
           // TODO: is there a better way to sort cities? By name?
           .sort((cityA, cityB) => cityB.shipCount - cityA.shipCount)
           .map((citySummary) => (
-            <CityCard
-              type="SHIP_FOCUSED"
+            <ShipFocusedCityCard
               key={citySummary.name}
-              cityId={citySummary.id}
+              citySummary={citySummary}
               className={
                 selectedCity?.name == citySummary.name ? "bg-blue-300" : ""
               }

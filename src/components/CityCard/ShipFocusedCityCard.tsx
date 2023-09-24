@@ -1,7 +1,8 @@
 import { type CommonCityCardProps } from "~/components/CityCard"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 
-interface ShipFocusedCityCardProps extends CommonCityCardProps {}
+interface ShipFocusedCityCardProps
+  extends Pick<CommonCityCardProps, "citySummary" | "onClick" | "className"> {}
 
 export const ShipFocusedCityCard = ({
   citySummary,

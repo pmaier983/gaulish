@@ -31,8 +31,8 @@ export const TradeInterface = ({
   // TODO: handle ship selection case
   if (!tradeShip)
     return (
-      <div className="flex max-w-full flex-1 flex-row gap-2 overflow-x-auto p-2">
-        <div className="flex min-w-[300px] flex-1 flex-col gap-2">
+      <div className="flex h-fit max-w-full flex-1 flex-row gap-2 overflow-x-auto p-2">
+        <div className="flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded-md p-2 outline outline-1 outline-black">
           {/* TODO: why is the bottom of this list squished (when it overflows?) */}
           {visibleShips.map((ship) => (
             <ShipCard key={ship.id} type="TINY" ship={ship} />

@@ -345,17 +345,11 @@ interface getPiceInput {
   amplitude: number
   // Controls the number the price fluctuates around
   midline: number
-  timeMs: number
   seed: number
 }
 
-export const getPrice = ({
-  amplitude,
-  midline,
-  timeMs,
-  seed,
-}: getPiceInput) => {
-  const timeMin = timeMs / 60000
+export const getPrice = ({ amplitude, midline, seed }: getPiceInput) => {
+  const timeMin = Math.round(new Date().getTime() / 60000)
 
   // const of sin & cos values
   const countOfVales = 4
