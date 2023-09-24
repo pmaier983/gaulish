@@ -23,6 +23,7 @@ export const ShipTradeCard = ({
     return ship.cityId === selectedCity.id
   })
 
+  // If there is no trade ship, render a trade ship selection interface
   if (!tradeShip) {
     return (
       <div

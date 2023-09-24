@@ -1,6 +1,6 @@
 import { type ComponentPropsWithRef } from "react"
+import { FormatNumber } from "~/components/FormatNumber"
 import { type IMAGE_ICON, ImageIcon } from "~/components/ImageIcon"
-import { renderFormattedNumber } from "~/utils/formatUtils"
 
 interface ImageIconCountProps extends ComponentPropsWithRef<"div"> {
   id: IMAGE_ICON
@@ -17,7 +17,7 @@ export const ImageIconCount = ({
       className={`flex flex-row items-center justify-center gap-2 text-xl leading-5 ${className}`}
     >
       <ImageIcon id={id} />
-      <div>{renderFormattedNumber(count)}</div>
+      <FormatNumber number={count} />
     </div>
   )
 }
@@ -36,9 +36,9 @@ export const CargoCount = ({
     <div className={`flex flex-row items-center gap-2 ${className}`}>
       <ImageIcon id="CARGO" />
       <div className="flex flex-1 flex-col items-center text-xl leading-5">
-        <div>{renderFormattedNumber(currentCargo)}</div>
+        <FormatNumber number={currentCargo} />
         <div className="h-[2px] w-full bg-black"></div>
-        <div>{renderFormattedNumber(cargoCapacity)}</div>
+        <FormatNumber number={cargoCapacity} />
       </div>
     </div>
   )

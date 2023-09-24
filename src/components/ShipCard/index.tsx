@@ -59,6 +59,7 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
     .map((currentShip) => currentShip.id)
     .includes(ship.id)
 
+  // separate out these components to avoid re-renders
   const commonShipCardProps: CommonShipCardProps = {
     ship,
     isSelectedShip,

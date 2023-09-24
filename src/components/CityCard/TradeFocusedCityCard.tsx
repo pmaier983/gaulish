@@ -1,4 +1,5 @@
 import { type CommonCityCardProps } from "~/components/CityCard"
+import { FormatNumber } from "~/components/FormatNumber"
 import { Icon } from "~/components/Icon"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Tooltip } from "~/components/Tooltip"
@@ -30,7 +31,7 @@ export const TradeFocusedCityCard = ({
         .map((cargo) => (
           <div key={cargo.type} className="flex w-[3rem] flex-row gap-1">
             <ImageIcon id={cargo.type} className="min-w-[24px]" />
-            {getPrice({ ...cargo, seed: city.id })}
+            <FormatNumber number={getPrice({ ...cargo, seed: city.id })} />
           </div>
         ))}
     </div>

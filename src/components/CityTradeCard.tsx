@@ -19,6 +19,7 @@ export const CityTradeCard = ({
     initialData: [],
   })
 
+  // If there is no selected city, render a city selection interface
   if (!selectedCity) {
     return (
       <div

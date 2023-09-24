@@ -85,8 +85,6 @@ export const CityDialog = () => {
 
   const tradeShip = ships.find((ship) => ship.id === selectedTradeShipId)
 
-  console.log({ tradeShip })
-
   const selectedExchangeShips = ships.filter((ship) =>
     selectedExchangeShipIds.includes(ship.id),
   )
@@ -134,6 +132,9 @@ const CityDialogCommonContent = ({
     <div className="flex max-w-full flex-1 flex-row justify-between gap-2 max-sm:flex-col">
       {/* Sidebar */}
       <nav className="flex flex-col gap-3 overflow-y-auto">
+        <h3 className="self-center text-2xl">
+          {selectedCity ? selectedCity.name : "Select a City"}
+        </h3>
         {citySummaries
           // TODO: is there a better way to sort cities? By name?
           .sort((cityA, cityB) => cityB.shipCount - cityA.shipCount)
@@ -190,6 +191,7 @@ const CityDialogCommonContent = ({
   </DialogWrapper>
 )
 
+// TODO: rework this to only pass props where needed
 type CityDialogInterfaceProps = {
   cityDialogInterface: CityDialogInterface
 } & BaseInterfaceProps &
