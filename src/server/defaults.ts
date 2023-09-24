@@ -1,12 +1,60 @@
-import { type Path, type Tile, type City, type Npc } from "schema"
+import {
+  type Path,
+  type Tile,
+  type City,
+  type Npc,
+  type CargoTypes,
+  type CityCargo,
+} from "schema"
 import {
   SHIP_TYPES,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
 } from "~/components/constants"
 
+export const DEFAULT_CITY_CARGO: { [key in CargoTypes]: CityCargo } = {
+  WHEAT: {
+    amplitude: 2,
+    midline: 5,
+    type: "WHEAT",
+  },
+  WOOL: {
+    amplitude: 3,
+    midline: 10,
+    type: "WOOL",
+  },
+  STONE: {
+    amplitude: 5,
+    midline: 15,
+    type: "STONE",
+  },
+  WOOD: {
+    amplitude: 5,
+    midline: 20,
+    type: "WOOD",
+  },
+}
+
 export const DEFAULT_CITIES: City[] = [
-  { level: 1, name: "Lumbridge", xyTileId: "1:3", id: 1 },
-  { level: 1, name: "Varrock", xyTileId: "5:5", id: 2 },
+  {
+    name: "Lumbridge",
+    xyTileId: "1:3",
+    id: 1,
+    cityCargo: [
+      DEFAULT_CITY_CARGO["WHEAT"],
+      DEFAULT_CITY_CARGO["WOOD"],
+      DEFAULT_CITY_CARGO["STONE"],
+    ],
+  },
+  {
+    name: "Varrock",
+    xyTileId: "5:5",
+    id: 2,
+    cityCargo: [
+      DEFAULT_CITY_CARGO["WOOL"],
+      DEFAULT_CITY_CARGO["WOOD"],
+      DEFAULT_CITY_CARGO["STONE"],
+    ],
+  },
 ]
 
 export const DEFAULT_PATHS: Omit<Path, "createdAt">[] = [
