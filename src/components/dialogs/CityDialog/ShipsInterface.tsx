@@ -1,10 +1,16 @@
+import { type ComponentPropsWithRef } from "react"
+import { type City } from "schema"
 import { ShipCard } from "~/components/ShipCard"
-import { type BaseInterfaceProps } from "~/components/dialogs/CityDialog"
 import { api } from "~/utils/api"
 
-export interface ShipsInterfaceProps extends BaseInterfaceProps {}
+export interface ShipsInterfaceProps extends ComponentPropsWithRef<"div"> {
+  selectedCity?: City
+}
 
-export const ShipsInterface = ({ selectedCity }: ShipsInterfaceProps) => {
+export const ShipsInterface = ({
+  selectedCity,
+  className,
+}: ShipsInterfaceProps) => {
   const queryClient = api.useContext()
 
   const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
@@ -16,7 +22,9 @@ export const ShipsInterface = ({ selectedCity }: ShipsInterfaceProps) => {
   })
 
   return (
-    <div className="flex max-w-full flex-1 gap-2 overflow-x-auto p-2">
+    <div
+      className={`flex max-w-full flex-1 gap-2 overflow-x-auto p-2 ${className}`}
+    >
       {ships
         .filter((ship) => {
           if (!selectedCity) return true

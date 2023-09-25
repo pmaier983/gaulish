@@ -2,36 +2,20 @@ import * as Dialog from "@radix-ui/react-dialog"
 import { type City } from "schema"
 
 import { Icon } from "~/components/Icon"
-import {
-  DockyardInterface,
-  type DockyardInterfaceProps,
-} from "~/components/dialogs/CityDialog/DockyardInterface"
-import {
-  ExchangeInterface,
-  type ExchangeInterfaceProps,
-} from "~/components/dialogs/CityDialog/ExchangeInterface"
-import {
-  ShipsInterface,
-  type ShipsInterfaceProps,
-} from "~/components/dialogs/CityDialog/ShipsInterface"
-import {
-  TradeInterface,
-  type TradeInterfaceProps,
-} from "~/components/dialogs/CityDialog/TradeInterface"
+import { DockyardInterface } from "~/components/dialogs/CityDialog/DockyardInterface"
+import { ExchangeInterface } from "~/components/dialogs/CityDialog/ExchangeInterface"
+import { ShipsInterface } from "~/components/dialogs/CityDialog/ShipsInterface"
+import { TradeInterface } from "~/components/dialogs/CityDialog/TradeInterface"
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { api } from "~/utils/api"
 import { type CitySummary, getCitySummaries } from "~/utils/utils"
 
 import {
-  CityDialogInterface,
+  type CityDialogInterface,
   CITY_DIALOG_INTERFACES,
   useCityDialogStore,
 } from "~/state/cityDialogStore"
 import { ShipFocusedCityCard } from "~/components/CityCard/ShipFocusedCityCard"
-
-export interface BaseInterfaceProps {
-  selectedCity?: City
-}
 
 // Much of the tailwind css in this file was copied from here:
 // https://github1s.com/shadcn-ui/ui/blob/HEAD/apps/www/registry/default/ui/dialog.tsx
@@ -43,6 +27,7 @@ export const CityDialog = () => {
     selectedExchangeShipIds,
     toggleSelectedCityId,
     setCityDialogInterface,
+    toggleSelectedTradeShipId,
   } = useCityDialogStore((state) => ({
     selectedCityId: state.selectedCityId,
     cityDialogInterface: state.cityDialogInterface,
@@ -50,6 +35,7 @@ export const CityDialog = () => {
     selectedExchangeShipIds: state.selectedExchangeShipIds,
     toggleSelectedCityId: state.toggleSelectedCityId,
     setCityDialogInterface: state.setCityDialogInterface,
+    toggleSelectedTradeShipId: state.toggleSelectedTradeShipId,
   }))
 
   const queryClient = api.useContext()
@@ -89,6 +75,35 @@ export const CityDialog = () => {
     selectedExchangeShipIds.includes(ship.id),
   )
 
+  // TODO: how much worse is this render interface compared to a react component?
+  // Its just super annoying to make this its own component...
+  const renderInterface = () => {
+    switch (cityDialogInterface) {
+      case CITY_DIALOG_INTERFACES.TRADE: {
+        return (
+          <TradeInterface
+            tradeShip={tradeShip}
+            selectedCity={selectedCity}
+            toggleSelectedCityId={toggleSelectedCityId}
+            toggleSelectedTradeShipId={toggleSelectedTradeShipId}
+          />
+        )
+      }
+      case CITY_DIALOG_INTERFACES.EXCHANGE: {
+        return (
+          <ExchangeInterface selectedExchangeShips={selectedExchangeShips} />
+        )
+      }
+      case CITY_DIALOG_INTERFACES.DOCKYARD: {
+        return <DockyardInterface />
+      }
+      default:
+      case CITY_DIALOG_INTERFACES.SHIPS: {
+        return <ShipsInterface selectedCity={selectedCity} />
+      }
+    }
+  }
+
   return (
     <CityDialogCommonContent
       selectedCity={selectedCity}
@@ -97,14 +112,7 @@ export const CityDialog = () => {
       cityDialogInterface={cityDialogInterface}
       citySummaries={getCitySummaries(knownCities, ships)}
     >
-      <CityDialogInterface
-        // TODO consider if its better to separate props to avoid re-renders here
-        cityDialogInterface={cityDialogInterface}
-        selectedCity={selectedCity}
-        tradeShip={tradeShip}
-        selectedExchangeShips={selectedExchangeShips}
-        toggleSelectedCityId={toggleSelectedCityId}
-      />
+      {renderInterface()}
     </CityDialogCommonContent>
   )
 }
@@ -190,33 +198,3 @@ const CityDialogCommonContent = ({
     </div>
   </DialogWrapper>
 )
-
-// TODO: rework this to only pass props where needed
-type CityDialogInterfaceProps = {
-  cityDialogInterface: CityDialogInterface
-} & BaseInterfaceProps &
-  DockyardInterfaceProps &
-  TradeInterfaceProps &
-  ExchangeInterfaceProps &
-  ShipsInterfaceProps
-
-const CityDialogInterface = ({
-  cityDialogInterface,
-  ...props
-}: CityDialogInterfaceProps) => {
-  switch (cityDialogInterface) {
-    case CITY_DIALOG_INTERFACES.TRADE: {
-      return <TradeInterface {...props} />
-    }
-    case CITY_DIALOG_INTERFACES.EXCHANGE: {
-      return <ExchangeInterface {...props} />
-    }
-    case CITY_DIALOG_INTERFACES.DOCKYARD: {
-      return <DockyardInterface {...props} />
-    }
-    default:
-    case CITY_DIALOG_INTERFACES.SHIPS: {
-      return <ShipsInterface {...props} />
-    }
-  }
-}
