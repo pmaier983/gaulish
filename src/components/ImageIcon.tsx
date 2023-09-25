@@ -1,4 +1,5 @@
 import Image, { type ImageProps } from "next/image"
+import { forwardRef } from "react"
 import { SHIP_TYPES } from "~/components/constants"
 
 const IMAGE_ICONS_PURE = {
@@ -96,17 +97,22 @@ interface ImageIconProps
   className?: string
 }
 
-export const ImageIcon = ({ id, size, className }: ImageIconProps) => {
-  const details = IMAGE_ICONS_TO_DETAILS[id]
-  const widthAndHeight = size ?? details.defaultSize
-  return (
-    <Image
-      // TODO: handle the min width and height size better then this!
-      className={`h-fit rounded-md outline outline-1 outline-black ${className}`}
-      src={details.path}
-      alt={details.alt}
-      width={widthAndHeight}
-      height={widthAndHeight}
-    />
-  )
-}
+export const ImageIcon = forwardRef<HTMLImageElement, ImageIconProps>(
+  ({ id, size, className }, forwardRef) => {
+    const details = IMAGE_ICONS_TO_DETAILS[id]
+    const widthAndHeight = size ?? details.defaultSize
+    return (
+      <Image
+        // TODO: handle the min width and height size better then this!
+        className={`h-fit rounded-md outline outline-1 outline-black ${className}`}
+        src={details.path}
+        alt={details.alt}
+        width={widthAndHeight}
+        height={widthAndHeight}
+        ref={forwardRef}
+      />
+    )
+  },
+)
+
+ImageIcon.displayName = "ImageIcon"
