@@ -1,8 +1,10 @@
-import { type CommonCityCardProps } from "~/components/CityCard"
+import { type ComponentPropsWithRef } from "react"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
+import { type CitySummary } from "~/utils/utils"
 
-interface ShipFocusedCityCardProps
-  extends Pick<CommonCityCardProps, "citySummary" | "onClick" | "className"> {}
+interface ShipFocusedCityCardProps extends ComponentPropsWithRef<"button"> {
+  citySummary: CitySummary
+}
 
 export const ShipFocusedCityCard = ({
   citySummary,

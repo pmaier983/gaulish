@@ -1,11 +1,12 @@
 import { type ComponentPropsWithRef } from "react"
-import { type Ship, type City } from "schema"
+import { type City } from "schema"
 import { ShipCard } from "~/components/ShipCard"
+import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 
 interface ShipTradeCardProps extends ComponentPropsWithRef<"div"> {
   selectedCity?: City
-  tradeShip?: Ship
+  tradeShip?: ShipComposite
 }
 
 export const ShipTradeCard = ({
@@ -27,10 +28,8 @@ export const ShipTradeCard = ({
   if (!tradeShip) {
     return (
       <div
-        className={`flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded-md p-2 ${className}`}
+        className={`flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded-md ${className}`}
       >
-        <div className="text-2xl">Select a Ship</div>
-        {/* TODO: why is the bottom of this list squished (when it overflows?) */}
         {visibleShips.map((ship) => (
           <ShipCard key={ship.id} type="TINY" ship={ship} />
         ))}
@@ -38,5 +37,9 @@ export const ShipTradeCard = ({
     )
   }
 
-  return <div className="flex flex-1">TODO</div>
+  return (
+    <div className="flex flex-1 justify-center">
+      <ShipCard type="LARGE" ship={tradeShip} />
+    </div>
+  )
 }

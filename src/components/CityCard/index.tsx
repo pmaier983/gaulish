@@ -1,8 +1,7 @@
-import { type City } from "schema"
 import { ShipFocusedCityCard } from "~/components/CityCard/ShipFocusedCityCard"
 import { TradeFocusedCityCard } from "~/components/CityCard/TradeFocusedCityCard"
 import { api } from "~/utils/api"
-import { type CitySummary, getCitySummaries } from "~/utils/utils"
+import { getCitySummaries } from "~/utils/utils"
 
 export const CITY_CARD_TYPES = {
   SHIP_FOCUSED: "SHIP_FOCUSED",
@@ -16,11 +15,6 @@ interface CityCardProps {
   cityId: number
   onClick: () => void
   className?: string
-}
-
-export interface CommonCityCardProps extends Omit<CityCardProps, "type"> {
-  citySummary: CitySummary
-  city: City
 }
 
 export const CityCard = ({ type, cityId, ...rest }: CityCardProps) => {
@@ -55,20 +49,13 @@ export const CityCard = ({ type, cityId, ...rest }: CityCardProps) => {
     (citySummary) => citySummary.id === cityId,
   )!
 
-  const commonCityCardProps: CommonCityCardProps = {
-    cityId,
-    citySummary,
-    city,
-    ...rest,
-  }
-
   switch (type) {
     case CITY_CARD_TYPES.TRADE_FOCUSED: {
-      return <TradeFocusedCityCard {...commonCityCardProps} />
+      return <TradeFocusedCityCard city={city} {...rest} />
     }
     default:
     case CITY_CARD_TYPES.SHIP_FOCUSED: {
-      return <ShipFocusedCityCard {...commonCityCardProps} />
+      return <ShipFocusedCityCard citySummary={citySummary} {...rest} />
     }
   }
 }

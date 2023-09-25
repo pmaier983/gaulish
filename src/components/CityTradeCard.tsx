@@ -23,9 +23,8 @@ export const CityTradeCard = ({
   if (!selectedCity) {
     return (
       <div
-        className={`flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded p-2  ${className}`}
+        className={`flex min-w-[280px] flex-1 flex-col items-end gap-2 rounded ${className}`}
       >
-        <div className="text-2xl">Select a City</div>
         {cities.map((city) => (
           <TradeFocusedCityCard
             city={city}
@@ -37,5 +36,13 @@ export const CityTradeCard = ({
     )
   }
 
-  return <div className="flex flex-1">TODO</div>
+  return (
+    <TradeFocusedCityCard
+      city={selectedCity}
+      key={selectedCity.id}
+      onClick={() => onClickCityId(selectedCity.id)}
+      className="h-min self-center"
+      hasButton={false}
+    />
+  )
 }

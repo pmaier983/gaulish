@@ -31,7 +31,7 @@ export const TradeInterface = ({
           toggleSelectedCityId={toggleSelectedCityId}
           toggleSelectedTradeShipId={toggleSelectedTradeShipId}
         />
-        <div className="flex flex-1 flex-row">
+        <div className="flex flex-1 flex-row gap-2">
           <ShipTradeCard tradeShip={tradeShip} selectedCity={selectedCity} />
           <CityTradeCard
             onClickCityId={toggleSelectedCityId}
@@ -70,42 +70,45 @@ export const TradeInterfaceHeader = ({
   className,
 }: TradeInterfaceHeaderProps) => {
   return (
-    <h3 className={`grid grid-cols-3 items-center ${className}`}>
-      {tradeShip ? (
-        <div className="flex flex-row gap-1">
-          <ShipHeader shipId={tradeShip.id} />
-          <ExitButton
-            label="Revert Ship Selection"
-            onClick={() => toggleSelectedTradeShipId()}
-          />
-        </div>
-      ) : (
-        <span className="text-2xl">Select A Ship</span>
-      )}
-
-      <div className="flex flex-row justify-center gap-2">
-        {tradeShip && (
-          <ImageIconCount id="GOLD" count={tradeShip?.cargo.gold} />
+    <div className="flex flex-col gap-1">
+      <h3 className={`grid grid-cols-3 items-center ${className}`}>
+        {tradeShip ? (
+          <div className="flex flex-row gap-1">
+            <ShipHeader shipId={tradeShip.id} />
+            <ExitButton
+              label="Revert Ship Selection"
+              onClick={() => toggleSelectedTradeShipId()}
+            />
+          </div>
+        ) : (
+          <span className="text-2xl">Select A Ship</span>
         )}
-        {tradeShip && (
-          <CargoCount
-            cargoCapacity={tradeShip.cargoCapacity}
-            currentCargo={getCargoSum(tradeShip.cargo)}
-          />
-        )}
-      </div>
 
-      {selectedCity ? (
-        <div className="flex justify-end gap-1 text-xl">
-          <div className="">{selectedCity.name}</div>
-          <ExitButton
-            label="Revert City Selection"
-            onClick={() => toggleSelectedCityId()}
-          />
+        <div className="flex flex-row justify-center gap-2">
+          {tradeShip && (
+            <ImageIconCount id="GOLD" count={tradeShip?.cargo.gold} />
+          )}
+          {tradeShip && (
+            <CargoCount
+              cargoCapacity={tradeShip.cargoCapacity}
+              currentCargo={getCargoSum(tradeShip.cargo)}
+            />
+          )}
         </div>
-      ) : (
-        <span className="flex justify-end text-2xl">Select A City</span>
-      )}
-    </h3>
+
+        {selectedCity ? (
+          <div className="flex justify-end gap-1 text-xl">
+            <div className="">{selectedCity.name}</div>
+            <ExitButton
+              label="Revert City Selection"
+              onClick={() => toggleSelectedCityId()}
+            />
+          </div>
+        ) : (
+          <span className="flex justify-end text-2xl">Select A City</span>
+        )}
+      </h3>
+      <div className="h-[2px] w-full bg-black" />
+    </div>
   )
 }
