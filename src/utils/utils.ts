@@ -352,16 +352,28 @@ export const getPrice = ({ amplitude, midline, seed }: getPiceInput) => {
   const timeMin = Math.round(new Date().getTime() / 60000)
 
   // const of sin & cos values
-  const countOfVales = 4
+  const countOfWaves = 4
 
-  const innerValue =
-    Math.sin(timeMin * randomNumberWithSeed(seed + 1)) +
-    Math.cos(timeMin * randomNumberWithSeed(seed + 2)) +
-    Math.cos(timeMin * randomNumberWithSeed(seed + 3)) +
-    Math.sin(timeMin * randomNumberWithSeed(seed + 4))
+  const randomArray = Array(countOfWaves)
+    .fill(undefined)
+    .map((_, i) => randomNumberWithSeed(seed + i))
+  const randomSum = randomArray.reduce((acc, val) => acc + val, 0)
+  const randomArrayPercent = randomArray.map((val) => val / randomSum)
+
+  let innerValue = 0
+
+  for (let i = 0; i < countOfWaves; i++) {
+    const val = timeMin * randomArray[i]! * randomArrayPercent[i]!
+    const randomSway = randomNumberWithSeed(seed + i * 10)
+    if (i % 2 === 0) {
+      innerValue += Math.sin(val) * randomSway
+    } else {
+      innerValue += Math.cos(val) * randomSway
+    }
+  }
 
   const finalValue = Math.round(
-    amplitude * ((innerValue * 1) / countOfVales) + midline,
+    amplitude * ((innerValue * 1) / countOfWaves) + midline,
   )
 
   const minValue = 1
