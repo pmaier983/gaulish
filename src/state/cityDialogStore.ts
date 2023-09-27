@@ -96,6 +96,8 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
       } else {
         set({ selectedCityId: newSelectedCityId })
       }
+
+      set({ selectedTradeShipId: undefined })
     },
 
     toggleSelectedTradeShipId: (newSelectedTradeShipId) => {

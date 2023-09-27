@@ -34,7 +34,7 @@ export const FormatNumber = ({
 }: FormatNumberProps) => {
   const compactNumber = getFormattedNumber({ number, isGold })
 
-  if (compactNumber === number.toString()) {
+  if (compactNumber === `${number}${isGold ? "g" : ""}`) {
     return <div className={`${className}`}>{compactNumber}</div>
   }
 
