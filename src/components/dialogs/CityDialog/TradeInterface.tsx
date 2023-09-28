@@ -7,7 +7,7 @@ import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { PriceSlider } from "~/components/PriceSlider"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipTradeCard } from "~/components/ShipTradeCard"
-import { ExitButton } from "~/components/buttons/ExitButton"
+import { SwapButton } from "~/components/buttons/SwapButton"
 import { CARGO_TYPES_LIST } from "~/components/constants"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { getCargoSum, getPrice } from "~/utils/utils"
@@ -54,7 +54,7 @@ export const TradeInterface = ({
     const cargoType = type.toUpperCase()
     const isCargo = CARGO_TYPES_LIST.includes(cargoType)
     const hasCargoTypeOnboard = typeof count === "number" && count > 0
-    const cityLacksCargoType = !cityCargoTypes.includes(type)
+    const cityLacksCargoType = !cityCargoTypes.includes(cargoType)
 
     if (isCargo && hasCargoTypeOnboard && cityLacksCargoType) {
       return [...acc, { type: cargoType as CargoTypes, count: count }]
@@ -144,9 +144,9 @@ export const TradeInterfaceHeader = ({
     <div className="flex flex-col gap-1">
       <h3 className={`grid grid-cols-3 items-center ${className}`}>
         {tradeShip ? (
-          <div className="flex flex-row gap-1">
+          <div className="flex flex-row items-center gap-1">
             <ShipHeader shipId={tradeShip.id} />
-            <ExitButton
+            <SwapButton
               label="Revert Ship Selection"
               onClick={() => toggleSelectedTradeShipId()}
             />
@@ -155,7 +155,7 @@ export const TradeInterfaceHeader = ({
           <span className="text-2xl">Select A Ship</span>
         )}
 
-        <div className="flex flex-row justify-center gap-2">
+        <div className="flex flex-row items-center justify-center gap-2">
           {tradeShip && (
             <ImageIconCount id="GOLD" count={tradeShip?.cargo.gold} />
           )}
@@ -168,12 +168,12 @@ export const TradeInterfaceHeader = ({
         </div>
 
         {selectedCity ? (
-          <div className="flex justify-end gap-1 text-xl">
-            <div className="">{selectedCity.name}</div>
-            <ExitButton
+          <div className="flex items-center justify-end gap-1 text-xl">
+            <SwapButton
               label="Revert City Selection"
               onClick={() => toggleSelectedCityId()}
             />
+            <div className="">{selectedCity.name}</div>
           </div>
         ) : (
           <span className="flex justify-end text-2xl">Select A City</span>

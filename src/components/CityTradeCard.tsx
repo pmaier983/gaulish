@@ -1,6 +1,7 @@
 import { type ComponentPropsWithRef } from "react"
 import { type City } from "schema"
 import { TradeFocusedCityCard } from "~/components/CityCard/TradeFocusedCityCard"
+import { SwapButton } from "~/components/buttons/SwapButton"
 import { api } from "~/utils/api"
 
 interface CityTradeCardProps extends ComponentPropsWithRef<"div"> {
@@ -37,12 +38,18 @@ export const CityTradeCard = ({
   }
 
   return (
-    <TradeFocusedCityCard
-      city={selectedCity}
-      key={selectedCity.id}
-      onClick={() => onClickCityId(selectedCity.id)}
-      className="h-min self-center"
-      hasButton={false}
-    />
+    <div className="flex flex-1 flex-row items-center gap-3">
+      <SwapButton
+        label="revet city selection"
+        onClick={() => onClickCityId()}
+      />
+      <TradeFocusedCityCard
+        city={selectedCity}
+        key={selectedCity.id}
+        onClick={() => onClickCityId(selectedCity.id)}
+        className="h-min"
+        hasButton={false}
+      />
+    </div>
   )
 }

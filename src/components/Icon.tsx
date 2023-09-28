@@ -5,12 +5,14 @@ import { type ComponentPropsWithRef } from "react"
  */
 export const ICONS = {
   x: "x",
+  "x-square": "x-square",
   arrowRight: "arrow-right",
   arrowLeft: "arrow-left",
   "edit-3": "edit-3",
   map: "map",
   trade: "trade",
-  arrowRightCircle: "arrow-right-circle",
+  "arrow-right-circle": "arrow-right-circle",
+  "refresh-cw": "refresh-cw",
 } as const
 
 export type ICON = keyof typeof ICONS

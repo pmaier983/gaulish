@@ -28,7 +28,7 @@ export const TradeFocusedCityCard = ({
             onClick={onClick}
             className="rounded bg-blue-400 p-1 text-white outline outline-1 outline-black hover:text-blue-800 active:bg-blue-500"
           >
-            <Icon id="arrowRightCircle" />
+            <Icon id="arrow-right-circle" />
             <span className="sr-only">Select City</span>
           </button>
         )}
