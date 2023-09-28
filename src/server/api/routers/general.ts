@@ -1,4 +1,4 @@
-import { inArray } from "drizzle-orm"
+import { and, eq, inArray } from "drizzle-orm"
 import { users, ship } from "schema"
 import { z } from "zod"
 
@@ -33,9 +33,12 @@ export const generalRouter = createTRPCRouter({
       }, {})
 
       const usersShips = await ctx.db.query.ship.findMany({
-        where: inArray(
-          ship.userId,
-          leaderboardUsers.map((user) => user.userId),
+        where: and(
+          inArray(
+            ship.userId,
+            leaderboardUsers.map((user) => user.userId),
+          ),
+          eq(ship.isSunk, false),
         ),
         with: {
           cargo: {
