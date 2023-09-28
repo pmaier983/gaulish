@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef } from "react"
-import { type City } from "schema"
+import { type CargoTypes, type City } from "schema"
 import { CityTradeCard } from "~/components/CityTradeCard"
 import { FormatNumber } from "~/components/FormatNumber"
 import { ImageIcon } from "~/components/ImageIcon"
@@ -8,6 +8,7 @@ import { PriceSlider } from "~/components/PriceSlider"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipTradeCard } from "~/components/ShipTradeCard"
 import { ExitButton } from "~/components/buttons/ExitButton"
+import { CARGO_TYPES_LIST } from "~/components/constants"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { getCargoSum, getPrice } from "~/utils/utils"
 
@@ -45,6 +46,22 @@ export const TradeInterface = ({
     )
   }
 
+  const cityCargoTypes = [...selectedCity.cityCargo.map((val) => val.type)]
+
+  const currentShipCargo = Object.entries(tradeShip.cargo).reduce<
+    { type: CargoTypes; count: number }[]
+  >((acc, [type, count]) => {
+    const cargoType = type.toUpperCase()
+    const isCargo = CARGO_TYPES_LIST.includes(cargoType)
+    const hasCargoTypeOnboard = typeof count === "number" && count > 0
+    const cityLacksCargoType = !cityCargoTypes.includes(type)
+
+    if (isCargo && hasCargoTypeOnboard && cityLacksCargoType) {
+      return [...acc, { type: cargoType as CargoTypes, count: count }]
+    }
+    return acc
+  }, [])
+
   return (
     <div className={`flex max-w-full flex-1 flex-col gap-2 p-2 ${className}`}>
       <TradeInterfaceHeader
@@ -59,7 +76,7 @@ export const TradeInterface = ({
         return (
           <div
             key={cargo.type}
-            className="grid grid-cols-[1fr_4rem_1fr] border-b-2 border-dashed border-black pb-2 pt-2"
+            className="grid grid-cols-[1fr_5rem_1fr] gap-2 border-b-2 border-dashed border-black pb-2 pt-2"
           >
             <div className="flex flex-1 flex-row pl-2 pr-2">
               <PriceSlider
@@ -72,7 +89,7 @@ export const TradeInterface = ({
                 }}
               />
             </div>
-            <div className="flex min-w-[4rem] flex-row content-center items-center gap-2">
+            <div className="flex h-full min-w-[4rem] flex-row content-center items-center gap-2 border border-b-0 border-t-0 border-dashed border-black pl-3 pr-3">
               <ImageIcon id={cargo.type} />
               <FormatNumber number={cargoPrice} isGold />
             </div>
@@ -90,6 +107,21 @@ export const TradeInterface = ({
           </div>
         )
       })}
+      {currentShipCargo.length > 0 && (
+        <div className="grid grid-cols-[1fr_5rem_1fr] gap-2">
+          <div className="flex flex-1 flex-wrap gap-2">
+            Remaining Cargo:
+            {currentShipCargo.map((cargo) => (
+              <ImageIconCount
+                key={cargo.type}
+                id={cargo.type}
+                count={cargo.count}
+                className="w-[3.4rem]"
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

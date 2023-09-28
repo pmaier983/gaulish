@@ -105,3 +105,6 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 2500, // 1 tile every 2.5 seconds
   },
 }
+
+// TODO: find a better way to keep this in sync with cargo?
+export const CARGO_TYPES_LIST = ["WHEAT", "STONE", "WOOD", "WOOL"] as const

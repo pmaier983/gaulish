@@ -262,11 +262,13 @@ export const logRelations = relations(log, ({ one }) => ({
 
 export const cargo = mysqlTable("cargo", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
+  /** ITTT: Also Update CARGO_TYPES_LIST in constants */
   gold: int("gold").default(0).notNull(),
   wheat: int("wheat").default(0).notNull(),
   wool: int("wool").default(0).notNull(),
   stone: int("stone").default(0).notNull(),
-  wood: int("wood").default(0).notNull(), // possibly add fine-wood & hardwood later
+  wood: int("wood").default(0).notNull(),
+  /** ITTT: Also Update CARGO_TYPES_LIST in constants */
 })
 export type Cargo = InferModel<typeof cargo>
 export const cargoRelations = relations(cargo, ({ one }) => ({
