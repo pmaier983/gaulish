@@ -49,6 +49,13 @@ export const PriceSlider = ({
 
   const color = type === "BUY" ? "red" : "green"
 
+  if (type === "SELL" && maxValue === 0)
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        Nothing to Sell
+      </div>
+    )
+
   return (
     <form
       className="flex flex-1 flex-row gap-2"

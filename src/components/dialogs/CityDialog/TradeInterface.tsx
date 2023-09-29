@@ -144,7 +144,7 @@ export const TradeInterfaceHeader = ({
     <div className="flex flex-col gap-1">
       <h3 className={`grid grid-cols-3 items-center ${className}`}>
         {tradeShip ? (
-          <div className="flex flex-row items-center gap-1">
+          <div className="flex flex-row items-center gap-2">
             <ShipHeader shipId={tradeShip.id} />
             <SwapButton
               label="Revert Ship Selection"
@@ -168,7 +168,7 @@ export const TradeInterfaceHeader = ({
         </div>
 
         {selectedCity ? (
-          <div className="flex items-center justify-end gap-1 text-xl">
+          <div className="flex items-center justify-end gap-2 text-xl">
             <SwapButton
               label="Revert City Selection"
               onClick={() => toggleSelectedCityId()}
