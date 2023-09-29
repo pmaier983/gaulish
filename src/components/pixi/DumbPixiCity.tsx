@@ -40,6 +40,7 @@ export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
     },
     [cityXPosition, cityYPosition, citySize],
   )
+
   return (
     <>
       <Graphics draw={draw} />

@@ -4,7 +4,7 @@ import { FormatNumber } from "~/components/FormatNumber"
 import { Icon } from "~/components/Icon"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Tooltip } from "~/components/Tooltip"
-import { getPrice } from "~/utils/utils"
+import { useGetPrice } from "~/hooks/useGetPrice"
 
 interface TradeFocusedCityCardProps extends ComponentPropsWithRef<"div"> {
   city: City
@@ -18,6 +18,8 @@ export const TradeFocusedCityCard = ({
   hasButton = true,
   className,
 }: TradeFocusedCityCardProps) => {
+  const { getPrice } = useGetPrice()
+
   return (
     <div
       className={`flex max-w-[23rem] flex-row flex-wrap items-center gap-y-2 rounded-md p-2 pr-0 outline outline-1 outline-black ${className}`}

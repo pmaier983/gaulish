@@ -333,51 +333,9 @@ export const getCitySummaries = (
 
 // Thank you Tommy Ettinger
 // https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
-function randomNumberWithSeed(seed: number) {
+export const randomNumberWithSeed = (seed: number) => {
   let t = (seed += 0x6d2b79f5)
   t = Math.imul(t ^ (t >>> 15), t | 1)
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-}
-
-interface getPiceInput {
-  // Controls the max variation around the midline
-  amplitude: number
-  // Controls the number the price fluctuates around
-  midline: number
-  seed: number
-}
-
-export const getPrice = ({ amplitude, midline, seed }: getPiceInput) => {
-  const timeMin = Math.round(new Date().getTime() / 60000)
-
-  // const of sin & cos values
-  const countOfWaves = 4
-
-  const randomArray = Array(countOfWaves)
-    .fill(undefined)
-    .map((_, i) => randomNumberWithSeed(seed + i))
-  const randomSum = randomArray.reduce((acc, val) => acc + val, 0)
-  const randomArrayPercent = randomArray.map((val) => val / randomSum)
-
-  let innerValue = 0
-
-  for (let i = 0; i < countOfWaves; i++) {
-    const val = timeMin * randomArray[i]! * randomArrayPercent[i]!
-    const randomSway = randomNumberWithSeed(seed + i * 10)
-    if (i % 2 === 0) {
-      innerValue += Math.sin(val) * randomSway
-    } else {
-      innerValue += Math.cos(val) * randomSway
-    }
-  }
-
-  const finalValue = Math.round(
-    amplitude * ((innerValue * 1) / countOfWaves) + midline,
-  )
-
-  const minValue = 1
-  const maxValue = midline + amplitude
-
-  return Math.min(Math.max(finalValue, minValue), maxValue)
 }

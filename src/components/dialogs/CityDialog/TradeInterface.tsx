@@ -9,8 +9,9 @@ import { ShipHeader } from "~/components/ShipHeader"
 import { ShipTradeCard } from "~/components/ShipTradeCard"
 import { SwapButton } from "~/components/buttons/SwapButton"
 import { CARGO_TYPES_LIST } from "~/components/constants"
+import { useGetPrice } from "~/hooks/useGetPrice"
 import { type ShipComposite } from "~/state/gamestateStore"
-import { getCargoSum, getPrice } from "~/utils/utils"
+import { getCargoSum } from "~/utils/utils"
 
 export interface TradeInterfaceProps extends ComponentPropsWithRef<"div"> {
   tradeShip?: ShipComposite
@@ -26,6 +27,8 @@ export const TradeInterface = ({
   toggleSelectedTradeShipId,
   className,
 }: TradeInterfaceProps) => {
+  const { getPrice } = useGetPrice()
+
   if (!selectedCity || !tradeShip) {
     return (
       <div className="flex max-w-full flex-1 flex-col gap-2 p-2">
