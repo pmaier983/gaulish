@@ -10,7 +10,7 @@ export const LOG_PAGE_SIZE = 10
 
 export const MAX_SHIP_NAME_LENGTH = 20
 
-export const PRICE_UPDATE_INTERVAL = 1000 * 60 // every minute
+export const PRICE_UPDATE_INTERVAL = 1000 * 60 * 5 // every 5 minutes
 
 export const FAKE_INITIAL_SHIP_PATH_ID = "FAKE_INITIAL_SHIP_PATH_ID"
 

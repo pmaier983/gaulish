@@ -208,7 +208,16 @@ export const hasNpcUserCollision = ({
 }
 
 export const getCargoSum = (cargo: Cargo) => {
-  return cargo.stone + cargo.wood + cargo.wheat + cargo.wool
+  return Object.entries(cargo).reduce((acc, [cargoType, cargoAmount]) => {
+    // Skip id
+    if (typeof cargoAmount === "string") {
+      return acc
+    }
+    // Skip gold
+    if (cargoType === "gold") {
+    }
+    return acc + cargoAmount
+  }, 0)
 }
 
 // TODO: turn into a bfs algorithm that scans an area

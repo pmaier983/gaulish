@@ -4,6 +4,7 @@ import { mapRouter } from "~/server/api/routers/map"
 import { shipsRouter } from "~/server/api/routers/ships"
 import { logsRouter } from "~/server/api/routers/logs"
 import { adminRouter } from "~/server/api/routers/admin"
+import { tradeRouter } from "~/server/api/routers/trade"
 
 /**
  * This is the primary router for your server.
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
   map: mapRouter,
   ships: shipsRouter,
   logs: logsRouter,
+  trade: tradeRouter,
 })
 
 // export type definition of API

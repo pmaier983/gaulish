@@ -10,7 +10,7 @@ interface getPriceOutsideReactInputs {
   seed: number
 }
 
-const getPriceOutsideReact = ({
+export const getPriceOutsideReact = ({
   amplitude,
   midline,
   seed,

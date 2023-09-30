@@ -32,18 +32,20 @@ export const PriceSlider = ({
 }: SliderProps) => {
   const [value, setInternalValue] = useState<number[]>(defaultValue ?? [0])
 
+  const shipGold = ship.cargo.gold
+
   const valueNumber = value.at(0)!
 
   const totalPrice = price * valueNumber
 
-  const lowercaseCargoType = cargoType.toLocaleLowerCase() as Lowercase<
-    typeof cargoType
-  >
+  const maxPossibleAfforded = Math.floor(shipGold / price)
 
   const maxValue =
-    type === "BUY" ? ship.cargoCapacity : ship.cargo[lowercaseCargoType]
+    type === "BUY"
+      ? Math.min(ship.cargoCapacity, maxPossibleAfforded)
+      : ship.cargo[cargoType]
 
-  const isButtonDisabled = totalPrice > ship.cargo.gold || totalPrice === 0
+  const isButtonDisabled = totalPrice > shipGold || totalPrice === 0
 
   const isValueChangeDisabled = type === "SELL" ? maxValue === 0 : false
 

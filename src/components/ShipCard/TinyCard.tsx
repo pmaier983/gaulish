@@ -2,6 +2,7 @@ import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { type CommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
 import { TradeButton } from "~/components/buttons/TradeButton"
+import { getCargoSum } from "~/utils/utils"
 
 interface TinyShipCardProps extends CommonShipCardProps {}
 
@@ -22,12 +23,7 @@ export const TinyShipCard = ({
       <div className="flex-2 flex flex-row justify-end gap-5">
         <ImageIconCount id="GOLD" count={ship.cargo.gold} />
         <CargoCount
-          currentCargo={
-            ship.cargo.stone +
-            ship.cargo.wheat +
-            ship.cargo.wood +
-            ship.cargo.wool
-          }
+          currentCargo={getCargoSum(ship.cargo)}
           cargoCapacity={ship.cargoCapacity}
         />
         <TradeButton

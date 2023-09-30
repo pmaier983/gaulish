@@ -484,10 +484,10 @@ export const validateNpcConflicts = async ({
           .update(cargo)
           .set({
             gold: 0,
-            stone: Math.floor(userShip.cargo.stone / 2),
-            wood: Math.floor(userShip.cargo.wood / 2),
-            wheat: Math.floor(userShip.cargo.wheat / 2),
-            wool: Math.floor(userShip.cargo.wool / 2),
+            STONE: Math.floor(userShip.cargo.STONE / 2),
+            WOOD: Math.floor(userShip.cargo.WOOD / 2),
+            WHEAT: Math.floor(userShip.cargo.WHEAT / 2),
+            WOOL: Math.floor(userShip.cargo.WOOL / 2),
           })
           .where(eq(cargo.id, userShip.cargoId))
 

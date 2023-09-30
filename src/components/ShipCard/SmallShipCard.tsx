@@ -4,6 +4,7 @@ import { ShipHeader } from "~/components/ShipHeader"
 import { ExchangeButton } from "~/components/buttons/ExchangeButton"
 import { SailButton } from "~/components/buttons/SailButton"
 import { TradeButton } from "~/components/buttons/TradeButton"
+import { getCargoSum } from "~/utils/utils"
 
 interface SmallShipCardProps extends CommonShipCardProps {}
 
@@ -32,12 +33,7 @@ export const SmallShipCard = ({
       <div className="flex flex-row items-center justify-between">
         <ImageIconCount id="GOLD" count={ship.cargo.gold} />
         <CargoCount
-          currentCargo={
-            ship.cargo.stone +
-            ship.cargo.wheat +
-            ship.cargo.wood +
-            ship.cargo.wool
-          }
+          currentCargo={getCargoSum(ship.cargo)}
           cargoCapacity={ship.cargoCapacity}
         />
         <ExchangeButton
