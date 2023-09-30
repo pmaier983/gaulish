@@ -11,6 +11,7 @@ import { SwapButton } from "~/components/buttons/SwapButton"
 import { CARGO_TYPES_LIST } from "~/components/constants"
 import { useGetPrice } from "~/hooks/useGetPrice"
 import { type ShipComposite } from "~/state/gamestateStore"
+import { api } from "~/utils/api"
 import { getCargoSum } from "~/utils/utils"
 
 export interface TradeInterfaceProps extends ComponentPropsWithRef<"div"> {
@@ -28,6 +29,10 @@ export const TradeInterface = ({
   className,
 }: TradeInterfaceProps) => {
   const { getPrice } = useGetPrice()
+
+  const { mutate: buyCargo } = api.trade.buyCargo.useMutation({})
+
+  const { mutate: sellCargo } = api.trade.sellCargo.useMutation({})
 
   if (!selectedCity || !tradeShip) {
     return (
@@ -88,7 +93,11 @@ export const TradeInterface = ({
                 ship={tradeShip}
                 cargoType={cargo.type}
                 onSubmit={(val) => {
-                  console.log("wow!", val)
+                  sellCargo({
+                    amount: val,
+                    cargoType: cargo.type,
+                    shipId: tradeShip.id,
+                  })
                 }}
               />
             </div>
@@ -103,7 +112,11 @@ export const TradeInterface = ({
                 ship={tradeShip}
                 cargoType={cargo.type}
                 onSubmit={(val) => {
-                  console.log("wow!", val)
+                  buyCargo({
+                    amount: val,
+                    cargoType: cargo.type,
+                    shipId: tradeShip.id,
+                  })
                 }}
               />
             </div>

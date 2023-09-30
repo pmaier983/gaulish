@@ -215,6 +215,7 @@ export const getCargoSum = (cargo: Cargo) => {
     }
     // Skip gold
     if (cargoType === "gold") {
+      return acc
     }
     return acc + cargoAmount
   }, 0)
