@@ -1,10 +1,11 @@
 import * as Slider from "@radix-ui/react-slider"
 import { useState } from "react"
-import { FormatNumber } from "~/components/FormatNumber"
 
 import styles from "./priceSlider.module.css"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { type CargoTypes } from "schema"
+import { PurchasePriceButton } from "~/components/buttons/PurchasePriceButton"
+import { getCargoSum } from "~/utils/utils"
 
 interface SliderProps extends Omit<Slider.SliderProps, "onSubmit"> {
   type: "BUY" | "SELL"
@@ -45,11 +46,23 @@ export const PriceSlider = ({
       ? Math.min(ship.cargoCapacity, maxPossibleAfforded)
       : ship.cargo[cargoType]
 
-  const isButtonDisabled = totalPrice > shipGold || totalPrice === 0
+  // TODO: probably better to refactor this using HookForm & Zod
+  const whyIsButtonDisabled = (() => {
+    if (totalPrice > shipGold) {
+      return "Not enough gold on this ship to purchase"
+    }
+    if (totalPrice === 0) {
+      return "Nothing to purchase"
+    }
+    if (type === "BUY" && ship.cargoCapacity - getCargoSum(ship.cargo) === 0) {
+      return "Not enough cargo space"
+    }
+    return false
+  })()
+
+  const isButtonDisabled = !!whyIsButtonDisabled
 
   const isValueChangeDisabled = type === "SELL" ? maxValue === 0 : false
-
-  const color = type === "BUY" ? "red" : "green"
 
   if (type === "SELL" && maxValue === 0)
     return (
@@ -91,28 +104,14 @@ export const PriceSlider = ({
           setInternalValue([parseInt(e.currentTarget.value, 10)])
         }
       />
-      <div
-        className={`flex flex-row items-center rounded bg-${color}-400 outline outline-1 outline-black`}
-      >
-        <button
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault()
-            onSubmit(valueNumber)
-          }}
-          disabled={isButtonDisabled}
-          className={`p-2 capitalize hover:bg-${color}-500 hover:text-white active:bg-${color}-700 disabled:bg-slate-300 disabled:text-white`}
-        >
-          {type.toLocaleLowerCase()}
-        </button>
-        <div className="h-full w-[1px] bg-black" />
-
-        <FormatNumber
-          number={totalPrice}
-          isGold
-          className={`w-[4rem] bg-${color}-200 p-2`}
-        />
-      </div>
+      <PurchasePriceButton
+        label={type.toLocaleLowerCase()}
+        price={totalPrice}
+        disabled={isButtonDisabled}
+        type={type}
+        onClick={() => onSubmit(valueNumber)}
+        tooltipContent={whyIsButtonDisabled}
+      />
     </form>
   )
 }
