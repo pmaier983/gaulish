@@ -1,5 +1,7 @@
 import { type ComponentPropsWithRef } from "react"
 import { type CargoTypes, type City } from "schema"
+import { produce } from "immer"
+
 import { CityTradeCard } from "~/components/CityTradeCard"
 import { FormatNumber } from "~/components/FormatNumber"
 import { ImageIcon } from "~/components/ImageIcon"
@@ -12,6 +14,7 @@ import { CARGO_TYPES_LIST } from "~/components/constants"
 import { useGetPrice } from "~/hooks/useGetPrice"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
+import { addToLogs } from "~/utils/sailingUtils"
 import { getCargoSum } from "~/utils/utils"
 
 export interface TradeInterfaceProps extends ComponentPropsWithRef<"div"> {
@@ -28,11 +31,63 @@ export const TradeInterface = ({
   toggleSelectedTradeShipId,
   className,
 }: TradeInterfaceProps) => {
+  const queryClient = api.useContext()
   const { getPrice } = useGetPrice()
 
-  const { mutate: buyCargo } = api.trade.buyCargo.useMutation({})
+  const { mutate: buyCargo } = api.trade.buyCargo.useMutation({
+    onMutate: (buyCargoInputs) => {
+      queryClient.ships.getUsersShips.setData(undefined, (oldShips) => {
+        const newShips = produce(oldShips, (draftShips) => {
+          const shipToUpdate = draftShips?.find(
+            (ship) => ship.id === buyCargoInputs.shipId,
+          )
+          if (!shipToUpdate?.cargo) throw new Error("Ship has no cargo")
+          // Update the ship's gold count!
+          shipToUpdate.cargo.gold -= buyCargoInputs.totalPrice
+          // Update the ship's cargo
+          shipToUpdate.cargo[buyCargoInputs.cargoType] += buyCargoInputs.amount
+        })
 
-  const { mutate: sellCargo } = api.trade.sellCargo.useMutation({})
+        return newShips
+      })
+    },
+    onError: () => {
+      // If things fail, refresh everything to be safe!
+      void queryClient.ships.getUsersShips.invalidate()
+    },
+    onSuccess: ({ newLogs }) => {
+      // when the query succeeds, update the logs!
+      addToLogs({ queryClient, newLogs })
+    },
+  })
+
+  const { mutate: sellCargo } = api.trade.sellCargo.useMutation({
+    onMutate: (sellCargoInputs) => {
+      queryClient.ships.getUsersShips.setData(undefined, (oldShips) => {
+        const newShips = produce(oldShips, (draftShips) => {
+          const shipToUpdate = draftShips?.find(
+            (ship) => ship.id === sellCargoInputs.shipId,
+          )
+          if (!shipToUpdate?.cargo) throw new Error("Ship has no cargo")
+          // Update the ship's gold count!
+          shipToUpdate.cargo.gold += sellCargoInputs.totalPrice
+          // Update the ship's cargo
+          shipToUpdate.cargo[sellCargoInputs.cargoType] -=
+            sellCargoInputs.amount
+        })
+
+        return newShips
+      })
+    },
+    onError: () => {
+      // If things fail, refresh everything to be safe!
+      void queryClient.ships.getUsersShips.invalidate()
+    },
+    onSuccess: ({ newLogs }) => {
+      // when the query succeeds, update the logs!
+      addToLogs({ queryClient, newLogs })
+    },
+  })
 
   if (!selectedCity || !tradeShip) {
     return (
@@ -97,6 +152,7 @@ export const TradeInterface = ({
                     amount: val,
                     cargoType: cargo.type,
                     shipId: tradeShip.id,
+                    totalPrice: cargoPrice * val,
                   })
                 }}
               />
@@ -116,6 +172,7 @@ export const TradeInterface = ({
                     amount: val,
                     cargoType: cargo.type,
                     shipId: tradeShip.id,
+                    totalPrice: cargoPrice * val,
                   })
                 }}
               />

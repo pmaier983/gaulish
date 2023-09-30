@@ -6,7 +6,7 @@ import {
   CARGO_TYPES_LIST,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
 } from "~/components/constants"
-import { getPriceOutsideReact } from "~/hooks/useGetPrice"
+import { getSpotPrice } from "~/hooks/useGetPrice"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { getCargoSum } from "~/utils/utils"
@@ -21,6 +21,8 @@ export const tradeRouter = createTRPCRouter({
         shipId: z.string(),
         cargoType: z.enum(CARGO_TYPES_LIST),
         amount: z.number(),
+        // total price is unused, and is only here to help out the frontend
+        totalPrice: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -68,7 +70,7 @@ export const tradeRouter = createTRPCRouter({
       if (!currentCargo)
         throw new Error("The city doesn't sell that cargo type!")
 
-      const price = getPriceOutsideReact({
+      const price = getSpotPrice({
         ...currentCargo,
         seed: userShip.cityId,
       })
@@ -80,7 +82,7 @@ export const tradeRouter = createTRPCRouter({
         throw new Error("Not enough gold to buy that much cargo")
       }
 
-      await ctx.db.transaction(async (trx) => {
+      return await ctx.db.transaction(async (trx) => {
         await trx
           .update(cargo)
           .set({
@@ -114,6 +116,8 @@ export const tradeRouter = createTRPCRouter({
         shipId: z.string(),
         cargoType: z.enum(CARGO_TYPES_LIST),
         amount: z.number(),
+        // total price is unused, and is only here to help out the frontend
+        totalPrice: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -155,7 +159,7 @@ export const tradeRouter = createTRPCRouter({
       if (!currentCargo)
         throw new Error("The city doesn't buy that cargo type!")
 
-      const price = getPriceOutsideReact({
+      const price = getSpotPrice({
         ...currentCargo,
         seed: userShip.cityId,
       })

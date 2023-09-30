@@ -94,7 +94,7 @@ export const handleSailingEvents = ({
           const sinkEvent = event as SailEventSink
           setHaveLogsUpdatedState(true)
 
-          addToLogs({ queryClient, newLog: sinkEvent.log })
+          addToLogs({ queryClient, newLogs: [sinkEvent.log] })
 
           queryClient.ships.getUsersShips.setData(
             undefined,
@@ -117,7 +117,7 @@ export const handleSailingEvents = ({
 
           setHaveLogsUpdatedState(true)
 
-          addToLogs({ queryClient, newLog: logEvent.log })
+          addToLogs({ queryClient, newLogs: [logEvent.log] })
         }, event.triggerTime - Date.now())
         break
       }
@@ -138,14 +138,14 @@ export const handleSailingEvents = ({
 
 interface AddToLogsProps {
   queryClient: QueryClient
-  newLog: Log
+  newLogs: Log[]
 }
 
-export const addToLogs = ({ queryClient, newLog }: AddToLogsProps) => {
+export const addToLogs = ({ queryClient, newLogs }: AddToLogsProps) => {
   queryClient.logs.getLogs.setInfiniteData(
     { limit: LOG_PAGE_SIZE },
     (oldData) => {
-      const newLogPage = { logs: [newLog], nextCursor: 1 }
+      const newLogPage = { logs: newLogs, nextCursor: 1 }
 
       if (!oldData)
         return {

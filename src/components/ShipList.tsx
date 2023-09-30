@@ -23,7 +23,6 @@ export const ShipList = () => {
       queryClient.ships.getUsersShips.setData(undefined, (oldShipList) => {
         const newData = produce(oldShipList, (draftShipList) => {
           draftShipList?.push(data)
-          return
         })
         return newData
       })

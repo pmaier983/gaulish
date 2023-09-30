@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { PRICE_UPDATE_INTERVAL } from "~/components/constants"
 import { randomNumberWithSeed } from "~/utils/utils"
 
-interface getPriceOutsideReactInputs {
+interface getSpotPriceInputs {
   // Controls the max variation around the midline
   amplitude: number
   // Controls the number the price fluctuates around
@@ -10,11 +10,11 @@ interface getPriceOutsideReactInputs {
   seed: number
 }
 
-export const getPriceOutsideReact = ({
+export const getSpotPrice = ({
   amplitude,
   midline,
   seed,
-}: getPriceOutsideReactInputs) => {
+}: getSpotPriceInputs) => {
   const timeMin = Math.round(new Date().getTime() / PRICE_UPDATE_INTERVAL)
 
   // const of sin & cos values
@@ -59,5 +59,5 @@ export const useGetPrice = () => {
     return () => clearInterval(intervalId)
   })
 
-  return { getPrice: getPriceOutsideReact }
+  return { getPrice: getSpotPrice }
 }
