@@ -2,7 +2,7 @@ import { type ComponentPropsWithRef } from "react"
 import { FormatNumber } from "~/components/FormatNumber"
 import { Tooltip } from "~/components/Tooltip"
 
-interface PurchasePriceButtonProps
+export interface PurchasePriceButtonProps
   extends Omit<ComponentPropsWithRef<"button">, "type" | "onClick"> {
   label: string
   price: number

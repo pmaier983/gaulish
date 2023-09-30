@@ -24,7 +24,8 @@ export const CityDialog = () => {
     selectedCityId,
     cityDialogInterface,
     selectedTradeShipId,
-    selectedExchangeShipIds,
+    selectedExchangeShipIdLeft,
+    selectedExchangeShipIdRight,
     toggleSelectedCityId,
     setCityDialogInterface,
     toggleSelectedTradeShipId,
@@ -32,7 +33,8 @@ export const CityDialog = () => {
     selectedCityId: state.selectedCityId,
     cityDialogInterface: state.cityDialogInterface,
     selectedTradeShipId: state.selectedTradeShipId,
-    selectedExchangeShipIds: state.selectedExchangeShipIds,
+    selectedExchangeShipIdLeft: state.selectedExchangeShipIdLeft,
+    selectedExchangeShipIdRight: state.selectedExchangeShipIdRight,
     toggleSelectedCityId: state.toggleSelectedCityId,
     setCityDialogInterface: state.setCityDialogInterface,
     toggleSelectedTradeShipId: state.toggleSelectedTradeShipId,
@@ -71,8 +73,12 @@ export const CityDialog = () => {
 
   const tradeShip = ships.find((ship) => ship.id === selectedTradeShipId)
 
-  const selectedExchangeShips = ships.filter((ship) =>
-    selectedExchangeShipIds.includes(ship.id),
+  const selectedExchangeShipLeft = ships.find(
+    (ship) => ship.id === selectedExchangeShipIdLeft,
+  )
+
+  const selectedExchangeShipRight = ships.find(
+    (ship) => ship.id === selectedExchangeShipIdRight,
   )
 
   // TODO: how much worse is this render interface compared to a react component?
@@ -91,7 +97,11 @@ export const CityDialog = () => {
       }
       case CITY_DIALOG_INTERFACES.EXCHANGE: {
         return (
-          <ExchangeInterface selectedExchangeShips={selectedExchangeShips} />
+          <ExchangeInterface
+            selectedExchangeShipLeft={selectedExchangeShipLeft}
+            selectedExchangeShipRight={selectedExchangeShipRight}
+            selectedCity={selectedCity}
+          />
         )
       }
       case CITY_DIALOG_INTERFACES.DOCKYARD: {

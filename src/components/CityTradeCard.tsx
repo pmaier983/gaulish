@@ -1,7 +1,7 @@
 import { type ComponentPropsWithRef } from "react"
 import { type City } from "schema"
 import { TradeFocusedCityCard } from "~/components/CityCard/TradeFocusedCityCard"
-import { SwapButton } from "~/components/buttons/SwapButton"
+import { SwapButton } from "~/components/Button/SwapButton"
 import { api } from "~/utils/api"
 
 interface CityTradeCardProps extends ComponentPropsWithRef<"div"> {

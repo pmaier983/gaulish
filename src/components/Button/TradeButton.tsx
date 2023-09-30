@@ -2,7 +2,7 @@ import { type ComponentPropsWithoutRef } from "react"
 
 import { Icon } from "~/components/Icon"
 
-interface TradeButtonProps extends ComponentPropsWithoutRef<"button"> {}
+export interface TradeButtonProps extends ComponentPropsWithoutRef<"button"> {}
 
 export const TradeButton = ({ className, ...props }: TradeButtonProps) => {
   return (

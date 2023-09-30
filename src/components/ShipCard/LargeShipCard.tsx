@@ -2,9 +2,9 @@ import { type IMAGE_ICON, IMAGE_ICONS } from "~/components/ImageIcon"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { type CommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
-import { ExchangeButton } from "~/components/buttons/ExchangeButton"
-import { SailButton } from "~/components/buttons/SailButton"
-import { TradeButton } from "~/components/buttons/TradeButton"
+import { ExchangeButton } from "~/components/Button/ExchangeButton"
+import { SailButton } from "~/components/Button/SailButton"
+import { TradeButton } from "~/components/Button/TradeButton"
 import { getCargoSum } from "~/utils/utils"
 
 interface LargeShipCardProps extends CommonShipCardProps {}

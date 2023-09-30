@@ -4,7 +4,7 @@ import { useState } from "react"
 import styles from "./priceSlider.module.css"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { type CargoTypes } from "schema"
-import { PurchasePriceButton } from "~/components/buttons/PurchasePriceButton"
+import { PurchasePriceButton } from "~/components/Button/PurchasePriceButton"
 import { getCargoSum } from "~/utils/utils"
 
 interface SliderProps extends Omit<Slider.SliderProps, "onSubmit"> {

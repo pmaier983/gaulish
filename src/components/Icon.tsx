@@ -12,6 +12,7 @@ export const ICONS = {
   map: "map",
   trade: "trade",
   "arrow-right-circle": "arrow-right-circle",
+  "arrow-left-circle": "arrow-left-circle",
   "refresh-cw": "refresh-cw",
 } as const
 

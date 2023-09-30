@@ -2,7 +2,7 @@ import { type ComponentPropsWithRef } from "react"
 
 import { Icon } from "~/components/Icon"
 
-interface ExitButtonProps extends ComponentPropsWithRef<"button"> {
+export interface ExitButtonProps extends ComponentPropsWithRef<"button"> {
   label: string
 }
 

@@ -23,13 +23,13 @@ export interface CityDialogStoreActions {
     newTradeShipId?: string
     newSelectedCityId?: number
   }) => void
-  shipExchangeClick: (newExchangeShipIds: string[]) => void
+  shipExchangeClick: (
+    newExchangeShipId?: string,
+    side?: "LEFT" | "RIGHT",
+  ) => void
 
   toggleSelectedCityId: (newSelectedCityId?: number) => void
   toggleSelectedTradeShipId: (newSelectedTradeShipId?: string) => void
-
-  addSelectedExchangeShipId: (newSelectedExchangeShipId: string) => void
-  removeSelectedExchangeShipId: (newSelectedExchangeShipId: string) => void
 }
 
 export interface CityDialogStore {
@@ -38,7 +38,8 @@ export interface CityDialogStore {
   selectedCityId?: number
   selectedTradeShipId?: string
 
-  selectedExchangeShipIds: string[]
+  selectedExchangeShipIdLeft?: string
+  selectedExchangeShipIdRight?: string
 
   cityDialogInterface: CityDialogInterface
 }
@@ -47,8 +48,6 @@ const initialCityDialogStoreState: CityDialogStore = {
   isOpen: false,
 
   cityDialogInterface: "SHIPS",
-
-  selectedExchangeShipIds: [],
 }
 
 export type CityDialogStoreState = CityDialogStore & CityDialogStoreActions
@@ -69,12 +68,31 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
       })
     },
 
-    shipExchangeClick: (newExchangeShipIds) => {
-      set({
-        cityDialogInterface: "EXCHANGE",
-        isOpen: true,
-        selectedExchangeShipIds: newExchangeShipIds,
-      })
+    shipExchangeClick: (newExchangeShipId, side) => {
+      // If a side is, add the ship to the specified side
+      if (typeof side === "string") {
+        if (side === "LEFT") {
+          set({
+            cityDialogInterface: "EXCHANGE",
+            isOpen: true,
+            selectedExchangeShipIdLeft: newExchangeShipId,
+          })
+        } else {
+          set({
+            cityDialogInterface: "EXCHANGE",
+            isOpen: true,
+            selectedExchangeShipIdRight: newExchangeShipId,
+          })
+        }
+        // Otherwise default to the left side and remove any other ship
+      } else {
+        set({
+          cityDialogInterface: "EXCHANGE",
+          isOpen: true,
+          selectedExchangeShipIdLeft: newExchangeShipId,
+          selectedExchangeShipIdRight: undefined,
+        })
+      }
     },
 
     setCityDialogInterface: (newInterface) => {
@@ -107,36 +125,6 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
       } else {
         set({ selectedTradeShipId: newSelectedTradeShipId })
       }
-    },
-
-    addSelectedExchangeShipId: (newSelectedExchangeShipId: string) => {
-      const currentSelectedExchangeShipIds = get().selectedExchangeShipIds
-
-      // Replace the second ship when adding a third ship
-      if (currentSelectedExchangeShipIds.length >= 2) {
-        const [firstShipId] = currentSelectedExchangeShipIds
-        set({
-          selectedExchangeShipIds: [firstShipId!, newSelectedExchangeShipId],
-        })
-      } else {
-        // Otherwise just shove the new shipId onto the array
-        set({
-          selectedExchangeShipIds: [
-            ...currentSelectedExchangeShipIds,
-            newSelectedExchangeShipId,
-          ],
-        })
-      }
-    },
-
-    removeSelectedExchangeShipId: (newSelectedExchangeShipId: string) => {
-      const currentSelectedExchangeShipIds = get().selectedExchangeShipIds
-
-      set({
-        selectedExchangeShipIds: currentSelectedExchangeShipIds.filter(
-          (shipId) => shipId !== newSelectedExchangeShipId,
-        ),
-      })
     },
 
     restart: () => {},

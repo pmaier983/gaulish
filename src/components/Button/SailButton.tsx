@@ -2,7 +2,7 @@ import { type ComponentPropsWithRef } from "react"
 
 import { Icon } from "~/components/Icon"
 
-interface SailButtonProps extends ComponentPropsWithRef<"button"> {}
+export interface SailButtonProps extends ComponentPropsWithRef<"button"> {}
 
 export const SailButton = ({ className, ...props }: SailButtonProps) => {
   return (

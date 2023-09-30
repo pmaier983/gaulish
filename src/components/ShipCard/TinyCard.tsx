@@ -1,7 +1,7 @@
+import { TradeButton } from "~/components/Button/TradeButton"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { type CommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
-import { TradeButton } from "~/components/buttons/TradeButton"
 import { getCargoSum } from "~/utils/utils"
 
 interface TinyShipCardProps extends CommonShipCardProps {}
