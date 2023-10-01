@@ -12,12 +12,10 @@ export const useSailing = () => {
   const [, setHaveLogsUpdatedState] = useAtom(haveLogsUpdatedAtom)
   const {
     selectedShip,
-    cityObject,
     addSailingShips,
     toggleShipSelection,
     setKnownTilesObject,
   } = useGamestateStore((state) => ({
-    cityObject: state.cityObject,
     selectedShip: state.selectedShip,
     addSailingShips: state.addSailingShips,
     toggleShipSelection: state.toggleShipSelection,
@@ -48,26 +46,24 @@ export const useSailing = () => {
         setKnownTilesObject,
       })
 
-      // Always update a ship to its next possible location
+      // Always update the ship after sailing
       queryClient.ships.getUsersShips.setData(undefined, (oldUserShipList) => {
         const newUserShipList = produce(
           oldUserShipList,
           (draftUserShipList) => {
-            draftUserShipList?.forEach((ship) => {
-              if (ship.id === selectedShip?.id) {
-                const finalTile = data.ship.path.pathArray.at(-1)
-                if (!finalTile)
-                  throw new Error("No final tile in returned ship sailing path")
-                const destinationCity = cityObject[finalTile]
+            if (!draftUserShipList) throw Error("Could not find user ship list")
 
-                // There is a chance the destination is not a city and the ship has sunk!
-                if (destinationCity) {
-                  ship.cityId = destinationCity.id
-                }
-              }
-            })
+            const shipToReplaceIndex = draftUserShipList?.findIndex(
+              (ship) => ship.id === selectedShip?.id,
+            )
+
+            if (!shipToReplaceIndex)
+              throw Error("Could not find ship to replace")
+
+            draftUserShipList[shipToReplaceIndex] = data.ship
           },
         )
+        console.log({ newUserShipList, oldUserShipList })
         return newUserShipList
       })
 
