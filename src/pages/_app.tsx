@@ -6,6 +6,7 @@ import { Alegreya } from "next/font/google"
 import { useRouter } from "next/router"
 import { configureAbly } from "@ably-labs/react-hooks"
 import { Toaster } from "react-hot-toast"
+import { Analytics } from "@vercel/analytics/react"
 
 import { AUTH_FREE_PAGES } from "~/components/constants"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
@@ -58,14 +59,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
   pageProps: { session },
   ...rest
 }) => (
-  <SessionProvider session={session}>
-    <div className={`flex h-full flex-col ${Font.className}`}>
-      <AuthWrapper>
-        <Toaster position="bottom-center" />
-        <Component {...rest} />
-      </AuthWrapper>
-    </div>
-  </SessionProvider>
+  <>
+    <SessionProvider session={session}>
+      <div className={`flex h-full flex-col ${Font.className}`}>
+        <AuthWrapper>
+          <Toaster position="bottom-center" />
+          <Component {...rest} />
+        </AuthWrapper>
+      </div>
+    </SessionProvider>
+    <Analytics />
+  </>
 )
 
 // eslint-disable-next-line import/no-default-export

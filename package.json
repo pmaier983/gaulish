@@ -25,6 +25,7 @@
     "@trpc/next": "^10.38.5",
     "@trpc/react-query": "^10.38.5",
     "@trpc/server": "^10.38.5",
+    "@vercel/analytics": "^1.0.2",
     "ably": "^1.2.45",
     "drizzle-orm": "^0.28.6",
     "immer": "^10.0.2",
