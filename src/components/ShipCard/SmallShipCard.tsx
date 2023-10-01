@@ -1,12 +1,12 @@
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
-import { type CommonShipCardProps } from "~/components/ShipCard"
+import { type InnerCommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ExchangeButton } from "~/components/Button/ExchangeButton"
 import { SailButton } from "~/components/Button/SailButton"
 import { TradeButton } from "~/components/Button/TradeButton"
 import { getCargoSum } from "~/utils/utils"
 
-interface SmallShipCardProps extends CommonShipCardProps {}
+export interface SmallShipCardProps {}
 
 export const SmallShipCard = ({
   ship,
@@ -15,7 +15,7 @@ export const SmallShipCard = ({
   toggleShipSelection,
   shipExchangeClick,
   shipTradeClick,
-}: SmallShipCardProps) => {
+}: SmallShipCardProps & InnerCommonShipCardProps) => {
   return (
     <article
       className={`flex w-full max-w-[20rem] flex-col gap-2 rounded p-2 outline outline-1 outline-black ${
@@ -38,7 +38,7 @@ export const SmallShipCard = ({
         />
         <ExchangeButton
           disabled={isSailing}
-          onClick={() => shipExchangeClick([ship.id])}
+          onClick={() => shipExchangeClick(ship.id)}
         />
         <TradeButton
           onClick={() =>

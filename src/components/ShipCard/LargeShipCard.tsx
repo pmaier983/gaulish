@@ -1,13 +1,13 @@
 import { type IMAGE_ICON, IMAGE_ICONS } from "~/components/ImageIcon"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
-import { type CommonShipCardProps } from "~/components/ShipCard"
+import { type InnerCommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ExchangeButton } from "~/components/Button/ExchangeButton"
 import { SailButton } from "~/components/Button/SailButton"
 import { TradeButton } from "~/components/Button/TradeButton"
 import { getCargoSum } from "~/utils/utils"
 
-interface LargeShipCardProps extends CommonShipCardProps {}
+export interface LargeShipCardProps {}
 
 export const LargeShipCard = ({
   ship,
@@ -16,7 +16,7 @@ export const LargeShipCard = ({
   toggleShipSelection,
   shipExchangeClick,
   shipTradeClick,
-}: LargeShipCardProps) => {
+}: LargeShipCardProps & InnerCommonShipCardProps) => {
   const cargoArray = Object.entries(ship.cargo).filter(
     // This is a Type guard https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types
     (input: [string, number | string]): input is [IMAGE_ICON, number] => {
@@ -40,12 +40,11 @@ export const LargeShipCard = ({
             toggleOpenState(false)
             toggleShipSelection(ship)
           }}
-          className=" justify-center"
           disabled={isSailing}
         />
         <ExchangeButton
           disabled={isSailing}
-          onClick={() => shipExchangeClick([ship.id])}
+          onClick={() => shipExchangeClick(ship.id)}
         />
         <TradeButton
           className="flex-1 justify-center"

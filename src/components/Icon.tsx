@@ -18,7 +18,7 @@ export const ICONS = {
 
 export type ICON = keyof typeof ICONS
 
-interface IconProps extends ComponentPropsWithRef<"svg"> {
+export interface IconProps extends ComponentPropsWithRef<"svg"> {
   id: ICON
   size?: ComponentPropsWithRef<"svg">["width"]
 }

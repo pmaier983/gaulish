@@ -8,9 +8,18 @@ import {
   type ShipComposite,
   type GamestateStoreActions,
 } from "~/state/gamestateStore"
-import { LargeShipCard } from "~/components/ShipCard/LargeShipCard"
-import { SmallShipCard } from "~/components/ShipCard/SmallShipCard"
-import { TinyShipCard } from "~/components/ShipCard/TinyCard"
+import {
+  LargeShipCard,
+  type LargeShipCardProps,
+} from "~/components/ShipCard/LargeShipCard"
+import {
+  SmallShipCard,
+  type SmallShipCardProps,
+} from "~/components/ShipCard/SmallShipCard"
+import {
+  TinyShipCard,
+  type TinyShipCardProps,
+} from "~/components/ShipCard/TinyCard"
 
 const SHIP_CARD_TYPES = {
   SMALL: "SMALL",
@@ -20,12 +29,13 @@ const SHIP_CARD_TYPES = {
 
 export type ShipCardType = keyof typeof SHIP_CARD_TYPES
 
-interface ShipCardProps {
+export interface CommonShipCardProps {
   ship: ShipComposite
   type: ShipCardType
 }
 
-export interface CommonShipCardProps extends Omit<ShipCardProps, "type"> {
+export interface InnerCommonShipCardProps
+  extends Omit<CommonShipCardProps, "type"> {
   isSelectedShip: boolean
   isSailing: boolean
   city?: City
@@ -36,7 +46,12 @@ export interface CommonShipCardProps extends Omit<ShipCardProps, "type"> {
   toggleOpenState: CityDialogStoreActions["toggleOpenState"]
 }
 
-export const ShipCard = ({ ship, type }: ShipCardProps) => {
+type ShipCardProps =
+  | ({ type: "TINY" } & TinyShipCardProps & Omit<CommonShipCardProps, "type">)
+  | ({ type: "SMALL" } & SmallShipCardProps & Omit<CommonShipCardProps, "type">)
+  | ({ type: "LARGE" } & LargeShipCardProps & Omit<CommonShipCardProps, "type">)
+
+export const ShipCard = ({ ship, type, ...rest }: ShipCardProps) => {
   const { sailingShips, selectedShip, toggleShipSelection } = useGamestateStore(
     (state) => ({
       sailingShips: state.sailingShips,
@@ -60,7 +75,7 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
     .includes(ship.id)
 
   // separate out these components to avoid re-renders
-  const commonShipCardProps: CommonShipCardProps = {
+  const commonShipCardProps: InnerCommonShipCardProps = {
     ship,
     isSelectedShip,
     isSailing,
@@ -68,6 +83,7 @@ export const ShipCard = ({ ship, type }: ShipCardProps) => {
     toggleShipSelection,
     shipExchangeClick,
     shipTradeClick,
+    ...rest,
   }
 
   switch (type) {

@@ -1,10 +1,15 @@
-import { TradeButton } from "~/components/Button/TradeButton"
+import {
+  IconButton,
+  type IconButtonProps,
+} from "~/components/Button/IconButton"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
-import { type CommonShipCardProps } from "~/components/ShipCard"
+import { type InnerCommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
 import { getCargoSum } from "~/utils/utils"
 
-interface TinyShipCardProps extends CommonShipCardProps {}
+export interface TinyShipCardProps {
+  iconButtonProps?: IconButtonProps
+}
 
 export const TinyShipCard = ({
   ship,
@@ -12,7 +17,13 @@ export const TinyShipCard = ({
   isSailing,
   shipTradeClick,
   className,
-}: TinyShipCardProps) => {
+  iconButtonProps = {
+    label: "Trade",
+    iconProps: {
+      id: "trade",
+    },
+  },
+}: TinyShipCardProps & InnerCommonShipCardProps) => {
   return (
     <article
       className={`flex w-full max-w-[25rem] flex-row justify-between gap-3 rounded p-2 outline outline-1 outline-black ${
@@ -26,7 +37,8 @@ export const TinyShipCard = ({
           currentCargo={getCargoSum(ship.cargo)}
           cargoCapacity={ship.cargoCapacity}
         />
-        <TradeButton
+        <IconButton
+          className="bg-green-400 hover:text-green-800 active:bg-green-500"
           disabled={isSailing}
           onClick={() =>
             shipTradeClick({
@@ -34,6 +46,7 @@ export const TinyShipCard = ({
               newSelectedCityId: ship.cityId,
             })
           }
+          {...iconButtonProps}
         />
       </div>
     </article>

@@ -31,7 +31,18 @@ export const ShipTradeCard = ({
         className={`flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded-md ${className}`}
       >
         {visibleShips.map((ship) => (
-          <ShipCard key={ship.id} type="TINY" ship={ship} />
+          <ShipCard
+            key={ship.id}
+            type="TINY"
+            ship={ship}
+            iconButtonProps={{
+              label: "select ship",
+              className: "bg-blue-400 hover:text-blue-800 active:bg-blue-500",
+              iconProps: {
+                id: "arrow-left-circle",
+              },
+            }}
+          />
         ))}
       </div>
     )
