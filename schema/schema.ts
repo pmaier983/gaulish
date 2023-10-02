@@ -18,7 +18,7 @@ import { type AdapterAccount } from "next-auth/adapters"
 import {
   FAKE_INITIAL_SHIP_PATH_ID,
   type ShipType,
-} from "~/components/constants"
+} from "../src/components/constants"
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(

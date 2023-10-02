@@ -1,0 +1,145 @@
+table accounts {
+  id varchar(191) [pk, not null]
+  user_id varchar(191) [not null]
+  type varchar(191) [not null]
+  provider varchar(191) [not null]
+  provider_account_id varchar(191) [not null]
+  access_token text
+  expires_in int
+  id_token text
+  refresh_token text
+  refresh_token_expires_in int
+  scope varchar(191)
+  token_type varchar(191)
+  created_at timestamp [default: `(now())`]
+  updated_at timestamp [default: `(now())`]
+
+  indexes {
+    (provider, provider_account_id) [name: 'accounts_provider_providerAccountId_idx', unique]
+    user_id [name: 'accounts_userId_idx']
+  }
+}
+
+table cargo {
+  id varchar(191) [pk, not null]
+  gold int [not null, default: 0]
+  wheat int [not null, default: 0]
+  wool int [not null, default: 0]
+  stone int [not null, default: 0]
+  wood int [not null, default: 0]
+}
+
+table city {
+  id serial [pk, not null, increment]
+  name varchar(191) [not null]
+  xy_tile_id varchar(191) [not null]
+  city_cargo json [not null, default: `[]`]
+}
+
+table log {
+  id varchar(191) [pk, not null]
+  user_id varchar(191) [not null]
+  ship_id varchar(191) [not null]
+  text text [not null]
+  created_at timestamp [default: `(now())`]
+}
+
+table npc {
+  id serial [pk, not null, increment]
+  path_id varchar(191)
+  ship_type varchar(191) [not null]
+  name varchar(191) [not null]
+  speed float [not null]
+}
+
+table path {
+  id varchar(191) [pk, not null]
+  created_at timestamp [default: `(now())`]
+  path_array json [not null]
+}
+
+table sessions {
+  id varchar(191) [pk, not null]
+  session_token varchar(191) [not null]
+  user_id varchar(191) [not null]
+  expires datetime [not null]
+  created_at timestamp [default: `(now())`]
+  updated_at timestamp [default: `(now())`]
+
+  indexes {
+    session_token [name: 'sessions_sessionToken_idx', unique]
+    user_id [name: 'sessions_userId_idx']
+  }
+}
+
+table ship {
+  id varchar(191) [pk, not null]
+  user_id varchar(191) [not null]
+  city_id int [not null]
+  path_id varchar(191) [not null, default: 'FAKE_INITIAL_SHIP_PATH_ID']
+  cargo_id varchar(191) [not null]
+  ship_type varchar(191) [not null]
+  name varchar(191) [not null]
+  speed float [not null]
+  cargo_capacity int [not null]
+  is_sunk boolean [not null, default: false]
+}
+
+table tile {
+  xy_tile_id varchar(191) [pk, not null]
+  x int [not null]
+  y int [not null]
+  type_id smallint [not null]
+
+  indexes {
+    (x, y) [name: 'xy_index', unique]
+  }
+}
+
+table users {
+  id varchar(191) [pk, not null]
+  name varchar(191)
+  email varchar(191) [not null]
+  email_verified timestamp
+  image varchar(191)
+  created_at timestamp [default: `(now())`]
+  updated_at timestamp [default: `(now())`]
+  username varchar(191) [not null, default: 'Sailor']
+  known_tiles json [not null, default: `[]`]
+
+  indexes {
+    email [name: 'users_email_idx', unique]
+  }
+}
+
+table verification_tokens {
+  identifier varchar(191) [pk, not null]
+  token varchar(191) [not null]
+  expires datetime [not null]
+  created_at timestamp [default: `(now())`]
+  updated_at timestamp [default: `(now())`]
+
+  indexes {
+    token [name: 'verification_tokens_token_idx', unique]
+  }
+}
+
+ref: ship.cargo_id - cargo.id
+
+ref: tile.xy_tile_id - city.xy_tile_id
+
+ref: log.user_id > users.id
+
+ref: log.ship_id > ship.id
+
+ref: path.id - npc.path_id
+
+ref: ship.path_id - path.id
+
+ref: ship.user_id > users.id
+
+ref: ship.city_id > city.id
+
+ref: users.id - sessions.user_id
+
+ref: users.id - accounts.user_id
