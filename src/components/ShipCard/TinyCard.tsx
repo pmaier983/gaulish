@@ -2,21 +2,24 @@ import {
   IconButton,
   type IconButtonProps,
 } from "~/components/Button/IconButton"
-import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
+import { ImageIconCount, ShipCargoCount } from "~/components/ImageIconCount"
 import { type InnerCommonShipCardProps } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
-import { getCargoSum } from "~/utils/utils"
+import { type ShipComposite } from "~/state/gamestateStore"
 
 export interface TinyShipCardProps {
   iconButtonProps?: IconButtonProps
+  onClick?: (ship: ShipComposite) => void
+  hasButton?: boolean
 }
 
 export const TinyShipCard = ({
   ship,
   isSelectedShip,
   isSailing,
-  shipTradeClick,
+  onClick,
   className,
+  hasButton = true,
   iconButtonProps = {
     label: "Trade",
     iconProps: {
@@ -33,21 +36,19 @@ export const TinyShipCard = ({
       <ShipHeader shipId={ship.id} />
       <div className="flex-2 flex flex-row justify-end gap-5">
         <ImageIconCount id="GOLD" count={ship.cargo.gold} />
-        <CargoCount
-          currentCargo={getCargoSum(ship.cargo)}
-          cargoCapacity={ship.cargoCapacity}
-        />
-        <IconButton
-          className="bg-green-400 hover:text-green-800 active:bg-green-500"
-          disabled={isSailing}
-          onClick={() =>
-            shipTradeClick({
-              newTradeShipId: ship.id,
-              newSelectedCityId: ship.cityId,
-            })
-          }
-          {...iconButtonProps}
-        />
+        <ShipCargoCount ship={ship} />
+        {hasButton && (
+          <IconButton
+            className="bg-green-400 hover:text-green-800 active:bg-green-500"
+            disabled={isSailing}
+            onClick={() => {
+              if (onClick) {
+                onClick(ship)
+              }
+            }}
+            {...iconButtonProps}
+          />
+        )}
       </div>
     </article>
   )

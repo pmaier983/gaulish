@@ -8,7 +8,7 @@ import { ImageIcon } from "~/components/ImageIcon"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { PriceSlider } from "~/components/PriceSlider"
 import { ShipHeader } from "~/components/ShipHeader"
-import { ShipTradeCard } from "~/components/ShipTradeCard"
+import { ShipSelector } from "~/components/ShipSelector"
 import { SwapButton } from "~/components/Button/SwapButton"
 import { CARGO_TYPES_LIST } from "~/components/constants"
 import { useGetPrice } from "~/hooks/useGetPrice"
@@ -16,23 +16,27 @@ import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 import { addToLogs } from "~/utils/sailingUtils"
 import { getCargoSum } from "~/utils/utils"
+import { useCityDialogStore } from "~/state/cityDialogStore"
 
 export interface TradeInterfaceProps extends ComponentPropsWithRef<"div"> {
   tradeShip?: ShipComposite
   selectedCity?: City
-  toggleSelectedCityId: (newSelectedCityId?: number) => void
-  toggleSelectedTradeShipId: (newSelectedTradeShipId?: string) => void
 }
 
 export const TradeInterface = ({
   tradeShip,
   selectedCity,
-  toggleSelectedCityId,
-  toggleSelectedTradeShipId,
   className,
 }: TradeInterfaceProps) => {
   const queryClient = api.useContext()
   const { getPrice } = useGetPrice()
+
+  const { toggleSelectedCityId, toggleSelectedTradeShipId, shipTradeClick } =
+    useCityDialogStore((state) => ({
+      toggleSelectedCityId: state.toggleSelectedCityId,
+      toggleSelectedTradeShipId: state.toggleSelectedTradeShipId,
+      shipTradeClick: state.shipTradeClick,
+    }))
 
   const { mutate: buyCargo } = api.trade.buyCargo.useMutation({
     onMutate: (buyCargoInputs) => {
@@ -99,7 +103,23 @@ export const TradeInterface = ({
           toggleSelectedTradeShipId={toggleSelectedTradeShipId}
         />
         <div className="flex flex-1 flex-row gap-2">
-          <ShipTradeCard tradeShip={tradeShip} selectedCity={selectedCity} />
+          <ShipSelector
+            side="LEFT"
+            selectedShip={tradeShip}
+            selectedCity={selectedCity}
+            onSelection={(ship) => {
+              shipTradeClick({
+                newSelectedCityId: ship.cityId,
+                newTradeShipId: ship.id,
+              })
+            }}
+            onSelectionCancel={(ship) => {
+              shipTradeClick({
+                newSelectedCityId: ship.cityId,
+                newTradeShipId: undefined,
+              })
+            }}
+          />
           <CityTradeCard
             onClickCityId={toggleSelectedCityId}
             selectedCity={selectedCity}
@@ -215,7 +235,9 @@ export const TradeInterfaceHeader = ({
 }: TradeInterfaceHeaderProps) => {
   return (
     <div className="flex flex-col gap-1">
-      <h3 className={`grid grid-cols-3 items-center ${className}`}>
+      <h3
+        className={`grid grid-cols-3 items-center border-b-2 border-black pb-2 ${className}`}
+      >
         {tradeShip ? (
           <div className="flex flex-row items-center gap-2">
             <ShipHeader shipId={tradeShip.id} />
@@ -252,7 +274,6 @@ export const TradeInterfaceHeader = ({
           <span className="flex justify-end text-2xl">Select A City</span>
         )}
       </h3>
-      <div className="h-[2px] w-full bg-black" />
     </div>
   )
 }

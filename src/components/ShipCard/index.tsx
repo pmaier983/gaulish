@@ -51,6 +51,7 @@ type ShipCardProps =
   | ({ type: "SMALL" } & SmallShipCardProps & Omit<CommonShipCardProps, "type">)
   | ({ type: "LARGE" } & LargeShipCardProps & Omit<CommonShipCardProps, "type">)
 
+// TODO: I sort of hate this... it needs to be broken up or something
 export const ShipCard = ({ ship, type, ...rest }: ShipCardProps) => {
   const { sailingShips, selectedShip, toggleShipSelection } = useGamestateStore(
     (state) => ({
@@ -91,7 +92,17 @@ export const ShipCard = ({ ship, type, ...rest }: ShipCardProps) => {
       return <SmallShipCard {...commonShipCardProps} />
     }
     case "TINY": {
-      return <TinyShipCard {...commonShipCardProps} />
+      return (
+        <TinyShipCard
+          {...commonShipCardProps}
+          onClick={(ship) => {
+            shipTradeClick({
+              newSelectedCityId: ship.cityId,
+              newTradeShipId: ship.id,
+            })
+          }}
+        />
+      )
     }
     default:
     case "LARGE": {

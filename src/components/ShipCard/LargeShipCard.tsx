@@ -44,7 +44,7 @@ export const LargeShipCard = ({
         />
         <ExchangeButton
           disabled={isSailing}
-          onClick={() => shipExchangeClick(ship.id)}
+          onClick={() => shipExchangeClick({ newExchangeShipId: ship.id })}
         />
         <TradeButton
           className="flex-1 justify-center"

@@ -1,6 +1,8 @@
 import { type ComponentPropsWithRef } from "react"
 import { FormatNumber } from "~/components/FormatNumber"
 import { type IMAGE_ICON, ImageIcon } from "~/components/ImageIcon"
+import { type ShipComposite } from "~/state/gamestateStore"
+import { getCargoSum } from "~/utils/utils"
 
 interface ImageIconCountProps extends ComponentPropsWithRef<"div"> {
   id: IMAGE_ICON
@@ -43,3 +45,16 @@ export const CargoCount = ({
     </div>
   )
 }
+
+interface ShipCargoCountProps
+  extends Omit<CargoCountProps, "currentCargo" | "cargoCapacity"> {
+  ship: ShipComposite
+}
+
+export const ShipCargoCount = ({ ship, ...rest }: ShipCargoCountProps) => (
+  <CargoCount
+    cargoCapacity={ship.cargoCapacity}
+    currentCargo={getCargoSum(ship.cargo)}
+    {...rest}
+  />
+)

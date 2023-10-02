@@ -5,7 +5,6 @@ import { Icon, type IconProps } from "~/components/Icon"
 export interface IconButtonProps extends ComponentPropsWithRef<"button"> {
   iconProps: IconProps
   label: string
-  iconClassName?: string
 }
 
 export const IconButton = ({

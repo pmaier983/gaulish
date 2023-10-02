@@ -1,9 +1,10 @@
-import { type ComponentPropsWithRef } from "react"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import { type CitySummary } from "~/utils/utils"
 
-interface ShipFocusedCityCardProps extends ComponentPropsWithRef<"button"> {
+export interface ShipFocusedCityCardProps {
   citySummary: CitySummary
+  onClick: () => void
+  className?: string
 }
 
 export const ShipFocusedCityCard = ({
@@ -13,7 +14,7 @@ export const ShipFocusedCityCard = ({
 }: ShipFocusedCityCardProps) => {
   return (
     <button
-      onClick={onClick}
+      onClick={() => onClick()}
       // We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll)
       className={`flex flex-col items-center rounded-md border border-black p-2 ${className}`}
     >

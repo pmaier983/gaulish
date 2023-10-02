@@ -3,6 +3,7 @@ import { type City } from "schema"
 import { TradeFocusedCityCard } from "~/components/CityCard/TradeFocusedCityCard"
 import { SwapButton } from "~/components/Button/SwapButton"
 import { api } from "~/utils/api"
+import { IconButton } from "~/components/Button/IconButton"
 
 interface CityTradeCardProps extends ComponentPropsWithRef<"div"> {
   onClickCityId: (newSelectedCityId?: number) => void
@@ -27,11 +28,15 @@ export const CityTradeCard = ({
         className={`flex min-w-[280px] flex-1 flex-col items-end gap-2 rounded ${className}`}
       >
         {cities.map((city) => (
-          <TradeFocusedCityCard
-            city={city}
-            key={city.id}
-            onClick={() => onClickCityId(city.id)}
-          />
+          <div className="flex flex-row gap-3" key={city.id}>
+            <IconButton
+              iconProps={{ id: "arrow-right-circle" }}
+              label="Select City"
+              onClick={() => onClickCityId(city.id)}
+              className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"
+            />
+            <TradeFocusedCityCard city={city} />
+          </div>
         ))}
       </div>
     )
@@ -46,9 +51,7 @@ export const CityTradeCard = ({
       <TradeFocusedCityCard
         city={selectedCity}
         key={selectedCity.id}
-        onClick={() => onClickCityId(selectedCity.id)}
         className="h-min"
-        hasButton={false}
       />
     </div>
   )

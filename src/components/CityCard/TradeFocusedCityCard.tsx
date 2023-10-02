@@ -1,39 +1,25 @@
-import { type ComponentPropsWithRef } from "react"
 import { type City } from "schema"
 import { FormatNumber } from "~/components/FormatNumber"
-import { Icon } from "~/components/Icon"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Tooltip } from "~/components/Tooltip"
 import { useGetPrice } from "~/hooks/useGetPrice"
 
-interface TradeFocusedCityCardProps extends ComponentPropsWithRef<"div"> {
+import styles from "./TradeFocusedCityCard.module.css"
+
+export interface TradeFocusedCityCardProps {
+  className?: string
   city: City
-  onClick: () => void
-  hasButton?: boolean
 }
 
 export const TradeFocusedCityCard = ({
   city,
-  onClick,
-  hasButton = true,
   className,
 }: TradeFocusedCityCardProps) => {
   const { getPrice } = useGetPrice()
 
   return (
-    <div
-      className={`flex max-w-[23rem] flex-row flex-wrap items-center gap-y-2 rounded-md p-2 pr-0 outline outline-1 outline-black ${className}`}
-    >
-      <div className="flex w-[8.5rem] flex-row">
-        {hasButton && (
-          <button
-            onClick={onClick}
-            className="rounded bg-blue-400 p-1 text-white outline outline-1 outline-black hover:text-blue-800 active:bg-blue-500"
-          >
-            <Icon id="arrow-right-circle" />
-            <span className="sr-only">Select City</span>
-          </button>
-        )}
+    <div className={`${styles.containerGrid} ${className}`}>
+      <div className={`${styles.title}`}>
         <Tooltip content={city.name}>
           <div className=" overflow-hidden text-ellipsis pl-1 pr-1 text-xl">
             {city.name}

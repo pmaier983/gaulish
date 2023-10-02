@@ -28,7 +28,6 @@ export const CityDialog = () => {
     selectedExchangeShipIdRight,
     toggleSelectedCityId,
     setCityDialogInterface,
-    toggleSelectedTradeShipId,
   } = useCityDialogStore((state) => ({
     selectedCityId: state.selectedCityId,
     cityDialogInterface: state.cityDialogInterface,
@@ -37,7 +36,6 @@ export const CityDialog = () => {
     selectedExchangeShipIdRight: state.selectedExchangeShipIdRight,
     toggleSelectedCityId: state.toggleSelectedCityId,
     setCityDialogInterface: state.setCityDialogInterface,
-    toggleSelectedTradeShipId: state.toggleSelectedTradeShipId,
   }))
 
   const queryClient = api.useContext()
@@ -87,12 +85,7 @@ export const CityDialog = () => {
     switch (cityDialogInterface) {
       case CITY_DIALOG_INTERFACES.TRADE: {
         return (
-          <TradeInterface
-            tradeShip={tradeShip}
-            selectedCity={selectedCity}
-            toggleSelectedCityId={toggleSelectedCityId}
-            toggleSelectedTradeShipId={toggleSelectedTradeShipId}
-          />
+          <TradeInterface tradeShip={tradeShip} selectedCity={selectedCity} />
         )
       }
       case CITY_DIALOG_INTERFACES.EXCHANGE: {

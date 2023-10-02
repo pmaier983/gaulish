@@ -23,10 +23,13 @@ export interface CityDialogStoreActions {
     newTradeShipId?: string
     newSelectedCityId?: number
   }) => void
-  shipExchangeClick: (
-    newExchangeShipId?: string,
-    side?: "LEFT" | "RIGHT",
-  ) => void
+  shipExchangeClick: ({
+    newExchangeShipId,
+    side,
+  }: {
+    newExchangeShipId?: string
+    side?: "LEFT" | "RIGHT"
+  }) => void
 
   toggleSelectedCityId: (newSelectedCityId?: number) => void
   toggleSelectedTradeShipId: (newSelectedTradeShipId?: string) => void
@@ -68,7 +71,7 @@ export const useCityDialogStore = createWithEqualityFn<CityDialogStoreState>()(
       })
     },
 
-    shipExchangeClick: (newExchangeShipId, side) => {
+    shipExchangeClick: ({ newExchangeShipId, side }) => {
       // If a side is, add the ship to the specified side
       if (typeof side === "string") {
         if (side === "LEFT") {
