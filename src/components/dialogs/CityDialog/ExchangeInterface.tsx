@@ -1,9 +1,9 @@
 import { type ComponentPropsWithRef } from "react"
-import { type CargoTypes, type City } from "schema"
+import { type City } from "schema"
 import { SwapButton } from "~/components/Button/SwapButton"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipSelector } from "~/components/ShipSelector"
-import { ExchangeInterfaceRow } from "~/components/dialogs/CityDialog/ExchangeInterfaceRow"
+import { ExchangeInterfaceContent } from "~/components/dialogs/CityDialog/ExchangeInterfaceContent"
 import {
   type CityDialogStoreActions,
   useCityDialogStore,
@@ -101,17 +101,6 @@ export const ExchangeInterface = ({
     )
   }
 
-  const cargoList = [
-    ...Object.entries(selectedExchangeShipLeft.cargo),
-    ...Object.entries(selectedExchangeShipRight.cargo),
-  ]
-    .filter(([key, value]) => {
-      if (typeof value !== "number") return false
-      if (key === "gold") return false
-      return value > 0
-    })
-    .map(([key]) => key as CargoTypes)
-
   return (
     <div
       className={`flex h-min max-w-full flex-1 flex-col gap-2 overflow-x-auto p-2 ${className}`}
@@ -122,12 +111,10 @@ export const ExchangeInterface = ({
         shipExchangeClick={shipExchangeClick}
       />
       {/* Interface Content */}
-      <div className="flex flex-col">
-        <ExchangeInterfaceRow icon="GOLD" />
-        {cargoList.map((cargoType) => (
-          <ExchangeInterfaceRow key={cargoType} icon={cargoType} />
-        ))}
-      </div>
+      <ExchangeInterfaceContent
+        selectedExchangeShipLeft={selectedExchangeShipLeft}
+        selectedExchangeShipRight={selectedExchangeShipRight}
+      />
     </div>
   )
 }
