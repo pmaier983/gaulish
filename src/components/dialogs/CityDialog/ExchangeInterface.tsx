@@ -1,9 +1,9 @@
 import { type ComponentPropsWithRef } from "react"
-import { type City } from "schema"
+import { type CargoTypes, type City } from "schema"
 import { SwapButton } from "~/components/Button/SwapButton"
-import { ShipCargoCount } from "~/components/ImageIconCount"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipSelector } from "~/components/ShipSelector"
+import { ExchangeInterfaceRow } from "~/components/dialogs/CityDialog/ExchangeInterfaceRow"
 import {
   type CityDialogStoreActions,
   useCityDialogStore,
@@ -101,7 +101,16 @@ export const ExchangeInterface = ({
     )
   }
 
-  // const jointCargo =
+  const cargoList = [
+    ...Object.entries(selectedExchangeShipLeft.cargo),
+    ...Object.entries(selectedExchangeShipRight.cargo),
+  ]
+    .filter(([key, value]) => {
+      if (typeof value !== "number") return false
+      if (key === "gold") return false
+      return value > 0
+    })
+    .map(([key]) => key as CargoTypes)
 
   return (
     <div
@@ -113,7 +122,12 @@ export const ExchangeInterface = ({
         shipExchangeClick={shipExchangeClick}
       />
       {/* Interface Content */}
-      <div className="flex flex-col"></div>
+      <div className="flex flex-col">
+        <ExchangeInterfaceRow icon="GOLD" />
+        {cargoList.map((cargoType) => (
+          <ExchangeInterfaceRow key={cargoType} icon={cargoType} />
+        ))}
+      </div>
     </div>
   )
 }
@@ -133,41 +147,38 @@ const ExchangeInterfaceHeader = ({
     <div className="grid flex-1 grid-cols-[1fr_2px_1fr] gap-3 border-b-2 border-black">
       <div className="flex flex-row items-center justify-between gap-2 pb-2">
         {selectedExchangeShipLeft ? (
-          <>
-            <div className="flex flex-row gap-2">
-              <ShipHeader shipId={selectedExchangeShipLeft?.id} />
-              <SwapButton
-                onClick={() => {
-                  shipExchangeClick({
-                    newExchangeShipId: undefined,
-                    side: "LEFT",
-                  })
-                }}
-              />
-            </div>
-            <ShipCargoCount ship={selectedExchangeShipLeft} />
-          </>
+          <div className="flex flex-row gap-2">
+            <ShipHeader shipId={selectedExchangeShipLeft?.id} />
+            <SwapButton
+              onClick={() => {
+                shipExchangeClick({
+                  newExchangeShipId: undefined,
+                  side: "LEFT",
+                })
+              }}
+            />
+          </div>
         ) : (
           <div className="text-2xl">Select a Ship</div>
         )}
       </div>
       <div className="h-full bg-black" />
-      <div className="flex flex-row items-center justify-between gap-2 pb-2">
+      <div className="flex flex-row-reverse items-center justify-between gap-2 pb-2">
         {selectedExchangeShipRight ? (
-          <>
-            <div className="flex flex-row gap-2">
-              <ShipHeader shipId={selectedExchangeShipRight.id} />
-              <SwapButton
-                onClick={() => {
-                  shipExchangeClick({
-                    newExchangeShipId: undefined,
-                    side: "RIGHT",
-                  })
-                }}
-              />
-            </div>
-            <ShipCargoCount ship={selectedExchangeShipRight} />
-          </>
+          <div className="flex flex-row-reverse">
+            <ShipHeader
+              shipId={selectedExchangeShipRight.id}
+              className="flex-row-reverse gap-3"
+            />
+            <SwapButton
+              onClick={() => {
+                shipExchangeClick({
+                  newExchangeShipId: undefined,
+                  side: "RIGHT",
+                })
+              }}
+            />
+          </div>
         ) : (
           <div className="text-2xl">Select a Ship</div>
         )}
