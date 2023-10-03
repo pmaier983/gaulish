@@ -1,11 +1,15 @@
 import { type ComponentPropsWithRef } from "react"
 import { type City } from "schema"
+import { SwapButton } from "~/components/Button/SwapButton"
 import { ShipCargoCount } from "~/components/ImageIconCount"
-import { ShipCard } from "~/components/ShipCard"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipSelector } from "~/components/ShipSelector"
-import { useCityDialogStore } from "~/state/cityDialogStore"
+import {
+  type CityDialogStoreActions,
+  useCityDialogStore,
+} from "~/state/cityDialogStore"
 import { type ShipComposite } from "~/state/gamestateStore"
+import { api } from "~/utils/api"
 
 export interface ExchangeInterfaceProps extends ComponentPropsWithRef<"div"> {
   selectedExchangeShipLeft?: ShipComposite
@@ -23,6 +27,24 @@ export const ExchangeInterface = ({
     shipExchangeClick: state.shipExchangeClick,
   }))
 
+  const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
+    staleTime: Infinity,
+    initialData: [],
+  })
+
+  const visibleShips = ships.filter((ship) => {
+    if (selectedExchangeShipLeft) {
+      if (selectedExchangeShipLeft.id === ship.id) return false
+      return ship.cityId === selectedExchangeShipLeft.cityId
+    }
+    if (selectedExchangeShipRight) {
+      if (selectedExchangeShipRight.id === ship.id) return false
+      return ship.cityId === selectedExchangeShipRight.cityId
+    }
+    if (!selectedCity) return true
+    return ship.cityId === selectedCity.id
+  })
+
   if (!selectedExchangeShipLeft || !selectedExchangeShipRight) {
     return (
       <div
@@ -31,59 +53,55 @@ export const ExchangeInterface = ({
         <ExchangeInterfaceHeader
           selectedExchangeShipLeft={selectedExchangeShipLeft}
           selectedExchangeShipRight={selectedExchangeShipRight}
+          shipExchangeClick={shipExchangeClick}
         />
         {/* Interface Selection Content */}
         <div className="grid flex-1 grid-cols-2 gap-5">
-          <div>
-            {selectedExchangeShipLeft ? (
-              <ShipCard ship={selectedExchangeShipLeft} type="LARGE" />
-            ) : (
-              <ShipSelector
-                side="LEFT"
-                selectedShip={selectedExchangeShipLeft}
-                selectedCity={selectedCity}
-                onSelection={(ship) => {
-                  shipExchangeClick({
-                    newExchangeShipId: ship.id,
-                    side: "LEFT",
-                  })
-                }}
-                onSelectionCancel={() => {
-                  shipExchangeClick({
-                    newExchangeShipId: undefined,
-                    side: "LEFT",
-                  })
-                }}
-              />
-            )}
-          </div>
-          <div>
-            {selectedExchangeShipRight ? (
-              <ShipCard ship={selectedExchangeShipRight} type="LARGE" />
-            ) : (
-              <ShipSelector
-                side="RIGHT"
-                selectedShip={selectedExchangeShipRight}
-                selectedCity={selectedCity}
-                onSelection={(ship) => {
-                  shipExchangeClick({
-                    newExchangeShipId: ship.id,
-                    side: "RIGHT",
-                  })
-                }}
-                onSelectionCancel={() => {
-                  shipExchangeClick({
-                    newExchangeShipId: undefined,
-                    side: "RIGHT",
-                  })
-                }}
-              />
-            )}
-          </div>
+          <ShipSelector
+            side="LEFT"
+            selectedShip={selectedExchangeShipLeft}
+            ships={visibleShips}
+            onSelection={(ship) => {
+              shipExchangeClick({
+                newExchangeShipId: selectedExchangeShipLeft
+                  ? undefined
+                  : ship.id,
+                side: "LEFT",
+              })
+            }}
+            onSelectionCancel={() => {
+              shipExchangeClick({
+                newExchangeShipId: undefined,
+                side: "LEFT",
+              })
+            }}
+          />
+          <ShipSelector
+            side="RIGHT"
+            selectedShip={selectedExchangeShipRight}
+            ships={visibleShips}
+            onSelection={(ship) => {
+              shipExchangeClick({
+                newExchangeShipId: selectedExchangeShipRight
+                  ? undefined
+                  : ship.id,
+                side: "RIGHT",
+              })
+            }}
+            onSelectionCancel={() => {
+              shipExchangeClick({
+                newExchangeShipId: undefined,
+                side: "RIGHT",
+              })
+            }}
+            className="flex-row-reverse"
+          />
         </div>
       </div>
     )
   }
+
+  // const jointCargo =
 
   return (
     <div
@@ -92,9 +110,10 @@ export const ExchangeInterface = ({
       <ExchangeInterfaceHeader
         selectedExchangeShipLeft={selectedExchangeShipLeft}
         selectedExchangeShipRight={selectedExchangeShipRight}
+        shipExchangeClick={shipExchangeClick}
       />
       {/* Interface Content */}
-      <div>TODO Content</div>
+      <div className="flex flex-col"></div>
     </div>
   )
 }
@@ -102,42 +121,55 @@ export const ExchangeInterface = ({
 interface ExchangeInterfaceHeaderProps extends ComponentPropsWithRef<"div"> {
   selectedExchangeShipLeft?: ShipComposite
   selectedExchangeShipRight?: ShipComposite
+  shipExchangeClick: CityDialogStoreActions["shipExchangeClick"]
 }
 
 const ExchangeInterfaceHeader = ({
   selectedExchangeShipLeft,
   selectedExchangeShipRight,
+  shipExchangeClick,
 }: ExchangeInterfaceHeaderProps) => {
   return (
     <div className="grid flex-1 grid-cols-[1fr_2px_1fr] gap-3 border-b-2 border-black">
       <div className="flex flex-row items-center justify-between gap-2 pb-2">
         {selectedExchangeShipLeft ? (
           <>
-            <ShipHeader shipId={selectedExchangeShipLeft?.id} />
+            <div className="flex flex-row gap-2">
+              <ShipHeader shipId={selectedExchangeShipLeft?.id} />
+              <SwapButton
+                onClick={() => {
+                  shipExchangeClick({
+                    newExchangeShipId: undefined,
+                    side: "LEFT",
+                  })
+                }}
+              />
+            </div>
             <ShipCargoCount ship={selectedExchangeShipLeft} />
           </>
         ) : (
-          <>
-            <div className="text-2xl">Select a Ship</div>
-            <div />
-          </>
+          <div className="text-2xl">Select a Ship</div>
         )}
       </div>
       <div className="h-full bg-black" />
       <div className="flex flex-row items-center justify-between gap-2 pb-2">
         {selectedExchangeShipRight ? (
           <>
-            <ShipCargoCount
-              ship={selectedExchangeShipRight}
-              className="flex-row-reverse"
-            />
-            <ShipHeader shipId={selectedExchangeShipRight.id} />
+            <div className="flex flex-row gap-2">
+              <ShipHeader shipId={selectedExchangeShipRight.id} />
+              <SwapButton
+                onClick={() => {
+                  shipExchangeClick({
+                    newExchangeShipId: undefined,
+                    side: "RIGHT",
+                  })
+                }}
+              />
+            </div>
+            <ShipCargoCount ship={selectedExchangeShipRight} />
           </>
         ) : (
-          <>
-            <div />
-            <div className="text-2xl">Select a Ship</div>
-          </>
+          <div className="text-2xl">Select a Ship</div>
         )}
       </div>
     </div>

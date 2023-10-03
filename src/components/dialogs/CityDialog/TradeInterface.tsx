@@ -38,6 +38,16 @@ export const TradeInterface = ({
       shipTradeClick: state.shipTradeClick,
     }))
 
+  const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
+    staleTime: Infinity,
+    initialData: [],
+  })
+
+  const visibleShips = ships.filter((ship) => {
+    if (!selectedCity) return true
+    return ship.cityId === selectedCity.id
+  })
+
   const { mutate: buyCargo } = api.trade.buyCargo.useMutation({
     onMutate: (buyCargoInputs) => {
       queryClient.ships.getUsersShips.setData(undefined, (oldShips) => {
@@ -106,7 +116,7 @@ export const TradeInterface = ({
           <ShipSelector
             side="LEFT"
             selectedShip={tradeShip}
-            selectedCity={selectedCity}
+            ships={visibleShips}
             onSelection={(ship) => {
               shipTradeClick({
                 newSelectedCityId: ship.cityId,

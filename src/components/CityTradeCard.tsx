@@ -28,7 +28,7 @@ export const CityTradeCard = ({
         className={`flex min-w-[280px] flex-1 flex-col items-end gap-2 rounded ${className}`}
       >
         {cities.map((city) => (
-          <div className="flex flex-row gap-3" key={city.id}>
+          <div className="flex w-full flex-row gap-3" key={city.id}>
             <IconButton
               iconProps={{ id: "arrow-right-circle" }}
               label="Select City"

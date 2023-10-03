@@ -1,14 +1,13 @@
 import { type ComponentPropsWithRef } from "react"
-import { type City } from "schema"
 import { IconButton } from "~/components/Button/IconButton"
+import { SwapButton } from "~/components/Button/SwapButton"
 import { ShipCard } from "~/components/ShipCard"
 import { type ShipComposite } from "~/state/gamestateStore"
-import { api } from "~/utils/api"
 
 interface ShipTradeCardProps extends ComponentPropsWithRef<"div"> {
   side: "LEFT" | "RIGHT"
-  selectedCity?: City
   selectedShip?: ShipComposite
+  ships: ShipComposite[]
   onSelection: (ship: ShipComposite) => void
   onSelectionCancel: (ship: ShipComposite) => void
 }
@@ -16,19 +15,32 @@ interface ShipTradeCardProps extends ComponentPropsWithRef<"div"> {
 export const ShipSelector = ({
   side,
   selectedShip,
-  selectedCity,
+  ships,
   onSelection,
   className,
 }: ShipTradeCardProps) => {
-  const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
-    staleTime: Infinity,
-    initialData: [],
-  })
+  if (selectedShip) {
+    return (
+      <div className={`flex flex-1 flex-row gap-3 ${className}`}>
+        <ShipCard type="LARGE" ship={selectedShip} className="flex-1" />
+        <SwapButton
+          onClick={() => {
+            onSelection(selectedShip)
+          }}
+        />
+      </div>
+    )
+  }
 
-  const visibleShips = ships.filter((ship) => {
-    if (!selectedCity) return true
-    return ship.cityId === selectedCity.id
-  })
+  if (ships.length === 0) {
+    return (
+      <div
+        className={`flex flex-1 items-center justify-center text-2xl ${className}`}
+      >
+        No Available Ships at this City
+      </div>
+    )
+  }
 
   // If there is no selectedShip, render a ship selection interface
   if (!selectedShip) {
@@ -36,45 +48,28 @@ export const ShipSelector = ({
       <div
         className={`flex min-w-[320px] flex-1 flex-col items-center gap-2 rounded-md ${className}`}
       >
-        {visibleShips.map((ship) =>
-          side === "LEFT" ? (
-            <div className="flex w-full flex-row gap-3" key={ship.id}>
-              <ShipCard type="TINY" ship={ship} hasButton={false} />
-              <IconButton
-                iconProps={{ id: "arrow-left-circle" }}
-                label="Select Ship"
-                onClick={() => {
-                  onSelection(ship)
-                }}
-                className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"
-              />
-            </div>
-          ) : (
-            <div className="flex w-full flex-row gap-3" key={ship.id}>
-              <IconButton
-                iconProps={{ id: "arrow-right-circle" }}
-                label="Select Ship"
-                onClick={() => {
-                  onSelection(ship)
-                }}
-                className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"
-              />
-              <ShipCard
-                key={ship.id}
-                type="TINY"
-                ship={ship}
-                hasButton={false}
-              />
-            </div>
-          ),
-        )}
+        {ships.map((ship) => (
+          <div
+            className={`flex w-full flex-row gap-3 ${
+              side === "LEFT" ? "" : "flex-row-reverse"
+            }`}
+            key={ship.id}
+          >
+            <ShipCard type="TINY" ship={ship} hasButton={false} />
+            <IconButton
+              iconProps={{
+                id:
+                  side === "LEFT" ? "arrow-left-circle" : "arrow-right-circle",
+              }}
+              label="Select Ship"
+              onClick={() => {
+                onSelection(ship)
+              }}
+              className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"
+            />
+          </div>
+        ))}
       </div>
     )
   }
-
-  return (
-    <div className="flex flex-1 justify-center">
-      <ShipCard type="LARGE" ship={selectedShip} />
-    </div>
-  )
 }

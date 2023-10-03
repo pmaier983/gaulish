@@ -9,7 +9,7 @@ interface ShipHeaderProps extends ComponentPropsWithRef<"div"> {
   shipId: string
 }
 
-export const ShipHeader = ({ shipId }: ShipHeaderProps) => {
+export const ShipHeader = ({ shipId, className }: ShipHeaderProps) => {
   const queryClient = api.useContext()
 
   const { sailingShips, cityObject } = useGamestateStore((state) => ({
@@ -40,7 +40,7 @@ export const ShipHeader = ({ shipId }: ShipHeaderProps) => {
   const city = cityObject[ship?.cityId]
 
   return (
-    <div className="flex flex-row items-center">
+    <div className={`flex flex-row items-center ${className}`}>
       <ImageIcon id={ship.shipType} />
       <div className="flex flex-col overflow-hidden whitespace-nowrap pl-2">
         <Tooltip

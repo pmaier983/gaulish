@@ -7,7 +7,9 @@ import { SailButton } from "~/components/Button/SailButton"
 import { TradeButton } from "~/components/Button/TradeButton"
 import { getCargoSum } from "~/utils/utils"
 
-export interface LargeShipCardProps {}
+export interface LargeShipCardProps {
+  className?: string
+}
 
 export const LargeShipCard = ({
   ship,
@@ -16,6 +18,7 @@ export const LargeShipCard = ({
   toggleShipSelection,
   shipExchangeClick,
   shipTradeClick,
+  className,
 }: LargeShipCardProps & InnerCommonShipCardProps) => {
   const cargoArray = Object.entries(ship.cargo).filter(
     // This is a Type guard https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types
@@ -32,7 +35,9 @@ export const LargeShipCard = ({
 
   return (
     // We need to use border here as the parent container hides outlines & box shadows (cuz it needs to scroll)
-    <article className="flex min-h-[300px] min-w-[200px] flex-col gap-2 rounded-md border border-black p-2">
+    <article
+      className={`flex min-h-[300px] min-w-[200px] max-w-[320px] flex-col gap-2 rounded-md border border-black p-2 ${className}`}
+    >
       <ShipHeader shipId={ship.id} />
       <div className="flex flex-row items-center gap-3">
         <SailButton
