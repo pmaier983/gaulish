@@ -1,4 +1,3 @@
-import * as Slider from "@radix-ui/react-slider"
 import { useState } from "react"
 
 import styles from "./priceSlider.module.css"
@@ -6,8 +5,9 @@ import { type ShipComposite } from "~/state/gamestateStore"
 import { type CargoTypes } from "schema"
 import { PurchasePriceButton } from "~/components/Button/PurchasePriceButton"
 import { getCargoSum } from "~/utils/utils"
+import { Slider, type SliderProps } from "~/components/Slider"
 
-interface SliderProps extends Omit<Slider.SliderProps, "onSubmit"> {
+interface PriceSliderProps extends Omit<SliderProps, "onSubmit" | "label"> {
   type: "BUY" | "SELL"
   cargoType: CargoTypes
   price: number
@@ -30,7 +30,7 @@ export const PriceSlider = ({
   type,
   className,
   ...rest
-}: SliderProps) => {
+}: PriceSliderProps) => {
   const [value, setInternalValue] = useState<number[]>(defaultValue ?? [0])
 
   const shipGold = ship.cargo.gold
@@ -76,23 +76,16 @@ export const PriceSlider = ({
       className="flex flex-1 flex-row gap-2"
       onSubmit={() => onSubmit(valueNumber)}
     >
-      <Slider.Root
+      <Slider
         className={`relative flex flex-1 touch-none select-none items-center ${className}`}
         onValueChange={setInternalValue}
         value={value}
         min={0}
         max={maxValue}
         disabled={isValueChangeDisabled}
+        label="Purchase Amount"
         {...rest}
-      >
-        <Slider.Track className="relative h-2 flex-1 rounded bg-slate-400 data-[disabled]:opacity-50">
-          <Slider.Range className="absolute h-full rounded bg-amber-400" />
-        </Slider.Track>
-        <Slider.Thumb
-          className="block h-4 w-4 rounded-full bg-amber-900 data-[disabled]:opacity-0"
-          aria-label="Volume"
-        />
-      </Slider.Root>
+      />
       <input
         type="number"
         className={`m-0 w-[2rem] self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.numberInput}`}
