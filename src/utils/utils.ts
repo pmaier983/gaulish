@@ -343,7 +343,7 @@ export const getCitySummaries = (
 
 // Thank you Tommy Ettinger
 // https://gist.github.com/tommyettinger/46a874533244883189143505d203312c
-export const randomNumberWithSeed = (seed: number) => {
+export const getRandomNumberWithSeed = (seed: number) => {
   let t = (seed += 0x6d2b79f5)
   t = Math.imul(t ^ (t >>> 15), t | 1)
   t ^= t + Math.imul(t ^ (t >>> 7), t | 61)

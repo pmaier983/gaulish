@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { PRICE_UPDATE_INTERVAL } from "~/components/constants"
-import { randomNumberWithSeed } from "~/utils/utils"
+import { getRandomNumberWithSeed } from "~/utils/utils"
 
 interface getSpotPriceInputs {
   // Controls the max variation around the midline
@@ -22,7 +22,7 @@ export const getSpotPrice = ({
 
   const randomArray = Array(countOfWaves)
     .fill(undefined)
-    .map((_, i) => randomNumberWithSeed(seed + i))
+    .map((_, i) => getRandomNumberWithSeed(seed + i))
   const randomSum = randomArray.reduce((acc, val) => acc + val, 0)
   const randomArrayPercent = randomArray.map((val) => val / randomSum)
 
@@ -30,7 +30,7 @@ export const getSpotPrice = ({
 
   for (let i = 0; i < countOfWaves; i++) {
     const val = timeMin * randomArray[i]! * randomArrayPercent[i]!
-    const randomSway = randomNumberWithSeed(seed + i * 10)
+    const randomSway = getRandomNumberWithSeed(seed + i * 10)
     if (i % 2 === 0) {
       innerValue += Math.sin(val) * randomSway
     } else {
