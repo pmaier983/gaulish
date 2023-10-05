@@ -1,0 +1,9 @@
+.removeNumberArrows {
+  -moz-appearance: textfield;
+}
+
+.removeNumberArrows::-webkit-outer-spin-button,
+.removeNumberArrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
