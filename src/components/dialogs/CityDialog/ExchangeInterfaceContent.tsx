@@ -1,11 +1,16 @@
-import { type ComponentPropsWithRef } from "react"
+import React, { useState, type ComponentPropsWithRef } from "react"
 import { type CargoTypes } from "schema"
+import { CARGO_TYPES_LIST } from "~/components/constants"
 import { ExchangeInterfaceRow } from "~/components/dialogs/CityDialog/ExchangeInterfaceRow"
 import { type ShipComposite } from "~/state/gamestateStore"
 
 interface ExchangeInterfaceContentProps extends ComponentPropsWithRef<"div"> {
   selectedExchangeShipLeft: ShipComposite
   selectedExchangeShipRight: ShipComposite
+}
+
+type ShipsExchangeState = {
+  [key in CargoTypes]: number
 }
 
 export const ExchangeInterfaceContent = ({
@@ -26,11 +31,49 @@ export const ExchangeInterfaceContent = ({
     })
     .map(([key]) => key as CargoTypes)
 
+  const [currentGoldState, setGoldState] = useState(
+    Math.min(
+      selectedExchangeShipLeft.cargo.gold,
+      selectedExchangeShipRight.cargo.gold,
+    ),
+  )
+  const [currentExchangeState, setExchangeState] = useState<ShipsExchangeState>(
+    CARGO_TYPES_LIST.reduce<ShipsExchangeState>((acc, cargoType) => {
+      const leftShipCargoCount = selectedExchangeShipLeft.cargo[cargoType]
+      const rightShipCargoCount = selectedExchangeShipRight.cargo[cargoType]
+
+      acc[cargoType] = Math.min(leftShipCargoCount, rightShipCargoCount)
+
+      return acc
+    }, {} as ShipsExchangeState),
+  )
+
   return (
     <div className={`flex w-full flex-col gap-3 ${className}`}>
-      <ExchangeInterfaceRow icon="GOLD" />
+      <ExchangeInterfaceRow
+        icon="GOLD"
+        value={currentGoldState}
+        leftValue={selectedExchangeShipLeft.cargo.gold}
+        rightValue={selectedExchangeShipRight.cargo.gold}
+        onValueChange={(newGoldState) => setGoldState(newGoldState)}
+      />
       {cargoList.map((cargoType) => (
-        <ExchangeInterfaceRow key={cargoType} icon={cargoType} />
+        <React.Fragment key={cargoType}>
+          <div className="border-t-2 border-dashed border-black" />
+          <ExchangeInterfaceRow
+            icon={cargoType}
+            value={currentExchangeState[cargoType]}
+            leftValue={selectedExchangeShipLeft.cargo[cargoType]}
+            rightValue={selectedExchangeShipRight.cargo[cargoType]}
+            onValueChange={(value) => {
+              setExchangeState({
+                ...currentExchangeState,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                [cargoType]: value,
+              })
+            }}
+          />
+        </React.Fragment>
       ))}
     </div>
   )

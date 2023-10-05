@@ -1,27 +1,125 @@
-import { type ComponentPropsWithRef } from "react"
+import { useState, type ComponentPropsWithRef, useEffect } from "react"
 
-import { type IMAGE_ICON, ImageIcon } from "~/components/ImageIcon"
+import { type IMAGE_ICON } from "~/components/ImageIcon"
+import { ImageIconCount } from "~/components/ImageIconCount"
 import { Slider } from "~/components/Slider"
+
+import styles from "~/styles/utils.module.css"
 
 interface ExchangeInterfaceRowProps extends ComponentPropsWithRef<"div"> {
   icon: IMAGE_ICON
+  value: number
+  onValueChange: (value: number) => void
+  leftValue: number
+  rightValue: number
 }
 
 export const ExchangeInterfaceRow = ({
+  value,
+  onValueChange,
+  leftValue,
+  rightValue,
   icon,
   className,
 }: ExchangeInterfaceRowProps) => {
+  const sumValue = leftValue + rightValue
+  const [leftInnerValue, setLeftValue] = useState(sumValue - value)
+  const [rightInnerValue, setRightValue] = useState(value)
+
+  useEffect(() => {
+    setLeftValue(sumValue - value)
+    setRightValue(value)
+    // TODO: interestingly this only resets on first value change...
+  }, [sumValue, value])
+
   return (
-    <div className={`grid grid-cols-3 items-center ${className}`}>
-      <div>
-        <ImageIcon id={icon} />
+    <div className={`grid grid-cols-[1fr_2fr_1fr] items-center ${className}`}>
+      <div className="flex">
+        <ImageIconCount icon={icon} count={leftValue} />
       </div>
-      <div>
-        <Slider label="Exchange Amount" />
+      <div className="flex flex-row items-center justify-center gap-2">
+        <div className="flex w-[4rem] flex-row items-center justify-between gap-2">
+          <ValueChangeCount valueChange={sumValue - value - leftValue} />
+          <input
+            type="number"
+            className={`m-0 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
+            value={leftInnerValue}
+            min={0}
+            max={sumValue}
+            onChange={(e) => setLeftValue(parseInt(e.currentTarget.value, 10))}
+            onBlur={(e) => {
+              const newPossibleValue = Math.abs(
+                parseInt(e.currentTarget.value, 10) - sumValue,
+              )
+              const boundedValue = Math.max(
+                Math.min(newPossibleValue, sumValue),
+                0,
+              )
+              onValueChange(boundedValue)
+            }}
+          />
+        </div>
+        <Slider
+          label="Exchange Amount"
+          min={0}
+          max={sumValue}
+          onValueChange={(newValue) => onValueChange(newValue.at(0)!)}
+          value={[value]}
+        />
+        <div className="flex w-[4rem] flex-row items-center justify-between gap-2">
+          <input
+            type="number"
+            className={`m-0 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
+            value={rightInnerValue}
+            min={0}
+            max={sumValue}
+            onChange={(e) => setRightValue(parseInt(e.currentTarget.value, 10))}
+            onBlur={(e) => {
+              const newPossibleValue = Math.abs(
+                parseInt(e.currentTarget.value, 10),
+              )
+              const boundedValue = Math.max(
+                Math.min(newPossibleValue, sumValue),
+                0,
+              )
+
+              onValueChange(boundedValue)
+            }}
+          />
+          <ValueChangeCount valueChange={value - rightValue} />
+        </div>
       </div>
       <div className="flex flex-row-reverse">
-        <ImageIcon id={icon} />
+        <ImageIconCount
+          icon={icon}
+          count={rightValue}
+          className="flex-row-reverse"
+        />
       </div>
+    </div>
+  )
+}
+
+interface ValueChangeCountProps extends ComponentPropsWithRef<"div"> {
+  valueChange: number
+}
+
+const ValueChangeCount = ({
+  valueChange,
+  className = "",
+}: ValueChangeCountProps) => {
+  const isPositive = valueChange > 0
+
+  if (valueChange === 0) return <div>0</div>
+
+  return (
+    <div
+      className={` ${
+        isPositive ? "text-green-600" : "text-red-600"
+      } ${className}`}
+    >
+      {isPositive ? "+" : "-"}
+      {Math.abs(valueChange)}
     </div>
   )
 }
