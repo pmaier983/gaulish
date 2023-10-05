@@ -87,7 +87,7 @@ export const IMAGE_ICONS_TO_DETAILS: {
 
 interface ImageIconProps
   extends Omit<ImageProps, "src" | "alt" | "width" | "height"> {
-  id: IMAGE_ICON
+  icon: IMAGE_ICON
   size?: ImageProps["width"]
 
   src?: ImageProps["src"]
@@ -98,8 +98,8 @@ interface ImageIconProps
 }
 
 export const ImageIcon = forwardRef<HTMLImageElement, ImageIconProps>(
-  ({ id, size, className }, forwardRef) => {
-    const details = IMAGE_ICONS_TO_DETAILS[id]
+  ({ icon, size, className }, forwardRef) => {
+    const details = IMAGE_ICONS_TO_DETAILS[icon]
     const widthAndHeight = size ?? details.defaultSize
     return (
       <Image

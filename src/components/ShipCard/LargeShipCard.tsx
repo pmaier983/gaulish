@@ -63,7 +63,7 @@ export const LargeShipCard = ({
         />
       </div>
       <div className="flex flex-row items-center justify-around">
-        <ImageIconCount id="GOLD" count={ship.cargo.gold} />
+        <ImageIconCount icon="GOLD" count={ship.cargo.gold} />
         <CargoCount
           currentCargo={getCargoSum(ship.cargo)}
           cargoCapacity={ship.cargoCapacity}
@@ -72,7 +72,7 @@ export const LargeShipCard = ({
       <div className="h-[2px] w-full bg-black" />
       <div className="grid grid-cols-2 gap-2">
         {cargoArray.map(([cargoType, cargoCount]) => (
-          <ImageIconCount key={cargoType} id={cargoType} count={cargoCount} />
+          <ImageIconCount key={cargoType} icon={cargoType} count={cargoCount} />
         ))}
         {cargoArray.length === 0 && <div>No cargo</div>}
       </div>

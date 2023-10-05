@@ -35,7 +35,7 @@ export const TinyShipCard = ({
     >
       <ShipHeader shipId={ship.id} />
       <div className="flex-2 flex flex-row justify-end gap-5">
-        <ImageIconCount id="GOLD" count={ship.cargo.gold} />
+        <ImageIconCount icon="GOLD" count={ship.cargo.gold} />
         <ShipCargoCount ship={ship} />
         {hasButton && (
           <IconButton

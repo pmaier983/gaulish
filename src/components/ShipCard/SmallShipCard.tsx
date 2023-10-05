@@ -31,7 +31,7 @@ export const SmallShipCard = ({
         />
       </div>
       <div className="flex flex-row items-center justify-between">
-        <ImageIconCount id="GOLD" count={ship.cargo.gold} />
+        <ImageIconCount icon="GOLD" count={ship.cargo.gold} />
         <CargoCount
           currentCargo={getCargoSum(ship.cargo)}
           cargoCapacity={ship.cargoCapacity}

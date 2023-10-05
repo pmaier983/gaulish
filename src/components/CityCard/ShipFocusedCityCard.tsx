@@ -21,8 +21,8 @@ export const ShipFocusedCityCard = ({
       <h3 className="text-xl max-sm:text-base">{citySummary.name}</h3>
       {/* TODO: test these when the numbers get large! */}
       <div className="flex flex-row items-center gap-2 max-sm:sr-only">
-        <ImageIconCount id="SHIP" count={citySummary.shipCount} />
-        <ImageIconCount id="GOLD" count={citySummary.gold} />
+        <ImageIconCount icon="SHIP" count={citySummary.shipCount} />
+        <ImageIconCount icon="GOLD" count={citySummary.gold} />
         <CargoCount
           cargoCapacity={citySummary.cargo.cargoCapacity}
           currentCargo={citySummary.cargo.currentCargo}

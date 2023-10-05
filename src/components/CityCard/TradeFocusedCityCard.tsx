@@ -30,7 +30,7 @@ export const TradeFocusedCityCard = ({
         .sort((cargoA, cargoB) => cargoA.midline - cargoB.midline)
         .map((cargo) => (
           <div key={cargo.type} className="flex w-[4.25rem] flex-row gap-1">
-            <ImageIcon id={cargo.type} className="min-w-[24px]" />
+            <ImageIcon icon={cargo.type} className="min-w-[24px]" />
             <FormatNumber
               number={getPrice({ ...cargo, seed: city.id })}
               isGold

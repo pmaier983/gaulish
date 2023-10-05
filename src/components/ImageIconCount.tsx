@@ -5,12 +5,12 @@ import { type ShipComposite } from "~/state/gamestateStore"
 import { getCargoSum } from "~/utils/utils"
 
 interface ImageIconCountProps extends ComponentPropsWithRef<"div"> {
-  id: IMAGE_ICON
+  icon: IMAGE_ICON
   count: number
 }
 
 export const ImageIconCount = ({
-  id,
+  icon,
   count,
   className,
 }: ImageIconCountProps) => {
@@ -18,7 +18,7 @@ export const ImageIconCount = ({
     <div
       className={`flex flex-row items-center justify-center gap-2 text-xl leading-5 ${className}`}
     >
-      <ImageIcon id={id} />
+      <ImageIcon icon={icon} />
       <FormatNumber number={count} />
     </div>
   )
@@ -36,7 +36,7 @@ export const CargoCount = ({
 }: CargoCountProps) => {
   return (
     <div className={`flex flex-row items-center gap-2 ${className}`}>
-      <ImageIcon id="CARGO" />
+      <ImageIcon icon="CARGO" />
       <div className="flex flex-1 flex-col items-center text-xl leading-5">
         <FormatNumber number={currentCargo} />
         <div className="h-[2px] w-full bg-black"></div>

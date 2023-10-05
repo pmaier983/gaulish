@@ -41,7 +41,7 @@ export const ShipHeader = ({ shipId, className }: ShipHeaderProps) => {
 
   return (
     <div className={`flex flex-row items-center ${className}`}>
-      <ImageIcon id={ship.shipType} />
+      <ImageIcon icon={ship.shipType} />
       <div className="flex flex-col overflow-hidden whitespace-nowrap pl-2">
         <Tooltip
           interactive

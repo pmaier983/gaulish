@@ -1,11 +1,12 @@
 import { useState } from "react"
 
-import styles from "./priceSlider.module.css"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { type CargoTypes } from "schema"
 import { PurchasePriceButton } from "~/components/Button/PurchasePriceButton"
 import { getCargoSum } from "~/utils/utils"
 import { Slider, type SliderProps } from "~/components/Slider"
+
+import styles from "~/styles/utils.module.css"
 
 interface PriceSliderProps extends Omit<SliderProps, "onSubmit" | "label"> {
   type: "BUY" | "SELL"
@@ -90,7 +91,7 @@ export const PriceSlider = ({
       />
       <input
         type="number"
-        className={`m-0 w-[2rem] self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.numberInput}`}
+        className={`m-0 w-[2rem] self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
         value={valueNumber}
         min={0}
         max={maxValue}
