@@ -1,4 +1,5 @@
 import { useState, type ComponentPropsWithRef, useEffect } from "react"
+import { FormatNumberChange } from "~/components/FormatNumberChange"
 
 import { type IMAGE_ICON } from "~/components/ImageIcon"
 import { ImageIconCount } from "~/components/ImageIconCount"
@@ -39,7 +40,7 @@ export const ExchangeInterfaceRow = ({
       </div>
       <div className="flex flex-row items-center justify-center gap-2">
         <div className="flex w-[4rem] flex-row items-center justify-between gap-2">
-          <ValueChangeCount valueChange={sumValue - value - leftValue} />
+          <FormatNumberChange valueChange={sumValue - value - leftValue} />
           <input
             type="number"
             className={`m-0 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
@@ -86,7 +87,7 @@ export const ExchangeInterfaceRow = ({
               onValueChange(boundedValue)
             }}
           />
-          <ValueChangeCount valueChange={value - rightValue} />
+          <FormatNumberChange valueChange={value - rightValue} />
         </div>
       </div>
       <div className="flex flex-row-reverse">
@@ -96,30 +97,6 @@ export const ExchangeInterfaceRow = ({
           className="flex-row-reverse"
         />
       </div>
-    </div>
-  )
-}
-
-interface ValueChangeCountProps extends ComponentPropsWithRef<"div"> {
-  valueChange: number
-}
-
-const ValueChangeCount = ({
-  valueChange,
-  className = "",
-}: ValueChangeCountProps) => {
-  const isPositive = valueChange > 0
-
-  if (valueChange === 0) return <div>0</div>
-
-  return (
-    <div
-      className={` ${
-        isPositive ? "text-green-600" : "text-red-600"
-      } ${className}`}
-    >
-      {isPositive ? "+" : "-"}
-      {Math.abs(valueChange)}
     </div>
   )
 }

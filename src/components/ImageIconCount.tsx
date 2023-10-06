@@ -38,7 +38,10 @@ export const CargoCount = ({
     <div className={`flex flex-row items-center gap-2 ${className}`}>
       <ImageIcon icon="CARGO" />
       <div className="flex flex-1 flex-col items-center text-xl leading-5">
-        <FormatNumber number={currentCargo} />
+        <FormatNumber
+          number={currentCargo}
+          className={`${currentCargo > cargoCapacity ? "text-red-600" : ""}`}
+        />
         <div className="h-[2px] w-full bg-black"></div>
         <FormatNumber number={cargoCapacity} />
       </div>
