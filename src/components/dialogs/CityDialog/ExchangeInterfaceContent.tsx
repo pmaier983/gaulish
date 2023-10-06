@@ -39,10 +39,9 @@ export const ExchangeInterfaceContent = ({
   )
   const [currentExchangeState, setExchangeState] = useState<ShipsExchangeState>(
     CARGO_TYPES_LIST.reduce<ShipsExchangeState>((acc, cargoType) => {
-      const leftShipCargoCount = selectedExchangeShipLeft.cargo[cargoType]
       const rightShipCargoCount = selectedExchangeShipRight.cargo[cargoType]
 
-      acc[cargoType] = Math.min(leftShipCargoCount, rightShipCargoCount)
+      acc[cargoType] = rightShipCargoCount
 
       return acc
     }, {} as ShipsExchangeState),
