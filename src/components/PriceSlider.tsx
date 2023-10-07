@@ -39,23 +39,25 @@ export const PriceSlider = ({
 
   const totalPrice = price * valueNumber
 
-  const maxPossibleAfforded = Math.floor(shipGold / price)
-
-  const maxValue =
-    type === "BUY"
-      ? Math.min(ship.cargoCapacity, maxPossibleAfforded)
-      : ship.cargo[cargoType]
+  const maxValue = type === "BUY" ? ship.cargoCapacity : ship.cargo[cargoType]
 
   // TODO: probably better to refactor this using HookForm & Zod
   const whyIsButtonDisabled = (() => {
-    if (totalPrice > shipGold) {
-      return "Not enough gold on this ship to purchase"
+    if (type === "BUY") {
+      if (totalPrice > shipGold) {
+        return "Not enough gold on this ship to purchase"
+      }
+      if (totalPrice === 0) {
+        return "Nothing to buy"
+      }
+      if (ship.cargoCapacity - getCargoSum(ship.cargo) === 0) {
+        return "Not enough cargo space"
+      }
     }
-    if (totalPrice === 0) {
-      return "Nothing to purchase"
-    }
-    if (type === "BUY" && ship.cargoCapacity - getCargoSum(ship.cargo) === 0) {
-      return "Not enough cargo space"
+    if (type === "SELL") {
+      if (valueNumber === 0) {
+        return "Nothing to sell"
+      }
     }
     return false
   })()

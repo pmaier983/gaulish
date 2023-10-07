@@ -283,4 +283,5 @@ export type CityCargo = {
   type: CargoTypes
   amplitude: number
   midline: number
+  isSelling: boolean
 }

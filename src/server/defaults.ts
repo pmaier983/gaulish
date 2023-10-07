@@ -16,21 +16,25 @@ export const DEFAULT_CITY_CARGO: { [key in CargoTypes]: CityCargo } = {
     amplitude: 2,
     midline: 5,
     type: "WHEAT",
+    isSelling: true,
   },
   WOOL: {
     amplitude: 3,
     midline: 10,
     type: "WOOL",
+    isSelling: true,
   },
   STONE: {
     amplitude: 5,
     midline: 15,
     type: "STONE",
+    isSelling: true,
   },
   WOOD: {
     amplitude: 5,
     midline: 20,
     type: "WOOD",
+    isSelling: true,
   },
 }
 
@@ -43,6 +47,7 @@ export const DEFAULT_CITIES: City[] = [
       DEFAULT_CITY_CARGO["WHEAT"],
       DEFAULT_CITY_CARGO["WOOD"],
       DEFAULT_CITY_CARGO["STONE"],
+      { ...DEFAULT_CITY_CARGO["WOOL"], isSelling: false },
     ],
   },
   {
@@ -53,6 +58,7 @@ export const DEFAULT_CITIES: City[] = [
       DEFAULT_CITY_CARGO["WOOL"],
       DEFAULT_CITY_CARGO["WOOD"],
       DEFAULT_CITY_CARGO["STONE"],
+      { ...DEFAULT_CITY_CARGO["WHEAT"], isSelling: false },
     ],
   },
 ]

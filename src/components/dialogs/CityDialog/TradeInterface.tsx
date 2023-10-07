@@ -1,5 +1,5 @@
 import { type ComponentPropsWithRef } from "react"
-import { type CargoTypes, type City } from "schema"
+import { type City } from "schema"
 import { produce } from "immer"
 
 import { CityTradeCard } from "~/components/CityTradeCard"
@@ -10,7 +10,6 @@ import { PriceSlider } from "~/components/PriceSlider"
 import { ShipHeader } from "~/components/ShipHeader"
 import { ShipSelector } from "~/components/ShipSelector"
 import { SwapButton } from "~/components/Button/SwapButton"
-import { CARGO_TYPES_LIST } from "~/components/constants"
 import { useGetPrice } from "~/hooks/useGetPrice"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
@@ -139,92 +138,74 @@ export const TradeInterface = ({
     )
   }
 
-  const cityCargoTypes = [...selectedCity.cityCargo.map((val) => val.type)]
-
-  const currentShipCargo = Object.entries(tradeShip.cargo).reduce<
-    { type: CargoTypes; count: number }[]
-  >((acc, [type, count]) => {
-    const cargoType = type.toUpperCase()
-    const isCargo = CARGO_TYPES_LIST.includes(cargoType)
-    const hasCargoTypeOnboard = typeof count === "number" && count > 0
-    const cityLacksCargoType = !cityCargoTypes.includes(cargoType)
-
-    if (isCargo && hasCargoTypeOnboard && cityLacksCargoType) {
-      return [...acc, { type: cargoType as CargoTypes, count: count }]
-    }
-    return acc
-  }, [])
-
   return (
-    <div className={`flex max-w-full flex-1 flex-col gap-2 p-2 ${className}`}>
+    <div className={`flex max-w-full flex-1 flex-col p-2 ${className}`}>
       <TradeInterfaceHeader
         tradeShip={tradeShip}
         selectedCity={selectedCity}
         toggleSelectedCityId={toggleSelectedCityId}
         toggleSelectedTradeShipId={toggleSelectedTradeShipId}
       />
-      {selectedCity.cityCargo.map((cargo) => {
-        const cargoPrice = getPrice({ ...cargo, seed: selectedCity.id })
-
-        return (
-          <div
-            key={cargo.type}
-            className="grid grid-cols-[1fr_5rem_1fr] gap-2 border-b-2 border-dashed border-black pb-2 pt-2"
-          >
-            <div className="flex flex-1 flex-row pl-2 pr-2">
-              <PriceSlider
-                price={cargoPrice}
-                type="SELL"
-                ship={tradeShip}
-                cargoType={cargo.type}
-                onSubmit={(val) => {
-                  sellCargo({
-                    amount: val,
-                    cargoType: cargo.type,
-                    shipId: tradeShip.id,
-                    totalPrice: cargoPrice * val,
-                  })
-                }}
-              />
+      {selectedCity.cityCargo
+        .map((cargo) => ({
+          ...cargo,
+          price: getPrice({ ...cargo, seed: selectedCity.id }),
+        }))
+        .sort((a, b) => {
+          // sort by price from high to low and if the cargo .isSelling
+          if (a.isSelling && !b.isSelling) return -1
+          if (!a.isSelling && b.isSelling) return 1
+          return a.price - b.price
+        })
+        .map((cargo) => {
+          return (
+            <div
+              key={cargo.type}
+              className="grid grid-cols-[1fr_5rem_1fr] gap-2 border-b-2 border-dashed border-black pb-2 pt-2"
+            >
+              <div className="flex flex-1 flex-row pl-2 pr-2">
+                <PriceSlider
+                  price={cargo.price}
+                  type="SELL"
+                  ship={tradeShip}
+                  cargoType={cargo.type}
+                  onSubmit={(val) => {
+                    sellCargo({
+                      amount: val,
+                      cargoType: cargo.type,
+                      shipId: tradeShip.id,
+                      totalPrice: cargo.price * val,
+                    })
+                  }}
+                />
+              </div>
+              <div className="flex h-full min-w-[4rem] flex-row content-center items-center justify-center gap-2 border border-b-0 border-t-0 border-dashed border-black pl-3 pr-3">
+                <ImageIcon id={cargo.type} />
+                <FormatNumber number={cargo.price} isGold />
+              </div>
+              <div className="flex flex-1 flex-row ">
+                {cargo.isSelling ? (
+                  <PriceSlider
+                    price={cargo.price}
+                    type="BUY"
+                    ship={tradeShip}
+                    cargoType={cargo.type}
+                    onSubmit={(val) => {
+                      buyCargo({
+                        amount: val,
+                        cargoType: cargo.type,
+                        shipId: tradeShip.id,
+                        totalPrice: cargo.price * val,
+                      })
+                    }}
+                  />
+                ) : (
+                  <div>Not For Sale</div>
+                )}
+              </div>
             </div>
-            <div className="flex h-full min-w-[4rem] flex-row content-center items-center gap-2 border border-b-0 border-t-0 border-dashed border-black pl-3 pr-3">
-              <ImageIcon id={cargo.type} />
-              <FormatNumber number={cargoPrice} isGold />
-            </div>
-            <div className="flex flex-1 flex-row ">
-              <PriceSlider
-                price={cargoPrice}
-                type="BUY"
-                ship={tradeShip}
-                cargoType={cargo.type}
-                onSubmit={(val) => {
-                  buyCargo({
-                    amount: val,
-                    cargoType: cargo.type,
-                    shipId: tradeShip.id,
-                    totalPrice: cargoPrice * val,
-                  })
-                }}
-              />
-            </div>
-          </div>
-        )
-      })}
-      {currentShipCargo.length > 0 && (
-        <div className="grid grid-cols-[1fr_5rem_1fr] gap-2">
-          <div className="flex flex-1 flex-wrap gap-2">
-            Remaining Cargo:
-            {currentShipCargo.map((cargo) => (
-              <ImageIconCount
-                key={cargo.type}
-                id={cargo.type}
-                count={cargo.count}
-                className="w-[3.4rem]"
-              />
-            ))}
-          </div>
-        </div>
-      )}
+          )
+        })}
     </div>
   )
 }
