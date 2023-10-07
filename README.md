@@ -31,10 +31,8 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Setup a method for A/B testing
 - [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
 - [ ] Setup Stripe
-- [ ]
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Collect Data on what size screen users are using
-- [ ] Transition to https://github.com/anthonyshew/next-auth/blob/main/packages/adapter-drizzle/src/planetscale/index.ts when it is released
 - [ ] Plan out User Economy/MVP
 - [ ] Setup an error page (/\_error?)
 
