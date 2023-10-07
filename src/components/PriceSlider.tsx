@@ -62,7 +62,7 @@ export const PriceSlider = ({
 
   const isButtonDisabled = !!whyIsButtonDisabled
 
-  const isValueChangeDisabled = type === "SELL" ? maxValue === 0 : false
+  const isValueChangeDisabled = maxValue === 0
 
   if (type === "SELL" && maxValue === 0)
     return (

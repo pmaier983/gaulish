@@ -1,4 +1,4 @@
-import { type InferModel, relations } from "drizzle-orm"
+import { type InferSelectModel, relations } from "drizzle-orm"
 import {
   datetime,
   index,
@@ -118,7 +118,7 @@ export const users = mysqlTable(
     }
   },
 )
-export type User = InferModel<typeof users>
+export type User = InferSelectModel<typeof users>
 
 /* ******************** END - DEFAULT STUFF FROM NEXTAUTH ******************** */
 
@@ -150,7 +150,7 @@ export const ship = mysqlTable("ship", {
   cargoCapacity: int("cargo_capacity").notNull(),
   isSunk: boolean("is_sunk").default(false).notNull(),
 })
-export type Ship = InferModel<typeof ship>
+export type Ship = InferSelectModel<typeof ship>
 export const shipRelations = relations(ship, ({ one, many }) => ({
   user: one(users, {
     fields: [ship.userId],
@@ -176,7 +176,7 @@ export const path = mysqlTable("path", {
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
   pathArray: json("path_array").$type<string[]>().notNull(),
 })
-export type Path = InferModel<typeof path>
+export type Path = InferSelectModel<typeof path>
 export const pathRelations = relations(path, ({ one }) => ({
   // TODO: consider the benefits || negatives of merging these two tables
   npc: one(npc, {
@@ -203,7 +203,7 @@ export const tile = mysqlTable(
     xyIndex: uniqueIndex("xy_index").on(tile.x, tile.y),
   }),
 )
-export type Tile = InferModel<typeof tile>
+export type Tile = InferSelectModel<typeof tile>
 export const tileRelations = relations(tile, ({ one }) => ({
   city: one(city, {
     fields: [tile.xyTileId],
@@ -217,7 +217,7 @@ export const city = mysqlTable("city", {
   xyTileId: varchar("xy_tile_id", { length: 191 }).notNull(),
   cityCargo: json("city_cargo").$type<CityCargo[]>().notNull().default([]),
 })
-export type City = InferModel<typeof city>
+export type City = InferSelectModel<typeof city>
 export const cityRelations = relations(city, ({ one, many }) => ({
   ship: many(ship),
   tile: one(tile, {
@@ -233,7 +233,7 @@ export const npc = mysqlTable("npc", {
   name: varchar("name", { length: 191 }).notNull(),
   speed: float("speed").notNull(),
 })
-export type Npc = InferModel<typeof npc>
+export type Npc = InferSelectModel<typeof npc>
 export const npcRelations = relations(npc, ({ one }) => ({
   path: one(path, {
     fields: [npc.pathId],
@@ -248,7 +248,7 @@ export const log = mysqlTable("log", {
   text: text("text").notNull(),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow(),
 })
-export type Log = InferModel<typeof log>
+export type Log = InferSelectModel<typeof log>
 export const logRelations = relations(log, ({ one }) => ({
   user: one(users, {
     fields: [log.userId],
@@ -270,7 +270,7 @@ export const cargo = mysqlTable("cargo", {
   WOOD: int("wood").default(0).notNull(),
   /** ITTT: Also Update CARGO_TYPES_LIST in constants */
 })
-export type Cargo = InferModel<typeof cargo>
+export type Cargo = InferSelectModel<typeof cargo>
 export const cargoRelations = relations(cargo, ({ one }) => ({
   ship: one(ship, {
     fields: [cargo.id],
