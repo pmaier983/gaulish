@@ -98,7 +98,7 @@ export const CityDialog = () => {
         )
       }
       case CITY_DIALOG_INTERFACES.DOCKYARD: {
-        return <DockyardInterface />
+        return <DockyardInterface selectedCity={selectedCity} />
       }
       default:
       case CITY_DIALOG_INTERFACES.SHIPS: {
