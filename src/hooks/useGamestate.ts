@@ -125,7 +125,7 @@ export const useGamestate = () => {
     const intervalId = setInterval(() => {
       calculateMapObject()
       calculateVisibleTilesObject(data?.user.id ?? "")
-    }, 500)
+    }, 100)
     return () => clearInterval(intervalId)
   }, [calculateMapObject, calculateVisibleTilesObject, data?.user.id])
 

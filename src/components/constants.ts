@@ -75,6 +75,8 @@ export interface ShipProperties {
   shipType: ShipType
   cargoCapacity: number
   speed: number
+  attack: number
+  defense: number
 }
 
 // TODO: balancing
@@ -83,28 +85,38 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
 } = {
   [SHIP_TYPES.PLANK]: {
     shipType: SHIP_TYPES.PLANK,
-    cargoCapacity: 1,
-    speed: 1 / 1000, // 1 tile every second
+    cargoCapacity: 5,
+    speed: 1 / 2500,
+    attack: 0,
+    defense: 10000,
   },
   [SHIP_TYPES.RAFT]: {
     shipType: SHIP_TYPES.RAFT,
     cargoCapacity: 10,
-    speed: 1 / 2500, // 1 tile every 2.5 seconds
+    speed: 1 / 2300, // 1 tile every 2.5 seconds
+    attack: 500,
+    defense: 500,
   },
   [SHIP_TYPES.SLOOP]: {
     shipType: SHIP_TYPES.SLOOP,
-    cargoCapacity: 100,
-    speed: 1 / 2500, // 1 tile every 2.5 seconds
+    cargoCapacity: 25,
+    speed: 1 / 2000, // 1 tile every 2.5 seconds
+    attack: 1000,
+    defense: 1000,
   },
   [SHIP_TYPES.LONGSHIP]: {
     shipType: SHIP_TYPES.LONGSHIP,
-    cargoCapacity: 1000,
-    speed: 1 / 2500, // 1 tile every 2.5 seconds
+    cargoCapacity: 50,
+    speed: 1 / 1500, // 1 tile every 2.5 seconds
+    attack: 3000,
+    defense: 1500,
   },
   [SHIP_TYPES.FRIGATE]: {
     shipType: SHIP_TYPES.FRIGATE,
-    cargoCapacity: 10000,
-    speed: 1 / 2500, // 1 tile every 2.5 seconds
+    cargoCapacity: 100,
+    speed: 1 / 2000, // 1 tile every 2.5 seconds
+    attack: 2500,
+    defense: 2500,
   },
 }
 

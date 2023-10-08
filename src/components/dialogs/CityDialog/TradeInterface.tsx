@@ -152,9 +152,10 @@ export const TradeInterface = ({
           price: getPrice({ ...cargo, seed: selectedCity.id }),
         }))
         .sort((a, b) => {
-          // sort by price from high to low and if the cargo .isSelling
+          // Sort by isSelling
           if (a.isSelling && !b.isSelling) return -1
           if (!a.isSelling && b.isSelling) return 1
+          // Sort by price
           return a.price - b.price
         })
         .map((cargo) => {
