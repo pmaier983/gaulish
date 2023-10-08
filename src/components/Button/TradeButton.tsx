@@ -9,7 +9,7 @@ export const TradeButton = ({ className, ...props }: TradeButtonProps) => {
       className={` bg-green-400 hover:text-green-800 active:bg-green-500 ${className}`}
       label="Trade"
       iconProps={{
-        id: "trade",
+        icon: "trade",
       }}
       {...props}
     />

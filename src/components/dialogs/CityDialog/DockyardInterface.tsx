@@ -56,7 +56,7 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
                 <IconButton
                   label="Select City"
                   iconProps={{
-                    id: "arrow-right-circle",
+                    icon: "arrow-right-circle",
                   }}
                   onClick={() => toggleSelectedCityId(city.id)}
                   className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"
@@ -65,7 +65,7 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
               </div>
               <ImageIconCount
                 count={totalGoldInCity}
-                id="GOLD"
+                icon="GOLD"
                 className="flex-row-reverse"
               />
             </div>
@@ -88,7 +88,7 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
         <span>
           Total Gold In Port:
           {/* Make a Special Render gold count! */}
-          <ImageIconCount count={totalGoldInSelectedCity} id="GOLD" />
+          <ImageIconCount count={totalGoldInSelectedCity} icon="GOLD" />
         </span>
       </div>
       <div className="flex flex-1 bg-green-400"></div>

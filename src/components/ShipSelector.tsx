@@ -58,7 +58,7 @@ export const ShipSelector = ({
             <ShipCard type="TINY" ship={ship} hasButton={false} />
             <IconButton
               iconProps={{
-                id:
+                icon:
                   side === "LEFT" ? "arrow-left-circle" : "arrow-right-circle",
               }}
               label="Select Ship"

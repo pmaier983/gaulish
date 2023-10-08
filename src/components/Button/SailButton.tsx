@@ -10,7 +10,7 @@ export const SailButton = ({ className, ...props }: SailButtonProps) => {
       label="Set Sail"
       iconProps={{
         strokeWidth: "2",
-        id: "map",
+        icon: "map",
       }}
       {...props}
     />

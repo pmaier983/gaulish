@@ -15,7 +15,7 @@ export const SwapButton = ({
       className={`bg-blue-400 hover:bg-blue-500 active:bg-blue-500 active:text-blue-900 ${className}`}
       label={label}
       iconProps={{
-        id: "refresh-cw",
+        icon: "refresh-cw",
       }}
       {...props}
     />

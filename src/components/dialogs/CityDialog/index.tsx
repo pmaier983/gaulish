@@ -189,7 +189,7 @@ const CityDialogCommonContent = ({
             )}
           </div>
           <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
-            <Icon id="x" />
+            <Icon icon="x" />
             <span className="sr-only">Close</span>
           </Dialog.Close>
         </nav>

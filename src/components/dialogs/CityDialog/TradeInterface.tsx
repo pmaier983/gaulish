@@ -181,7 +181,7 @@ export const TradeInterface = ({
                 />
               </div>
               <div className="flex h-full min-w-[4rem] flex-row content-center items-center justify-center gap-2 border border-b-0 border-t-0 border-dashed border-black pl-3 pr-3">
-                <ImageIcon id={cargo.type} />
+                <ImageIcon icon={cargo.type} />
                 <FormatNumber number={cargo.price} isGold />
               </div>
               <div className="flex flex-1 flex-row ">
@@ -205,44 +205,8 @@ export const TradeInterface = ({
                 )}
               </div>
             </div>
-            <div className="flex h-full min-w-[4rem] flex-row content-center items-center gap-2 border border-b-0 border-t-0 border-dashed border-black pl-3 pr-3">
-              <ImageIcon icon={cargo.type} />
-              <FormatNumber number={cargoPrice} isGold />
-            </div>
-            <div className="flex flex-1 flex-row ">
-              <PriceSlider
-                price={cargoPrice}
-                type="BUY"
-                ship={tradeShip}
-                cargoType={cargo.type}
-                onSubmit={(val) => {
-                  buyCargo({
-                    amount: val,
-                    cargoType: cargo.type,
-                    shipId: tradeShip.id,
-                    totalPrice: cargoPrice * val,
-                  })
-                }}
-              />
-            </div>
-          </div>
-        )
-      })}
-      {currentShipCargo.length > 0 && (
-        <div className="grid grid-cols-[1fr_5rem_1fr] gap-2">
-          <div className="flex flex-1 flex-wrap gap-2">
-            Remaining Cargo:
-            {currentShipCargo.map((cargo) => (
-              <ImageIconCount
-                key={cargo.type}
-                icon={cargo.type}
-                count={cargo.count}
-                className="w-[3.4rem]"
-              />
-            ))}
-          </div>
-        </div>
-      )}
+          )
+        })}
     </div>
   )
 }

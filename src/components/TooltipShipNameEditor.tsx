@@ -79,7 +79,7 @@ export const TooltipShipNameEditor = ({
             inputText.length >= MAX_SHIP_NAME_LENGTH
           }
         >
-          <Icon id={"arrowRight"} size="1rem" />
+          <Icon icon={"arrowRight"} size="1rem" />
         </button>
       </form>
     )
@@ -94,7 +94,7 @@ export const TooltipShipNameEditor = ({
         }}
         className="rounded-full bg-red-400 p-1  hover:bg-red-600"
       >
-        <Icon id={"edit-3"} size="1rem" />
+        <Icon icon={"edit-3"} size="1rem" />
       </button>
     </div>
   )

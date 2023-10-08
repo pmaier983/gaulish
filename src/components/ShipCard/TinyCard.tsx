@@ -23,7 +23,7 @@ export const TinyShipCard = ({
   iconButtonProps = {
     label: "Trade",
     iconProps: {
-      id: "trade",
+      icon: "trade",
     },
   },
 }: TinyShipCardProps & InnerCommonShipCardProps) => {

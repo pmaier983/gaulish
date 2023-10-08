@@ -30,7 +30,7 @@ export const CityTradeCard = ({
         {cities.map((city) => (
           <div className="flex w-full flex-row gap-3" key={city.id}>
             <IconButton
-              iconProps={{ id: "arrow-right-circle" }}
+              iconProps={{ icon: "arrow-right-circle" }}
               label="Select City"
               onClick={() => onClickCityId(city.id)}
               className="bg-blue-400 hover:text-blue-800 active:bg-blue-500"

@@ -19,7 +19,7 @@ export const ICONS = {
 export type ICON = keyof typeof ICONS
 
 export interface IconProps extends ComponentPropsWithRef<"svg"> {
-  id: ICON
+  icon: ICON
   size?: ComponentPropsWithRef<"svg">["width"]
 }
 
@@ -32,6 +32,6 @@ export const Icon = (props: IconProps) => (
     strokeWidth={props.strokeWidth ?? "2"}
     {...props}
   >
-    <use href={`/icons.svg#${ICONS[props.id]}`} />
+    <use href={`/icons.svg#${ICONS[props.icon]}`} />
   </svg>
 )
