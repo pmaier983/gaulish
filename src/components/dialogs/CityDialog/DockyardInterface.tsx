@@ -75,5 +75,23 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
     )
   }
 
-  return <div>TODO</div>
+  const totalGoldInSelectedCity = ships.reduce((acc, ship) => {
+    if (ship.cityId === selectedCity.id) {
+      return acc + ship.cargo.gold
+    }
+    return acc
+  }, 0)
+
+  return (
+    <div className="grid flex-1 grid-cols-[1fr_3fr]">
+      <div className="flex flex-1 bg-red-400">
+        <span>
+          Total Gold In Port:
+          {/* Make a Special Render gold count! */}
+          <ImageIconCount count={totalGoldInSelectedCity} id="GOLD" />
+        </span>
+      </div>
+      <div className="flex flex-1 bg-green-400"></div>
+    </div>
+  )
 }
