@@ -38,12 +38,15 @@ export const ExchangeInterfaceRow = ({
       <div className="flex">
         <ImageIconCount icon={icon} count={leftValue} />
       </div>
-      <div className="flex flex-row items-center justify-center gap-2">
-        <div className="flex w-[4rem] flex-row items-center justify-between gap-2">
-          <FormatNumberChange valueChange={sumValue - value - leftValue} />
+      <div className="flex flex-row items-center justify-around gap-2">
+        <div className="flex w-[6rem] flex-row items-center justify-around gap-2">
+          <FormatNumberChange
+            valueChange={sumValue - value - leftValue}
+            className="flex flex-1 justify-end"
+          />
           <input
             type="number"
-            className={`m-0 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
+            className={`m-0 flex flex-1 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
             value={leftInnerValue}
             min={0}
             max={sumValue}
@@ -67,10 +70,10 @@ export const ExchangeInterfaceRow = ({
           onValueChange={(newValue) => onValueChange(newValue.at(0)!)}
           value={[value]}
         />
-        <div className="flex w-[4rem] flex-row items-center justify-between gap-2">
+        <div className="flex w-[6rem] flex-row items-center justify-around gap-2">
           <input
             type="number"
-            className={`m-0 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
+            className={`m-0 flex flex-1 self-center rounded p-1 text-center outline outline-1 outline-black disabled:opacity-50 ${styles.removeNumberArrows}`}
             value={rightInnerValue}
             min={0}
             max={sumValue}
@@ -87,7 +90,10 @@ export const ExchangeInterfaceRow = ({
               onValueChange(boundedValue)
             }}
           />
-          <FormatNumberChange valueChange={value - rightValue} />
+          <FormatNumberChange
+            valueChange={value - rightValue}
+            className="flex flex-1"
+          />
         </div>
       </div>
       <div className="flex flex-row-reverse">
