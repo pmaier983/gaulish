@@ -1,15 +1,21 @@
 import { createId } from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
 import { cargo, city, log, ship } from "schema"
+import { createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
+
 import {
   CARGO_TYPES_LIST,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
 } from "~/components/constants"
 import { getSpotPrice } from "~/hooks/useGetPrice"
-
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { getCargoSum } from "~/utils/utils"
+
+const shipCargoSchema = createSelectSchema(cargo, {
+  // TODO: how to exclude this entirely?
+  id: z.optional(z.undefined()),
+})
 
 export const tradeRouter = createTRPCRouter({
   /**
@@ -191,5 +197,123 @@ export const tradeRouter = createTRPCRouter({
       })
 
       // TODO: log the event
+    }),
+
+  /**
+   * Exchange Cargo
+   */
+  exchangeCargo: protectedProcedure
+    .input(
+      z.object({
+        leftShipId: z.string(),
+        rightShipId: z.string(),
+        newRightShipCargo: shipCargoSchema,
+        newLeftShipCargo: shipCargoSchema,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const leftShip = await ctx.db.query.ship.findFirst({
+        where: eq(ship.id, input.leftShipId),
+        columns: {
+          id: true,
+          shipType: true,
+          cargoId: true,
+          cityId: true,
+          name: true,
+        },
+        with: {
+          cargo: true,
+        },
+      })
+
+      const rightShip = await ctx.db.query.ship.findFirst({
+        where: eq(ship.id, input.rightShipId),
+        columns: {
+          id: true,
+          shipType: true,
+          cargoId: true,
+          cityId: true,
+          name: true,
+        },
+        with: {
+          cargo: true,
+        },
+      })
+
+      if (!leftShip || !rightShip) throw new Error("No ship found with that id")
+
+      // check that they are in the same city!
+      if (leftShip.cityId !== rightShip.cityId) {
+        throw new Error("Ships must be in the same city to exchange cargo")
+      }
+
+      // check that the ships have the cargo capacity
+      const rightShipCargoSum = getCargoSum(rightShip.cargo)
+      const rightShipShipType = SHIP_TYPE_TO_SHIP_PROPERTIES[rightShip.shipType]
+
+      if (rightShipCargoSum > rightShipShipType.cargoCapacity) {
+        throw new Error("Right ship has too much cargo to exchange")
+      }
+
+      const leftShipCargoSum = getCargoSum(leftShip.cargo)
+      const leftShipShipType = SHIP_TYPE_TO_SHIP_PROPERTIES[leftShip.shipType]
+
+      if (leftShipCargoSum > leftShipShipType.cargoCapacity) {
+        throw new Error("Left ship has too much cargo to exchange")
+      }
+
+      // check that the amount exchanged is equal
+      CARGO_TYPES_LIST.forEach((cargoType) => {
+        const oldCargoTypeSum =
+          leftShip.cargo[cargoType] + rightShip.cargo[cargoType]
+        const newCargoTypeSum =
+          input.newLeftShipCargo[cargoType] + input.newRightShipCargo[cargoType]
+
+        if (oldCargoTypeSum !== newCargoTypeSum) {
+          throw new Error(
+            "Something went wrong, you gained or lost cargo during the exchange!",
+          )
+        }
+      })
+
+      const oldGoldSum = leftShip.cargo["gold"] + rightShip.cargo["gold"]
+      const newCargoTypeSum =
+        input.newLeftShipCargo["gold"] + input.newRightShipCargo["gold"]
+
+      if (oldGoldSum !== newCargoTypeSum) {
+        throw new Error(
+          "Something went wrong, you gained or lost gold during the exchange!",
+        )
+      }
+
+      // TODO: check that they are not sailing?
+
+      return await ctx.db.transaction(async (trx) => {
+        await trx
+          .update(cargo)
+          .set({
+            ...input.newLeftShipCargo,
+          })
+          .where(eq(cargo.id, leftShip.cargoId))
+
+        await trx
+          .update(cargo)
+          .set({ ...input.newRightShipCargo })
+          .where(eq(cargo.id, rightShip.cargoId))
+
+        const newLog = {
+          id: createId(),
+          userId: ctx.session.user.id,
+          shipId: leftShip.id,
+          text: `${leftShip.name} exchanged cargo with ${rightShip.name}`,
+          createdAt: new Date(),
+        }
+
+        await trx.insert(log).values(newLog)
+
+        return {
+          newLogs: [newLog],
+        }
+      })
     }),
 })

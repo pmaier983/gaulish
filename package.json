@@ -30,6 +30,7 @@
     "@vercel/analytics": "^1.0.2",
     "ably": "^1.2.45",
     "drizzle-orm": "^0.28.6",
+    "drizzle-zod": "^0.5.1",
     "immer": "^10.0.2",
     "jotai": "^2.4.3",
     "next": "^13.5.3",
