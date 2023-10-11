@@ -12,10 +12,7 @@ import { getSpotPrice } from "~/hooks/useGetPrice"
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { getCargoSum } from "~/utils/utils"
 
-const shipCargoSchema = createSelectSchema(cargo, {
-  // TODO: how to exclude this entirely?
-  id: z.optional(z.undefined()),
-})
+const shipCargoSchema = createSelectSchema(cargo).omit({ id: true })
 
 export const tradeRouter = createTRPCRouter({
   /**
