@@ -180,7 +180,6 @@ export const ExchangeInterfaceContent = ({
             onValueChange={(value) => {
               setExchangeState({
                 ...currentExchangeState,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 [cargoType]: value,
               })
             }}

@@ -77,6 +77,7 @@ export interface ShipProperties {
   speed: number
   attack: number
   defense: number
+  price: number
 }
 
 // TODO: balancing
@@ -89,6 +90,7 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 2500,
     attack: 0,
     defense: 10000,
+    price: 0,
   },
   [SHIP_TYPES.RAFT]: {
     shipType: SHIP_TYPES.RAFT,
@@ -96,6 +98,7 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 2300, // 1 tile every 2.5 seconds
     attack: 500,
     defense: 500,
+    price: 100,
   },
   [SHIP_TYPES.SLOOP]: {
     shipType: SHIP_TYPES.SLOOP,
@@ -103,6 +106,7 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 2000, // 1 tile every 2.5 seconds
     attack: 1000,
     defense: 1000,
+    price: 1000,
   },
   [SHIP_TYPES.LONGSHIP]: {
     shipType: SHIP_TYPES.LONGSHIP,
@@ -110,6 +114,7 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 1500, // 1 tile every 2.5 seconds
     attack: 3000,
     defense: 1500,
+    price: 10000,
   },
   [SHIP_TYPES.FRIGATE]: {
     shipType: SHIP_TYPES.FRIGATE,
@@ -117,6 +122,7 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
     speed: 1 / 2000, // 1 tile every 2.5 seconds
     attack: 2500,
     defense: 2500,
+    price: 100000,
   },
 }
 

@@ -1,6 +1,7 @@
 import { type City } from "schema"
 import { IconButton } from "~/components/Button/IconButton"
 import { ImageIconCount } from "~/components/ImageIconCount"
+import { DockyardTable } from "~/components/dialogs/CityDialog/DockyardTable"
 import { useCityDialogStore } from "~/state/cityDialogStore"
 import { api } from "~/utils/api"
 
@@ -84,14 +85,14 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
 
   return (
     <div className="grid flex-1 grid-cols-[1fr_3fr]">
-      <div className="flex flex-1 bg-red-400">
+      <div className="flex flex-1">
         <span>
           Total Gold In Port:
           {/* Make a Special Render gold count! */}
           <ImageIconCount count={totalGoldInSelectedCity} icon="GOLD" />
         </span>
       </div>
-      <div className="flex flex-1 bg-green-400"></div>
+      <DockyardTable />
     </div>
   )
 }
