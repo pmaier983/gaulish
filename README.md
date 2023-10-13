@@ -35,6 +35,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Collect Data on what size screen users are using
 - [ ] Plan out User Economy/MVP
 - [ ] Setup an error page (/\_error?)
+- [ ] pre-release checklist https://vercel.com/docs/production-checklist
 
 ### Low Priority
 
