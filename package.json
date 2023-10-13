@@ -9,6 +9,7 @@
     "lint": "next lint && npx prettier --write .",
     "start": "next start",
     "test": "jest --watch",
+    "tsc": "tsc",
     "postinstall": "drizzle-kit generate:mysql",
     "db:push": "drizzle-kit push:mysql",
     "db:introspect": "drizzle-kit introspect:mysql",
