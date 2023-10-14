@@ -7,11 +7,13 @@ import { getCargoSum } from "~/utils/utils"
 interface ImageIconCountProps extends ComponentPropsWithRef<"div"> {
   icon: IMAGE_ICON
   count: number
+  isGold?: boolean
 }
 
 export const ImageIconCount = ({
   icon,
   count,
+  isGold,
   className,
 }: ImageIconCountProps) => {
   return (
@@ -19,7 +21,7 @@ export const ImageIconCount = ({
       className={`flex flex-row items-center justify-center gap-2 text-xl leading-5 ${className}`}
     >
       <ImageIcon icon={icon} />
-      <FormatNumber number={count} />
+      <FormatNumber number={count} isGold={isGold} />
     </div>
   )
 }

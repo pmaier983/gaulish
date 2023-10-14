@@ -5,6 +5,9 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { type ComponentProps } from "react"
+import { FormatNumber } from "~/components/FormatNumber"
+import { ImageIcon } from "~/components/ImageIcon"
+import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
 import {
   SHIP_TYPE_TO_SHIP_PROPERTIES,
   type ShipProperties,
@@ -13,10 +16,26 @@ import {
 const columnHelper = createColumnHelper<ShipProperties>()
 
 const columns = [
-  columnHelper.accessor("shipType", {}),
-  columnHelper.accessor("price", {}),
-  columnHelper.accessor("cargoCapacity", {}),
-  columnHelper.accessor("speed", {}),
+  columnHelper.accessor("shipType", {
+    cell: (info) => <ImageIcon icon={info.getValue()} />,
+  }),
+  columnHelper.accessor("price", {
+    cell: (info) => <ImageIconCount icon="GOLD" count={info.getValue()} />,
+  }),
+  columnHelper.accessor("cargoCapacity", {
+    cell: (info) => (
+      <CargoCount
+        cargoCapacity={info.getValue()}
+        currentCargo={0}
+        className="w-fit"
+      />
+    ),
+  }),
+  columnHelper.accessor("speed", {
+    cell: (info) => (
+      <FormatNumber number={Math.round(info.getValue() * 1000000)} />
+    ),
+  }),
   columnHelper.accessor("attack", {}),
   columnHelper.accessor("defense", {}),
 ]
