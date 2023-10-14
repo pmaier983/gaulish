@@ -58,3 +58,4 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
+- [ ] Fix the X-Axis overflow bugs in the city dialog
