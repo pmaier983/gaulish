@@ -2,25 +2,21 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "target": "es5",
+    "target": "esnext",
     "verbatimModuleSyntax": true,
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
-
     "strict": true,
     "noUncheckedIndexedAccess": true,
-
     "moduleResolution": "Bundler",
-    "module": "ESNext",
+    "module": "esnext",
     "noEmit": true,
-
-    "lib": ["ESNext", "dom", "dom.iterable"],
+    "lib": ["esnext", "dom", "dom.iterable"],
     "checkJs": true,
     "forceConsistentCasingInFileNames": true,
-
     "isolatedModules": true,
-    "jsx": "react-jsx",
+    "jsx": "preserve",
     "incremental": true,
     "baseUrl": ".",
     "paths": {

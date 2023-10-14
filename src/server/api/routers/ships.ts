@@ -126,7 +126,7 @@ export const shipsRouter = createTRPCRouter({
    * Fetch a list of the users Ships
    */
   getUsersShips: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.query.ship.findMany({
+    return await ctx.db.query.ship.findMany({
       where: and(eq(ship.userId, ctx.session.user.id), eq(ship.isSunk, false)),
       with: {
         path: true,
