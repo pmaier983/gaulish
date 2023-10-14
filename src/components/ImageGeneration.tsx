@@ -1,10 +1,10 @@
 import Image from "next/image"
+import type {
+  Image as OpenAIImage,
+  ImageGenerateParams,
+  ImagesResponse,
+} from "openai/resources/images.mjs"
 import { useState } from "react"
-import {
-  type Image as OpenAIImage,
-  type ImageGenerateParams,
-  type ImagesResponse,
-} from "openai/resources"
 
 export const ImageGeneration = () => {
   // TODO: use useQuery for all of this.

@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next"
 
 import OpenAI from "openai"
 import { ADMINS, getServerAuthSession } from "~/server/auth"
-import { type ImageGenerateParams } from "openai/resources"
+import type { ImageGenerateParams } from "openai/resources/images.mjs"
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
