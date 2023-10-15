@@ -90,7 +90,10 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
         <ImageIconCount count={totalGoldInSelectedCity} icon="GOLD" />
       </h3>
       <div className="flex flex-1 justify-center">
-        <DockyardTable totalGoldInSelectedCity={totalGoldInSelectedCity} />
+        <DockyardTable
+          totalGoldInSelectedCity={totalGoldInSelectedCity}
+          selectedCity={selectedCity}
+        />
       </div>
     </div>
   )

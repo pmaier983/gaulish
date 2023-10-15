@@ -5,6 +5,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { useMemo, type ComponentProps } from "react"
+import type { City } from "schema"
 import { FormatNumber } from "~/components/FormatNumber"
 import { ImageIcon } from "~/components/ImageIcon"
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
@@ -14,17 +15,39 @@ import {
   type ShipProperties,
   type ShipType,
 } from "~/components/constants"
+import { useCityDialogStore } from "~/state/cityDialogStore"
+import { api } from "~/utils/api"
 
 const columnHelper = createColumnHelper<ShipProperties>()
 
 interface DockyardTableProps extends ComponentProps<"table"> {
   totalGoldInSelectedCity: number
+  selectedCity: City
 }
 
 export const DockyardTable = ({
   totalGoldInSelectedCity,
   className = "",
+  selectedCity,
 }: DockyardTableProps) => {
+  const { setCityDialogInterface } = useCityDialogStore((state) => ({
+    setCityDialogInterface: state.setCityDialogInterface,
+  }))
+  const queryClient = api.useContext()
+
+  const { mutate: buyNewShip, isLoading } = api.ships.buyShip.useMutation({
+    onSuccess: (newShips) => {
+      queryClient.ships.getUsersShips.setData(undefined, () => {
+        return newShips
+      })
+      setCityDialogInterface("SHIPS")
+    },
+    onError: () => {
+      // If things fail, refresh everything to be safe!
+      void queryClient.ships.getUsersShips.invalidate()
+    },
+  })
+
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -53,6 +76,10 @@ export const DockyardTable = ({
                   disabled={isShipPurchaseDisabled}
                   className="h-full rounded bg-green-400 p-2 outline outline-1 outline-black hover:bg-green-600 active:bg-green-800 active:text-white disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 disabled:outline-slate-500"
                   onClick={() => {
+                    buyNewShip({
+                      shipType,
+                      cityId: selectedCity.id,
+                    })
                     console.log(shipType)
                   }}
                 >
@@ -109,7 +136,7 @@ export const DockyardTable = ({
         ),
       }),
     ],
-    [totalGoldInSelectedCity],
+    [buyNewShip, selectedCity.id, totalGoldInSelectedCity],
   )
 
   const table = useReactTable({
@@ -120,36 +147,43 @@ export const DockyardTable = ({
   })
 
   return (
-    <table className={`rounded outline outline-1 outline-black ${className}`}>
-      <thead className="border-b-2 border-black">
-        {table.getHeaderGroups().map((headerGroup) => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th key={header.id}>
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="border-t-2 border-dashed border-black">
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id}>
-                <div className="flex flex-1 flex-row justify-start gap-2 pl-2 pr-2">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </div>
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="relative flex flex-1 justify-center">
+      <table className={`rounded outline outline-1 outline-black ${className}`}>
+        <thead className="border-b-2 border-black">
+          {table.getHeaderGroups().map((headerGroup) => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="border-t-2 border-dashed border-black">
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id}>
+                  <div className="flex flex-1 flex-row justify-start gap-2 pl-2 pr-2">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </div>
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {isLoading && (
+        <div className="absolute flex h-full w-full flex-1 items-center justify-center bg-black bg-opacity-80 text-2xl text-white">
+          Setting up your new Ship!
+        </div>
+      )}
+    </div>
   )
 }

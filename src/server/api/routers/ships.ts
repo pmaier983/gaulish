@@ -1,15 +1,15 @@
 import { createId } from "@paralleldrive/cuid2"
-import { and, eq } from "drizzle-orm"
-import { type Ship, cargo, path, ship } from "schema"
+import { and, eq, inArray } from "drizzle-orm"
+import { path, ship, city, cargo } from "schema"
 import { z } from "zod"
 import {
-  FAKE_INITIAL_SHIP_PATH_ID,
   MAX_SHIP_NAME_LENGTH,
   SHIP_TYPES,
   SHIP_TYPE_TO_SHIP_PROPERTIES,
 } from "~/components/constants"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
+import { addShip } from "~/server/utils"
 import {
   type ValidationProps,
   getEnhancedShipPath,
@@ -152,6 +152,7 @@ export const shipsRouter = createTRPCRouter({
         },
       })
     }),
+
   /**
    * Adds a ship to a users profile
    *
@@ -165,62 +166,29 @@ export const shipsRouter = createTRPCRouter({
 
       if (!cityForNewShip) throw Error("No cities found for the new ship")
 
-      const shipProperties = SHIP_TYPE_TO_SHIP_PROPERTIES[SHIP_TYPES.PLANK]
-
-      if (!shipProperties)
-        throw Error("No ship properties found for that ship_type")
-
-      const allUserShips = await trx.query.ship.findMany({
-        where: and(eq(ship.userId, ctx.session.user.id)),
+      const currentUserShips = await trx.query.ship.findMany({
+        where: and(
+          eq(ship.userId, ctx.session.user.id),
+          eq(ship.isSunk, false),
+        ),
         columns: {
           isSunk: true,
-          shipType: true,
         },
       })
-
-      const currentUserShips = allUserShips.filter((ship) => !ship.isSunk)
 
       if (currentUserShips.length > 0) {
         throw Error("You already have a ship, No Freebies!")
       }
 
-      const countOfPlanks = currentUserShips.filter(
-        (ship) => ship.shipType === SHIP_TYPES.PLANK,
-      ).length
-
-      const newCargoId = createId()
-
-      await trx.insert(cargo).values({ id: newCargoId })
-
-      const partialNewShip: Ship = {
-        id: createId(),
-        userId: ctx.session.user.id,
+      return await addShip({
+        db: trx,
+        shipType: SHIP_TYPES.PLANK,
         cityId: cityForNewShip.id,
-        ...shipProperties,
-        cargoId: newCargoId,
-        isSunk: false,
-        pathId: FAKE_INITIAL_SHIP_PATH_ID, // TODO: is there a better way to do this?
-        name: `${SHIP_TYPES.PLANK.toLowerCase()} ${countOfPlanks + 1}`,
-      }
-
-      await trx.insert(ship).values(partialNewShip)
-
-      const newShip = await trx.query.ship.findFirst({
-        where: eq(ship.id, partialNewShip.id),
-        with: {
-          path: true,
-          cargo: true,
-        },
+        userId: ctx.session.user.id,
       })
-
-      if (!newShip)
-        throw new Error("Ship was not found immediately after being inserted")
-
-      // TODO: Add the tiles around that ship to the knowTiles list
-
-      return newShip
     })
   }),
+
   /**
    * Update a specific ships name
    */
@@ -238,5 +206,83 @@ export const shipsRouter = createTRPCRouter({
         .where(eq(ship.id, input.shipId))
 
       return input
+    }),
+
+  /**
+   * Buy a ship from a city
+   */
+  buyShip: protectedProcedure
+    .input(
+      z.object({
+        cityId: z.number(),
+        shipType: z.nativeEnum(SHIP_TYPES),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (trx) => {
+        // check if the user has enough gold in the city
+        const shipsInCity = await trx.query.ship.findMany({
+          where: and(
+            eq(ship.cityId, input.cityId),
+            eq(ship.isSunk, false),
+            eq(ship.userId, ctx.session.user.id),
+          ),
+          with: {
+            cargo: {
+              columns: {
+                id: true,
+                gold: true,
+              },
+            },
+          },
+          columns: {},
+        })
+
+        const totalGoldInCity = shipsInCity.reduce(
+          (acc, ship) => acc + ship.cargo.gold,
+          0,
+        )
+
+        if (
+          totalGoldInCity < SHIP_TYPE_TO_SHIP_PROPERTIES[input.shipType].price
+        ) {
+          throw new Error("Not enough gold in the city to purchase this ship!")
+        }
+
+        const goldRemainingInCity =
+          totalGoldInCity - SHIP_TYPE_TO_SHIP_PROPERTIES[input.shipType].price
+        const shipsCargoIds = shipsInCity.map((ship) => ship.cargo.id)
+
+        // Remove all the gold from the ships in the city
+        await trx
+          .update(cargo)
+          .set({ gold: 0 })
+          .where(inArray(cargo.id, shipsCargoIds))
+
+        const newShip = await addShip({
+          db: trx,
+          shipType: input.shipType,
+          cityId: input.cityId,
+          userId: ctx.session.user.id,
+        })
+
+        // Give the gold to the new ship!
+        await trx
+          .update(cargo)
+          .set({ gold: goldRemainingInCity })
+          .where(eq(cargo.id, newShip.cargoId))
+      })
+
+      // TODO: unify this with getUsersShips?
+      return await ctx.db.query.ship.findMany({
+        where: and(
+          eq(ship.userId, ctx.session.user.id),
+          eq(ship.isSunk, false),
+        ),
+        with: {
+          cargo: true,
+          path: true,
+        },
+      })
     }),
 })
