@@ -89,17 +89,17 @@ export const IMAGE_ICONS_TO_DETAILS: {
   [IMAGE_ICONS.SPEED]: {
     path: "/assets/icons/speed.webp",
     alt: "A gust of wind visualizing speed",
-    defaultSize: 32,
+    defaultSize: 24,
   },
   [IMAGE_ICONS.ATTACK]: {
     path: "/assets/icons/attack.webp",
     alt: "A sword visualizing attack",
-    defaultSize: 32,
+    defaultSize: 24,
   },
   [IMAGE_ICONS.DEFENSE]: {
     path: "/assets/icons/defense.webp",
     alt: "A shield visualizing defense",
-    defaultSize: 32,
+    defaultSize: 24,
   },
 }
 

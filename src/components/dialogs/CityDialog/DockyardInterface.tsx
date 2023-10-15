@@ -84,15 +84,14 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
   }, 0)
 
   return (
-    <div className="grid flex-1 grid-cols-[1fr_3fr]">
-      <div className="flex flex-1">
-        <span>
-          Total Gold In Port:
-          {/* Make a Special Render gold count! */}
-          <ImageIconCount count={totalGoldInSelectedCity} icon="GOLD" />
-        </span>
+    <div className="flex flex-1 flex-col p-2">
+      <h3 className="flex flex-row justify-center gap-3 p-2 text-2xl">
+        Total Gold In Port:
+        <ImageIconCount count={totalGoldInSelectedCity} icon="GOLD" />
+      </h3>
+      <div className="flex flex-1 justify-center">
+        <DockyardTable totalGoldInSelectedCity={totalGoldInSelectedCity} />
       </div>
-      <DockyardTable />
     </div>
   )
 }

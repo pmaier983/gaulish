@@ -197,7 +197,7 @@ export const ExchangeInterfaceContent = ({
             className="w-8 text-center"
           />
           <button
-            className="z-10 h-full bg-green-400 p-2 outline outline-2 outline-black hover:bg-green-700 hover:text-white disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 disabled:outline-slate-500"
+            className="h-full bg-green-400 p-2 outline outline-2 outline-black hover:bg-green-700 hover:text-white disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500 disabled:outline-slate-500"
             onClick={() => {
               exchange({
                 leftShipId: selectedExchangeShipLeft.id,
