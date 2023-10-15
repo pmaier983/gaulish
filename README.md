@@ -59,3 +59,9 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
 - [ ] Fix the X-Axis overflow bugs in the city dialog
+
+### MVP Requirements
+
+- [ ] Trade
+- [ ] Map Creator
+- [ ] Initial User Setup

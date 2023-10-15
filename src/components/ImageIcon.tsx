@@ -10,6 +10,9 @@ const IMAGE_ICONS_PURE = {
   WHEAT: "WHEAT",
   WOOD: "WOOD",
   WOOL: "WOOL",
+  SPEED: "SPEED",
+  ATTACK: "ATTACK",
+  DEFENSE: "DEFENSE",
 } as const
 
 export const IMAGE_ICONS = { ...IMAGE_ICONS_PURE, ...SHIP_TYPES } as const
@@ -81,6 +84,21 @@ export const IMAGE_ICONS_TO_DETAILS: {
   [IMAGE_ICONS.SLOOP]: {
     path: "/assets/ships/sloop.webp",
     alt: "A single triangular sailed sloop",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.SPEED]: {
+    path: "/assets/icons/speed.webp",
+    alt: "A gust of wind visualizing speed",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.ATTACK]: {
+    path: "/assets/icons/attack.webp",
+    alt: "A sword visualizing attack",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.DEFENSE]: {
+    path: "/assets/icons/defense.webp",
+    alt: "A shield visualizing defense",
     defaultSize: 32,
   },
 }
