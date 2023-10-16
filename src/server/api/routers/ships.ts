@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2"
 import { and, eq, inArray } from "drizzle-orm"
-import { path, ship, city, cargo } from "schema"
+import { path, ship, cargo } from "schema"
 import { z } from "zod"
 import {
   MAX_SHIP_NAME_LENGTH,
