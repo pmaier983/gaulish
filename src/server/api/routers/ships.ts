@@ -253,11 +253,13 @@ export const shipsRouter = createTRPCRouter({
           totalGoldInCity - SHIP_TYPE_TO_SHIP_PROPERTIES[input.shipType].price
         const shipsCargoIds = shipsInCity.map((ship) => ship.cargo.id)
 
-        // Remove all the gold from the ships in the city
-        await trx
-          .update(cargo)
-          .set({ gold: 0 })
-          .where(inArray(cargo.id, shipsCargoIds))
+        if (shipsCargoIds.length > 0) {
+          // Remove all the gold from the ships in the city
+          await trx
+            .update(cargo)
+            .set({ gold: 0 })
+            .where(inArray(cargo.id, shipsCargoIds))
+        }
 
         const newShip = await addShip({
           db: trx,

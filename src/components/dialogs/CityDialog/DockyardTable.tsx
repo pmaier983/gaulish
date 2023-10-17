@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { useMemo, type ComponentProps } from "react"
+import { useMemo, type ComponentProps, useState } from "react"
 import type { City } from "schema"
 import { FormatNumber } from "~/components/FormatNumber"
 import { ImageIcon } from "~/components/ImageIcon"
@@ -80,7 +80,6 @@ export const DockyardTable = ({
                       shipType,
                       cityId: selectedCity.id,
                     })
-                    console.log(shipType)
                   }}
                 >
                   Buy
@@ -136,15 +135,34 @@ export const DockyardTable = ({
         ),
       }),
     ],
-    [buyNewShip, selectedCity.id, totalGoldInSelectedCity],
+    [buyNewShip, selectedCity, totalGoldInSelectedCity],
   )
 
   const table = useReactTable({
     data: Object.values(SHIP_TYPE_TO_SHIP_PROPERTIES),
-    columns,
+    columns: columns,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
   })
+
+  const [state] = useState(table.initialState)
+
+  table.setOptions((prev) => ({
+    ...prev,
+    state,
+    onStateChange: () => {
+      /**
+       * TODO: fix this
+       *
+       * This is a MASSIVE hack to stop the table from a re-rendering in a loop
+       *
+       * currently when you are on the dockyard interface, and you change cities,
+       * the table enters into a re-render cycle and kills the entire application
+       * this is my band-aide for now...
+       *
+       * I think the issue is somewhere within getRowModel, but I haven't yet investigated
+       */
+    },
+  }))
 
   return (
     <div className="relative flex flex-1 justify-center">
