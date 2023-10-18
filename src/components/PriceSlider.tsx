@@ -80,7 +80,7 @@ export const PriceSlider = ({
       onSubmit={() => onSubmit(valueNumber)}
     >
       <Slider
-        className={`relative flex flex-1 touch-none select-none items-center ${className}`}
+        className={`relative flex min-w-[5rem] flex-1 touch-none select-none items-center ${className}`}
         onValueChange={setInternalValue}
         value={value}
         min={0}

@@ -166,7 +166,9 @@ export const DockyardTable = ({
 
   return (
     <div className="relative flex flex-1 justify-center">
-      <table className={`rounded outline outline-1 outline-black ${className}`}>
+      <table
+        className={`rounded outline outline-1 outline-black min-w-[500px]${className}`}
+      >
         <thead className="border-b-2 border-black">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

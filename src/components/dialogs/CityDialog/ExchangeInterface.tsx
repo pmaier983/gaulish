@@ -48,7 +48,7 @@ export const ExchangeInterface = ({
   if (!selectedExchangeShipLeft || !selectedExchangeShipRight) {
     return (
       <div
-        className={`flex h-min max-w-full flex-1 flex-col gap-2 overflow-x-auto p-2 ${className}`}
+        className={`flex h-min max-w-full flex-1 flex-col gap-2 p-2 ${className}`}
       >
         <ExchangeInterfaceHeader
           selectedExchangeShipLeft={selectedExchangeShipLeft}
@@ -56,7 +56,7 @@ export const ExchangeInterface = ({
           shipExchangeClick={shipExchangeClick}
         />
         {/* Interface Selection Content */}
-        <div className="grid flex-1 grid-cols-2 gap-5">
+        <div className="flex flex-1 gap-5 overflow-x-auto p-1">
           <ShipSelector
             side="LEFT"
             selectedShip={selectedExchangeShipLeft}
@@ -131,7 +131,7 @@ const ExchangeInterfaceHeader = ({
   shipExchangeClick,
 }: ExchangeInterfaceHeaderProps) => {
   return (
-    <div className="grid flex-1 grid-cols-[1fr_2px_1fr] gap-3 border-b-2 border-black">
+    <div className="flex flex-1 justify-between gap-3 border-b-2 border-black">
       <div className="flex flex-row items-center justify-between gap-2 pb-2">
         {selectedExchangeShipLeft ? (
           <div className="flex flex-row gap-2">
@@ -146,10 +146,9 @@ const ExchangeInterfaceHeader = ({
             />
           </div>
         ) : (
-          <div className="text-2xl">Select a Ship</div>
+          <div className="text-2xl">Select A Ship</div>
         )}
       </div>
-      <div className="h-full bg-black" />
       <div className="flex flex-row-reverse items-center justify-between gap-2 pb-2">
         {selectedExchangeShipRight ? (
           <div className="flex flex-row-reverse">
@@ -167,7 +166,7 @@ const ExchangeInterfaceHeader = ({
             />
           </div>
         ) : (
-          <div className="text-2xl">Select a Ship</div>
+          <div className="text-2xl">Select A Ship</div>
         )}
       </div>
     </div>

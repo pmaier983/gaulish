@@ -115,6 +115,7 @@ interface ImageIconProps
   className?: string
 }
 
+// TODO: prevent the flash when these images render!
 export const ImageIcon = forwardRef<HTMLImageElement, ImageIconProps>(
   ({ icon, size, className }, forwardRef) => {
     const details = IMAGE_ICONS_TO_DETAILS[icon]

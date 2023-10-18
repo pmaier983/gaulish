@@ -111,7 +111,7 @@ export const TradeInterface = ({
           toggleSelectedCityId={toggleSelectedCityId}
           toggleSelectedTradeShipId={toggleSelectedTradeShipId}
         />
-        <div className="flex flex-1 flex-row gap-2">
+        <div className="flex flex-1 flex-row gap-2 overflow-x-scroll p-2">
           <ShipSelector
             side="LEFT"
             selectedShip={tradeShip}
