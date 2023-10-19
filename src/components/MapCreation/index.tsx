@@ -1,11 +1,12 @@
-import { PixiViewport } from "~/components/pixi/PixiViewport"
-import { PixiStage } from "~/components/pixi/PixiStage"
-import { DumbPixiEmptyTile } from "~/components/pixi/DumbPixiEmptyTile"
-import { createArraySquare } from "~/utils/utils"
 import { useState } from "react"
 import Image from "next/image"
 import { Sprite } from "@pixi/react"
 import { produce } from "immer"
+
+import { PixiViewport } from "~/components/pixi/PixiViewport"
+import { PixiStage } from "~/components/pixi/PixiStage"
+import { DumbPixiEmptyTile } from "~/components/pixi/DumbPixiEmptyTile"
+import { createArraySquare } from "~/utils/utils"
 import {
   type TILE_TYPE,
   TILE_TYPES,

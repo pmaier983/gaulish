@@ -17,6 +17,7 @@ declare module "nextjs-routes" {
     | DynamicRoute<"/api/trpc/[trpc]", { "trpc": string }>
     | StaticRoute<"/app/dev">
     | StaticRoute<"/app">
+    | StaticRoute<"/app/map-creation">
     | StaticRoute<"/">;
 
   interface StaticRoute<Pathname> {
