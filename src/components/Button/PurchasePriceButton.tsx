@@ -31,10 +31,10 @@ export const PurchasePriceButton = ({
     >
       <Tooltip content={tooltipContent} disabled={!tooltipContent}>
         {/* https://www.radix-ui.com/primitives/docs/components/tooltip#displaying-a-tooltip-from-a-disabled-button */}
-        <span tabIndex={0}>
+        <span tabIndex={0} className="h-full">
           <button
             type="submit"
-            className={`flex p-2 capitalize text-black hover:text-white active:text-white disabled:bg-slate-400 disabled:opacity-50 disabled:hover:text-black ${buttonStyles[type]}`}
+            className={`flex h-full items-center p-2 capitalize text-black hover:text-white active:text-white disabled:bg-slate-400 disabled:opacity-50 disabled:hover:text-black ${buttonStyles[type]}`}
             onClick={(e) => {
               e.preventDefault()
               onClick()
