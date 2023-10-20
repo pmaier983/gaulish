@@ -151,6 +151,12 @@ export const TradeInterface = ({
           ...cargo,
           price: getPrice({ ...cargo, seed: selectedCity.id }),
         }))
+        .filter((cargo) => {
+          if (!cargo.isSelling && tradeShip.cargo[cargo.type] === 0) {
+            return false
+          }
+          return true
+        })
         .sort((a, b) => {
           // Sort by isSelling
           if (a.isSelling && !b.isSelling) return -1
