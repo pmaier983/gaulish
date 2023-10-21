@@ -50,18 +50,14 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Setup Dark Mode
 - [ ] why does clicking "Tab" add a horizontal scroll bar?
 - [ ] Improve every Error message (also add error message to all trcp useQuery/useMutations)
-- [ ] Remove all the `createdAt?.getDate() ?? 0`
-- [ ] Add some indicator to the user that they have no ships!
 - [ ] Add visibility strength to ship properties!
 - [ ] Consider converting all date fields to ms since epoch
 - [ ] Setup a better Icon management system (The Dynamically imports Icon's and doesn't require babel)
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
-- [ ] Fix the X-Axis overflow bugs in the city dialog
 
 ### MVP Requirements
 
-- [ ] Trade
 - [ ] Map Creator
 - [ ] Initial User Setup
