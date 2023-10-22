@@ -27,6 +27,9 @@ export const DevNavBar = () => {
       <Link href="/app/dev" className="rounded-sm bg-slate-400 px-3">
         Dev
       </Link>
+      <Link href="/app/map-creation" className="rounded-sm bg-amber-400 px-3">
+        Map Creation
+      </Link>
       <button
         className="rounded-sm bg-blue-400 px-3"
         onClick={() => {
