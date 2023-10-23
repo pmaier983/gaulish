@@ -33,7 +33,6 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Setup Stripe
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Collect Data on what size screen users are using
-- [ ] Plan out User Economy/MVP
 - [ ] Setup an error page (/\_error?)
 - [ ] pre-release checklist https://vercel.com/docs/production-checklist
 
