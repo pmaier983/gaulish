@@ -20,7 +20,13 @@ export const createArraySquare = <T>({
 }
 
 export const getTileImageString = (typeId: number) => {
-  if (typeId === 1 || typeId === 2 || typeId === 3 || typeId === 4) {
+  if (
+    typeId === 0 ||
+    typeId === 1 ||
+    typeId === 2 ||
+    typeId === 3 ||
+    typeId === 4
+  ) {
     const TileType = TILE_TYPE_ID_TO_TYPE[typeId]
     if (!TileType)
       throw Error("Invalid Tile type_id passed into TILE_TYPE_ID_TO_TYPE")
