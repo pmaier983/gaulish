@@ -15,8 +15,9 @@ import { DevNavBar } from "~/components/DevNavBar"
 import { Footer } from "~/components/Footer"
 import { CityDialog } from "~/components/dialogs/CityDialog"
 import { useCityDialogStore } from "~/state/cityDialogStore"
+import { MapPixiTile } from "~/components/MapPixiTile"
 
-const Map = dynamic(() => import("~/components/Map"), {
+const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
   ssr: false,
 })
 
@@ -60,12 +61,16 @@ const App = () => {
         <MapFooter />
         <DevNavBar />
         <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
-        <Map
+        <MapWrapper
           mapWidth={size.width}
           mapHeight={size.height}
           mapArray={mapArray}
           className={selectedShip ? "border-8 border-red-500" : ""}
-        />
+        >
+          {mapArray?.map((tile) => (
+            <MapPixiTile key={tile.xyTileId} {...tile} />
+          ))}
+        </MapWrapper>
       </div>
       <div className={styles.footer}>
         {isChatDisabled && <div className={styles.isDisabledOverlay} />}

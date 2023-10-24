@@ -1,48 +1,13 @@
 import { useState } from "react"
-import Image from "next/image"
-import { Sprite } from "@pixi/react"
-import { produce } from "immer"
+import dynamic from "next/dynamic"
 
-import { PixiViewport } from "~/components/pixi/PixiViewport"
-import { PixiStage } from "~/components/pixi/PixiStage"
-import { DumbPixiEmptyTile } from "~/components/pixi/DumbPixiEmptyTile"
-import { createArraySquare } from "~/utils/utils"
-import {
-  type TILE_TYPE,
-  TILE_TYPES,
-  TILE_TYPE_TO_TYPE_ID,
-} from "~/components/constants"
+import { useElementSize } from "~/hooks/useElementSize"
+import { createMap } from "~/components/MapCreation/utils"
+import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 
-interface PixiCell {
-  x: number
-  y: number
-  percentSize: number
-  type: TILE_TYPE
-}
-
-type CellMap = PixiCell[][]
-
-const initialCellMap = createArraySquare<Omit<PixiCell, "x" | "y">>({
-  size: 7,
-  tile: { type: TILE_TYPES.EMPTY, percentSize: 0.04 },
+const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
+  ssr: false,
 })
-
-const modifyCellInMap = (
-  cellMap: CellMap,
-  x: number,
-  y: number,
-  modifiedCell: Partial<PixiCell>,
-) => {
-  return produce<CellMap>(cellMap, (draft) => {
-    if (draft?.[y]?.[x]) {
-      const row = draft[y]
-      const currentCell = row?.[x]
-      if (currentCell) {
-        row[x] = { ...currentCell, ...modifiedCell }
-      }
-    }
-  })
-}
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -52,16 +17,41 @@ const modifyCellInMap = (
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreation = () => {
-  const [cellSelectionType, setCellSelectionType] = useState<TILE_TYPE>(
-    TILE_TYPES.EMPTY,
-  )
-  const [cellMap, setCellMap] = useState<CellMap>(initialCellMap)
-
-  const mapWidth = 200
+  const { sizeRef, size } = useElementSize()
+  const [mapSize, setMapSize] = useState(5)
+  const [mapArray, setMapArray] = useState(createMap(mapSize, mapSize))
 
   return (
-    <>
-      <div className="flex">
+    <div className="flex h-full flex-row p-10">
+      <div className="w-2/3" ref={sizeRef}>
+        <MapWrapper mapHeight={size.height} mapWidth={size.width}>
+          {mapArray?.map((tile) => (
+            <DumbPixiTile key={tile.xyTileId} {...tile} />
+          ))}
+        </MapWrapper>
+      </div>
+      {/* TODO: convert this into a form */}
+      <div className="p-5">
+        <div className="flex flex-row items-center gap-3">
+          Map size:
+          <input
+            className="border border-black bg-gray-300"
+            type="number"
+            value={mapSize}
+            onChange={(e) => setMapSize(parseInt(e.target.value))}
+          />
+          <button
+            className="rounded border border-red-800 bg-red-500 p-1"
+            onClick={() => {
+              setMapArray(createMap(mapSize, mapSize))
+            }}
+          >
+            Set Map Size
+          </button>
+        </div>
+      </div>
+
+      {/* <div className="flex">
         <PixiStage
           width={mapWidth}
           height={mapWidth}
@@ -125,7 +115,7 @@ const MapCreation = () => {
                   ? "outline outline-2 outline-red-700"
                   : ""
               }
-              src={`/${type.toLocaleLowerCase()}.webp`}
+              src={`/assets/tiles/${type.toLocaleLowerCase()}.webp`}
               width={mapWidth / Object.values(TILE_TYPES).length}
               height={mapWidth / Object.values(TILE_TYPES).length}
               alt={`${type} pixi cell type`}
@@ -133,28 +123,8 @@ const MapCreation = () => {
             />
           ))}
         </div>
-      </div>
-      <button
-        onClick={() => {
-          const allCells = cellMap.reduce<string[]>((acc, row) => {
-            const sqlROW = row.map((cell) => {
-              return `(${cell.x}, ${cell.y}, ${
-                TILE_TYPE_TO_TYPE_ID[cell.type]
-              })`
-            })
-            return acc.concat(sqlROW)
-          }, [])
-
-          const precedingText = `INSERT INTO gaulish.tile (x, y, type_id) VALUES `
-          console.log("COPIED TEXT", precedingText + allCells.join(", ") + ";")
-          void navigator.clipboard.writeText(
-            precedingText + allCells.join(", ") + ";",
-          )
-        }}
-      >
-        Copy SQL to Clipboard
-      </button>
-    </>
+      </div> */}
+    </div>
   )
 }
 

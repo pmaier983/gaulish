@@ -3,13 +3,13 @@ import { PixiStage } from "~/components/pixi/PixiStage"
 import { PixiViewport } from "~/components/pixi/PixiViewport"
 
 import type { Tile } from "schema"
-import { MapPixiTile } from "~/components/MapPixiTile"
 
-interface MapProps {
+interface MapWrapperProps {
   mapWidth: number
   mapHeight: number
   mapArray?: Tile[]
   className?: string
+  children: React.ReactNode
 }
 
 let count = 0
@@ -20,7 +20,12 @@ let count = 0
   @example import method
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
-const Map = ({ mapWidth, mapHeight, mapArray, className }: MapProps) => {
+const MapWrapper = ({
+  mapWidth,
+  mapHeight,
+  children,
+  className,
+}: MapWrapperProps) => {
   console.log("Map Render Count:", count++)
   return (
     <PixiStage
@@ -30,7 +35,7 @@ const Map = ({ mapWidth, mapHeight, mapArray, className }: MapProps) => {
       className={className}
     >
       <PixiViewport width={mapWidth} height={mapHeight}>
-        {mapArray?.map((tile) => <MapPixiTile key={tile.xyTileId} {...tile} />)}
+        {children}
       </PixiViewport>
     </PixiStage>
   )
@@ -38,4 +43,4 @@ const Map = ({ mapWidth, mapHeight, mapArray, className }: MapProps) => {
 
 // Only use dynamic import with this component (see above)!
 // eslint-disable-next-line import/no-default-export
-export default React.memo(Map)
+export default React.memo(MapWrapper)
