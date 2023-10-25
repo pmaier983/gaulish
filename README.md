@@ -55,6 +55,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
+- [ ] type_id -> Type string!
 
 ### MVP Requirements
 
