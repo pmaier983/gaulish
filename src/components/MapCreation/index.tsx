@@ -4,6 +4,7 @@ import dynamic from "next/dynamic"
 import { useElementSize } from "~/hooks/useElementSize"
 import { createMap } from "~/components/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
+import { DumbPixiTileBorder } from "~/components/pixi/DumbPixiTileBorder"
 
 const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
   ssr: false,
@@ -18,7 +19,7 @@ const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
 */
 const MapCreation = () => {
   const { sizeRef, size } = useElementSize()
-  const [mapSize, setMapSize] = useState(5)
+  const [mapSize, setMapSize] = useState(10)
   const [mapArray, setMapArray] = useState(createMap(mapSize, mapSize))
 
   return (
@@ -26,7 +27,10 @@ const MapCreation = () => {
       <div className="w-2/3" ref={sizeRef}>
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           {mapArray?.map((tile) => (
-            <DumbPixiTile key={tile.xyTileId} {...tile} />
+            <>
+              <DumbPixiTileBorder {...tile} />
+              <DumbPixiTile key={tile.xyTileId} {...tile} />
+            </>
           ))}
         </MapWrapper>
       </div>
