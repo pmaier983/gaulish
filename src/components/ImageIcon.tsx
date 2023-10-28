@@ -1,21 +1,27 @@
 import Image, { type ImageProps } from "next/image"
 import { forwardRef } from "react"
-import { SHIP_TYPES } from "~/components/constants"
+import { SHIP_TYPES, TILE_TYPES } from "~/components/constants"
 
 const IMAGE_ICONS_PURE = {
-  CARGO: "CARGO",
-  GOLD: "GOLD",
   SHIP: "SHIP",
+
   STONE: "STONE",
   WHEAT: "WHEAT",
   WOOD: "WOOD",
   WOOL: "WOOL",
+
+  CARGO: "CARGO",
+  GOLD: "GOLD",
   SPEED: "SPEED",
   ATTACK: "ATTACK",
   DEFENSE: "DEFENSE",
 } as const
 
-export const IMAGE_ICONS = { ...IMAGE_ICONS_PURE, ...SHIP_TYPES } as const
+export const IMAGE_ICONS = {
+  ...IMAGE_ICONS_PURE,
+  ...SHIP_TYPES,
+  ...TILE_TYPES,
+} as const
 
 export type IMAGE_ICON = keyof typeof IMAGE_ICONS
 
@@ -100,6 +106,31 @@ export const IMAGE_ICONS_TO_DETAILS: {
     path: "/assets/icons/defense.webp",
     alt: "A shield visualizing defense",
     defaultSize: 24,
+  },
+  [IMAGE_ICONS.EMPTY]: {
+    path: "/assets/tiles/empty.webp",
+    alt: "An empty tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.FOREST]: {
+    path: "/assets/tiles/forest.webp",
+    alt: "A forest tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.GRASSLAND]: {
+    path: "/assets/tiles/grassland.webp",
+    alt: "A grassland tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.MOUNTAIN]: {
+    path: "/assets/tiles/mountain.webp",
+    alt: "A mountain tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.OCEAN]: {
+    path: "/assets/tiles/ocean.webp",
+    alt: "An ocean tile",
+    defaultSize: 32,
   },
 }
 
