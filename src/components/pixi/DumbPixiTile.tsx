@@ -1,4 +1,4 @@
-import { Sprite, Text, useApp } from "@pixi/react"
+import { Sprite, Text, useApp, type _ReactPixi } from "@pixi/react"
 import { type Tile } from "schema"
 import * as PIXI from "pixi.js"
 
@@ -6,10 +6,12 @@ import { TILE_PERCENT_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
 import { getTileImageString } from "~/utils/utils"
 
+type DumbPixiTileProps = Tile & _ReactPixi.ISprite
+
 /**
  * A Dumb Pixi Tile Component that should lack any gamestate logic
  */
-export const DumbPixiTile = ({ x, y, type_id }: Tile) => {
+export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
   const { isUserAdmin } = useGlobalStore((state) => ({
     isUserAdmin: state.isUserAdmin,
   }))
@@ -31,6 +33,7 @@ export const DumbPixiTile = ({ x, y, type_id }: Tile) => {
         width={mapWidth * TILE_PERCENT_SIZE}
         height={mapWidth * TILE_PERCENT_SIZE}
         image={getTileImageString(type_id)}
+        {...rest}
       />
       {isUserAdmin && (
         <Text
