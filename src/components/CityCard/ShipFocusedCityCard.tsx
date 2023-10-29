@@ -1,5 +1,5 @@
 import { CargoCount, ImageIconCount } from "~/components/ImageIconCount"
-import { type CitySummary } from "~/utils/utils"
+import { type CitySummary } from "~/utils"
 
 export interface ShipFocusedCityCardProps {
   citySummary: CitySummary

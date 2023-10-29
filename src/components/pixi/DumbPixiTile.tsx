@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js"
 
 import { TILE_PERCENT_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
-import { getTileImageString } from "~/utils/utils"
+import { getTileImageString } from "~/utils"
 
 type DumbPixiTileProps = Tile & _ReactPixi.ISprite
 

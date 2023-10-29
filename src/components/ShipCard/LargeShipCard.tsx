@@ -5,7 +5,7 @@ import { ShipHeader } from "~/components/ShipHeader"
 import { ExchangeButton } from "~/components/Button/ExchangeButton"
 import { SailButton } from "~/components/Button/SailButton"
 import { TradeButton } from "~/components/Button/TradeButton"
-import { getCargoSum } from "~/utils/utils"
+import { getCargoSum } from "~/utils"
 
 export interface LargeShipCardProps {
   className?: string

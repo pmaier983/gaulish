@@ -2,7 +2,7 @@ import { type ComponentPropsWithRef } from "react"
 import { FormatNumber } from "~/components/FormatNumber"
 import { type IMAGE_ICON, ImageIcon } from "~/components/ImageIcon"
 import { type ShipComposite } from "~/state/gamestateStore"
-import { getCargoSum } from "~/utils/utils"
+import { getCargoSum } from "~/utils"
 
 interface ImageIconCountProps extends ComponentPropsWithRef<"div"> {
   icon: IMAGE_ICON

@@ -1,6 +1,6 @@
 import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "./../components/constants"
 import { describe, expect, test } from "@jest/globals"
-import { hasNpcUserCollision } from "./utils"
+import { hasNpcUserCollision } from "."
 import { type Path, type Npc } from "schema"
 import { SHIP_TYPES } from "~/components/constants"
 

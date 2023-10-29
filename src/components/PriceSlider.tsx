@@ -3,7 +3,7 @@ import { useState } from "react"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { type CargoTypes } from "schema"
 import { PurchasePriceButton } from "~/components/Button/PurchasePriceButton"
-import { getCargoSum } from "~/utils/utils"
+import { getCargoSum } from "~/utils"
 import { Slider, type SliderProps } from "~/components/Slider"
 
 import styles from "~/styles/utils.module.css"

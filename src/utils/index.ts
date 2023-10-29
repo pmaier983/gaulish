@@ -1,9 +1,15 @@
 import { createId } from "@paralleldrive/cuid2"
 import { type Path, type Npc, type City, type Cargo } from "schema"
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
 
 import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
 import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
 import { DIRECTIONS } from "~/components/constants"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const ABLY_CLIENT_ID = createId()
 

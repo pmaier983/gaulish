@@ -10,7 +10,7 @@ import {
 } from "~/components/constants"
 import { getSpotPrice } from "~/hooks/useGetPrice"
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
-import { getCargoSum } from "~/utils/utils"
+import { getCargoSum } from "~/utils"
 
 const shipCargoSchema = createSelectSchema(cargo).omit({ id: true })
 

@@ -14,7 +14,7 @@ import { useGetPrice } from "~/hooks/useGetPrice"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
 import { addToLogs } from "~/utils/sailingUtils"
-import { getCargoSum } from "~/utils/utils"
+import { getCargoSum } from "~/utils"
 import { useCityDialogStore } from "~/state/cityDialogStore"
 
 export interface TradeInterfaceProps extends ComponentPropsWithRef<"div"> {

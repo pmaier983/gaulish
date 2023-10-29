@@ -14,10 +14,10 @@ import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
-import { ABLY_CLIENT_ID } from "~/utils/utils"
+import { ABLY_CLIENT_ID } from "~/utils"
 
 // This is a variable font https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide
-const Font = Alegreya({ subsets: ["latin"] })
+const Font = Alegreya({ subsets: ["latin"], variable: "--default-font" })
 
 // See: https://github1s.com/vercel/next.js/blob/canary/examples/with-ably
 

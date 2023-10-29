@@ -25,7 +25,7 @@ import {
   getCargoSum,
   getXYFromXYTileId,
   hasNpcUserCollision,
-} from "~/utils/utils"
+} from "~/utils"
 
 /**
  * Sailing Events

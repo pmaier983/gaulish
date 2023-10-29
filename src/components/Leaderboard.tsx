@@ -4,7 +4,7 @@ import { useEffect } from "react"
 
 import { CHANNELS } from "~/components/constants"
 import { api } from "~/utils/api"
-import { ABLY_CLIENT_ID } from "~/utils/utils"
+import { ABLY_CLIENT_ID } from "~/utils"
 
 // TODO: possibly look into why this component is re-rending constantly?
 export const Leaderboard = () => {

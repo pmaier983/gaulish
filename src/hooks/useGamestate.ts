@@ -3,7 +3,7 @@ import { useCallback, useEffect } from "react"
 import { toast } from "react-hot-toast"
 import { useGamestateStore } from "~/state/gamestateStore"
 import { api } from "~/utils/api"
-import { getXYFromXYTileId } from "~/utils/utils"
+import { getXYFromXYTileId } from "~/utils"
 
 const VALID_KEYS = [
   "ArrowUp",

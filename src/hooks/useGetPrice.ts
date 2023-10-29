@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { PRICE_UPDATE_INTERVAL } from "~/components/constants"
-import { getRandomNumberWithSeed } from "~/utils/utils"
+import { getRandomNumberWithSeed } from "~/utils"
 
 interface getSpotPriceInputs {
   // Controls the max variation around the midline

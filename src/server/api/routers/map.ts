@@ -3,7 +3,7 @@ import { type Npc, type Path, users, city } from "schema"
 import { z } from "zod"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
-import { getDiamondAroundXYTileId } from "~/utils/utils"
+import { getDiamondAroundXYTileId } from "~/utils"
 
 interface NpcWithPath extends Npc {
   path: Path

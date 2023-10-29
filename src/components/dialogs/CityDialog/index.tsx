@@ -8,7 +8,7 @@ import { ShipsInterface } from "~/components/dialogs/CityDialog/ShipsInterface"
 import { TradeInterface } from "~/components/dialogs/CityDialog/TradeInterface"
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { api } from "~/utils/api"
-import { type CitySummary, getCitySummaries } from "~/utils/utils"
+import { type CitySummary, getCitySummaries } from "~/utils"
 
 import {
   type CityDialogInterface,

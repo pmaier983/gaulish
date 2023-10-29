@@ -10,7 +10,7 @@ import {
   getTilesMoved,
   getDiamondAroundXYTileId,
   uniqueBy,
-} from "~/utils/utils"
+} from "~/utils"
 import { type RouterOutputs } from "~/utils/api"
 import { shallow } from "zustand/shallow"
 import { produce } from "immer"
