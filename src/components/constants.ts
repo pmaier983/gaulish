@@ -27,7 +27,7 @@ export const TILE_TYPES = {
   OCEAN: "OCEAN",
 } as const
 
-export type TILE_TYPE = keyof typeof TILE_TYPES
+export type TileType = keyof typeof TILE_TYPES
 
 export const DIRECTIONS = {
   NORTH: "NORTH",
@@ -36,7 +36,7 @@ export const DIRECTIONS = {
   WEST: "WEST",
 } as const
 
-export type DIRECTION = keyof typeof DIRECTIONS
+export type Direction = keyof typeof DIRECTIONS
 
 export const OPPOSITE_DIRECTIONS = {
   [DIRECTIONS.NORTH]: DIRECTIONS.SOUTH,
@@ -45,7 +45,7 @@ export const OPPOSITE_DIRECTIONS = {
   [DIRECTIONS.WEST]: DIRECTIONS.EAST,
 } as const
 
-export const TILE_TYPE_ID_TO_TYPE: { [key: number]: TILE_TYPE } = {
+export const TILE_TYPE_ID_TO_TYPE: { [key: number]: TileType } = {
   0: TILE_TYPES.EMPTY,
   1: TILE_TYPES.FOREST,
   2: TILE_TYPES.GRASSLAND,

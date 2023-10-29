@@ -2,7 +2,7 @@ import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
 import type { Path, Tile, City, Ship } from "schema"
-import { OPPOSITE_DIRECTIONS, type DIRECTION } from "~/components/constants"
+import { OPPOSITE_DIRECTIONS, type Direction } from "~/components/constants"
 import {
   getDirectionTowardsPrevTile,
   getNpcCurrentXYTileId,
@@ -30,7 +30,7 @@ export type CityObject = { [xyTileId: string]: City }
 
 export interface SelectedShipPath {
   previousTileId?: string
-  directionLinesToDraw: DIRECTION[]
+  directionLinesToDraw: Direction[]
   index: number
   isLastTileInPath: boolean
 }
