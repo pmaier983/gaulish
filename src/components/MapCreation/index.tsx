@@ -39,7 +39,7 @@ const MapCreation = () => {
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
   const [isFloodFillActive, setFloodFillActiveState] = useState(false)
-  const [mapSize, setMapSize] = useState(5)
+  const [mapSize, setMapSize] = useState(30)
   const [mapArray, setMapArray] = useState(createMap(mapSize, mapSize))
 
   const updateMapTile = ({
