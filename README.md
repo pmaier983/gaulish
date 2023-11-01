@@ -56,6 +56,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
 - [ ] type_id -> Type string!
+- [ ] Implement proper rendering using SpriteSheets & Texture
 
 ### MVP Requirements
 
