@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic"
+import { DevNavBar } from "~/components/DevNavBar"
 
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"
@@ -17,7 +18,12 @@ const MapCreationPage = () => {
     return <FullPageRedirect />
   }
 
-  return <MapCreation />
+  return (
+    <>
+      <DevNavBar />
+      <MapCreation />
+    </>
+  )
 }
 
 // page export
