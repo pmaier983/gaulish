@@ -1,9 +1,9 @@
-import { Graphics, Text, useApp } from "@pixi/react"
-import * as PIXI from "pixi.js"
+import { Graphics, Text } from "@pixi/react"
+import type * as PIXI from "pixi.js"
 import { useCallback } from "react"
 
 import { type City, type Tile } from "schema"
-import { FONT_PERCENT_SIZE, TILE_PERCENT_SIZE } from "~/components/constants"
+import { FONT_PERCENT_SIZE, TILE_SIZE } from "~/components/constants"
 
 interface DumbPixiCityProps {
   city: City
@@ -11,25 +11,20 @@ interface DumbPixiCityProps {
 }
 
 export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
-  const app = useApp()
-
-  const mapWidth = app.renderer.options.width ?? 0
-
   const citySquareSize = 0.5
   const fill = "#d89a6c"
 
   // the width determines the size of the tile
-  const tileSize = mapWidth * TILE_PERCENT_SIZE
 
-  const citySize = tileSize * citySquareSize
+  const citySize = TILE_SIZE * citySquareSize
 
-  const tileXPosition = tile.x * tileSize
-  const tileYPosition = tile.y * tileSize
+  const tileXPosition = tile.x * TILE_SIZE
+  const tileYPosition = tile.y * TILE_SIZE
 
   const cityXPosition = tileXPosition + citySize / 2
   const cityYPosition = tileYPosition + citySize / 2
 
-  const fontSize = tileSize * FONT_PERCENT_SIZE
+  const fontSize = TILE_SIZE * FONT_PERCENT_SIZE
 
   const draw = useCallback(
     (g: PIXI.Graphics) => {
@@ -47,12 +42,9 @@ export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
       <Text
         text={city.name}
         x={tileXPosition}
-        y={tileYPosition + tileSize * 0.5 - fontSize / 2}
-        style={
-          new PIXI.TextStyle({
-            fontSize: fontSize,
-          })
-        }
+        y={tileYPosition + TILE_SIZE * 0.5 - fontSize / 2}
+        width={TILE_SIZE}
+        height={fontSize}
       />
     </>
   )

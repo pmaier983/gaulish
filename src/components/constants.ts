@@ -2,7 +2,7 @@ import { type NextRouter } from "next/router"
 
 export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
-export const TILE_PERCENT_SIZE = 0.05
+export const TILE_SIZE = 10
 
 export const FONT_PERCENT_SIZE = 0.2
 

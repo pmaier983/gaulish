@@ -1,6 +1,11 @@
 import type { Tile } from "schema"
 
-export const createMap = (width: number, height: number): Tile[] => {
+interface CreateMapOptions {
+  width: number
+  height: number
+}
+
+export const createMap = ({ width, height }: CreateMapOptions): Tile[] => {
   const tiles: Tile[] = []
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {

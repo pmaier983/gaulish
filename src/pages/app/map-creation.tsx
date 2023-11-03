@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic"
-import { DevNavBar } from "~/components/DevNavBar"
+import { DevNavBar } from "~/components/dev/DevNavBar"
 
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"

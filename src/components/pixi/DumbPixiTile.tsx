@@ -1,8 +1,8 @@
-import { Sprite, Text, useApp, type _ReactPixi } from "@pixi/react"
+import { Sprite, Text, type _ReactPixi } from "@pixi/react"
 import { type Tile } from "schema"
 import * as PIXI from "pixi.js"
 
-import { TILE_PERCENT_SIZE } from "~/components/constants"
+import { FONT_PERCENT_SIZE, TILE_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
 import { getTileImageString } from "~/utils"
 
@@ -16,32 +16,28 @@ export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
     isUserAdmin: state.isUserAdmin,
   }))
 
-  const app = useApp()
+  const texture = PIXI.Texture.from(getTileImageString(type_id))
 
-  const mapWidth = app.renderer.options.width ?? 0
-
-  const tileXPosition = mapWidth * x * TILE_PERCENT_SIZE
-  const tileYPosition = mapWidth * y * TILE_PERCENT_SIZE
-
-  const textSize = (mapWidth * TILE_PERCENT_SIZE) / 5
+  const tileXPosition = x * TILE_SIZE
+  const tileYPosition = y * TILE_SIZE
 
   return (
     <>
       <Sprite
         x={tileXPosition}
         y={tileYPosition}
-        width={mapWidth * TILE_PERCENT_SIZE}
-        height={mapWidth * TILE_PERCENT_SIZE}
-        image={getTileImageString(type_id)}
+        width={TILE_SIZE}
+        height={TILE_SIZE}
+        texture={texture}
         {...rest}
       />
       {isUserAdmin && (
         <Text
           text={`${x}:${y}`}
-          x={tileXPosition + textSize / 2}
-          y={tileYPosition + textSize / 2}
-          width={textSize}
-          height={textSize}
+          x={tileXPosition}
+          y={tileYPosition}
+          width={TILE_SIZE * FONT_PERCENT_SIZE}
+          height={TILE_SIZE * FONT_PERCENT_SIZE}
           style={
             new PIXI.TextStyle({
               fill: "#ffffff",
