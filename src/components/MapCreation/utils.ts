@@ -18,9 +18,11 @@ export const createMap = ({
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
       tiles.push({
-        type_id: hasRandomTypeId
-          ? Math.floor(Math.random() * COUNT_OF_TILE_TYPES)
-          : 0,
+        type: hasRandomTypeId
+          ? Object.values(TILE_TYPES).at(
+              Math.floor(Math.random() * COUNT_OF_TILE_TYPES),
+            ) ?? "EMPTY"
+          : "EMPTY",
         x: x,
         y: y,
         xyTileId: `${x}:${y}`,

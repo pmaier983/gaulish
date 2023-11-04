@@ -12,18 +12,18 @@ type DumbPixiTileProps = Tile & _ReactPixi.ISprite
 /**
  * A Dumb Pixi Tile Component that should lack any gamestate logic
  */
-export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
+export const DumbPixiTile = ({ x, y, type, ...rest }: DumbPixiTileProps) => {
   const [hasCoordinatesVisible, setCoordinatesVisibility] = useState(false)
   const { isUserAdmin } = useGlobalStore((state) => ({
     isUserAdmin: state.isUserAdmin,
   }))
 
-  const texture = PIXI.Texture.from(getTileImageString(type_id))
+  const texture = PIXI.Texture.from(getTileImageString(type))
 
   const tileXPosition = x * TILE_SIZE
   const tileYPosition = y * TILE_SIZE
 
-  if (type_id === 4 || type_id === 0) return null
+  if (type === "EMPTY" || type === "OCEAN") return null
 
   return (
     <>

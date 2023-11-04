@@ -10,7 +10,6 @@ import {
   timestamp,
   varchar,
   serial,
-  smallint,
   json,
   boolean,
 } from "drizzle-orm/mysql-core"
@@ -18,6 +17,7 @@ import { type AdapterAccount } from "next-auth/adapters"
 import {
   FAKE_INITIAL_SHIP_PATH_ID,
   type ShipType,
+  type TileType,
 } from "../src/components/constants"
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
@@ -197,7 +197,7 @@ export const tile = mysqlTable(
     xyTileId: varchar("xy_tile_id", { length: 191 }).primaryKey().notNull(),
     x: int("x").notNull(),
     y: int("y").notNull(),
-    type_id: smallint("type_id").notNull(),
+    type: varchar("ship_type", { length: 191 }).$type<TileType>().notNull(),
   },
   (tile) => ({
     xyIndex: uniqueIndex("xy_index").on(tile.x, tile.y),

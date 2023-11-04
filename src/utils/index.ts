@@ -3,7 +3,7 @@ import { type Path, type Npc, type City, type Cargo } from "schema"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { TILE_TYPE_ID_TO_TYPE } from "~/components/constants"
+import { type TileType } from "~/components/constants"
 import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
 import { DIRECTIONS } from "~/components/constants"
 
@@ -25,21 +25,8 @@ export const createArraySquare = <T>({
   return squareArray
 }
 
-export const getTileImageString = (typeId: number) => {
-  if (
-    typeId === 0 ||
-    typeId === 1 ||
-    typeId === 2 ||
-    typeId === 3 ||
-    typeId === 4
-  ) {
-    const TileType = TILE_TYPE_ID_TO_TYPE[typeId]
-    if (!TileType)
-      throw Error("Invalid Tile type_id passed into TILE_TYPE_ID_TO_TYPE")
-    return `/assets/tiles/${TileType.toLocaleLowerCase()}.webp`
-  } else {
-    throw new Error("Invalid Tile type_id passed into Tile")
-  }
+export const getTileImageString = (tileType: TileType) => {
+  return `/assets/tiles/${tileType.toLocaleLowerCase()}.webp`
 }
 
 export const getXYFromXYTileId = (xyTileId: string) => {

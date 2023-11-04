@@ -6,11 +6,7 @@ import { createMap } from "~/components/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { produce } from "immer"
 import type { Tile } from "schema"
-import {
-  TILE_TYPES,
-  type TileType,
-  TILE_TYPE_TO_TYPE_ID,
-} from "~/components/constants"
+import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Switch } from "~/components/Switch"
 
@@ -102,10 +98,10 @@ const MapCreation = () => {
       if (!currentTile) throw Error("Tile should never be undefined here!")
 
       // If the current tile should be changed, change and continue.
-      if (currentTile.type_id === startingTile.type_id) {
+      if (currentTile.type === startingTile.type) {
         mapObject[currentTileId] = {
           ...currentTile,
-          type_id: TILE_TYPE_TO_TYPE_ID[fillTileType],
+          type: fillTileType,
         }
         queue.push(
           `${x + 1}:${y}`,
@@ -144,7 +140,7 @@ const MapCreation = () => {
                         updateMapTile({
                           oldTile: tile,
                           newTile: {
-                            type_id: TILE_TYPE_TO_TYPE_ID[selectedTileType],
+                            type: selectedTileType,
                           },
                         })
                       }

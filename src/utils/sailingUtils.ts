@@ -15,7 +15,6 @@ import {
   FAKE_INITIAL_SHIP_PATH_ID,
   LOG_PAGE_SIZE,
   TILE_TYPES,
-  TILE_TYPE_ID_TO_TYPE,
 } from "~/components/constants"
 import { type DatabaseType } from "~/server/db"
 import { type ShipComposite } from "~/state/gamestateStore"
@@ -290,21 +289,16 @@ export const validateTileConflicts = async ({
         }`,
       )
 
-    const tileType = TILE_TYPE_ID_TO_TYPE[tile.type_id]
-
-    if (!tileType)
-      throw Error("invalid tileType passed into TILE_TYPE_TO_TYPE_ID")
-
     /**
      * Sailing over anything that is not ocean sinks the boat!
      * - Log the sinking event
      * - Add the event to the events list
      * - Update the ship to be sunk
      */
-    if (tileType !== TILE_TYPES.OCEAN) {
+    if (tile.type !== TILE_TYPES.OCEAN) {
       const logText = `Your ship ${
         userShip.name
-      } sank after sailing into a ${tileType.toLocaleLowerCase()}!`
+      } sank after sailing into a ${tile.type.toLocaleLowerCase()}!`
 
       await sinkShipEvent({
         db,
