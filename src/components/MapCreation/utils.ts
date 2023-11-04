@@ -31,3 +31,35 @@ export const createMap = ({
   }
   return tiles
 }
+
+interface CreateDevMapOptions {
+  width: number
+  height: number
+}
+
+export const createDevMap = ({
+  width,
+  height,
+}: CreateDevMapOptions): Tile[] => {
+  const tiles: Tile[] = []
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      if (x % 10 === 0 && y % 10 === 0) {
+        tiles.push({
+          type: "EMPTY",
+          x: x,
+          y: y,
+          xyTileId: `${x}:${y}`,
+        })
+      } else {
+        tiles.push({
+          type: "OCEAN",
+          x: x,
+          y: y,
+          xyTileId: `${x}:${y}`,
+        })
+      }
+    }
+  }
+  return tiles
+}

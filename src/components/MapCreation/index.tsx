@@ -2,13 +2,12 @@ import React, { useState } from "react"
 import dynamic from "next/dynamic"
 
 import { useElementSize } from "~/hooks/useElementSize"
-import { createMap } from "~/components/MapCreation/utils"
+import { createDevMap } from "~/components/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { produce } from "immer"
 import type { Tile } from "schema"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
-import { Switch } from "~/components/Switch"
 
 const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
   ssr: false,
@@ -19,6 +18,9 @@ const CLICK_TYPES = {
 } as const
 
 type ClickType = keyof typeof CLICK_TYPES
+
+const MAP_WIDTH = 100
+const MAP_HEIGHT = 100
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -33,13 +35,10 @@ const MapCreation = () => {
     TILE_TYPES.EMPTY,
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
-  const [isFloodFillActive, setFloodFillActiveState] = useState(false)
-  const [mapSize] = useState({ width: 100, height: 100 })
   const [mapArray, setMapArray] = useState(
-    createMap({
-      width: mapSize.width,
-      height: mapSize.height,
-      hasRandomTypeId: true,
+    createDevMap({
+      width: MAP_WIDTH,
+      height: MAP_HEIGHT,
     }),
   )
 
@@ -50,70 +49,43 @@ const MapCreation = () => {
     oldTile: Tile
     newTile: Partial<Tile>
   }) => {
-    const newMapArray = produce(mapArray, (draftMapArray) => {
-      const oldTileIndex = draftMapArray.findIndex(
-        (tile) => oldTile.xyTileId === tile.xyTileId,
-      )
+    const mapObject = mapArray.reduce<{ [xyTileId: string]: Tile }>(
+      (acc, tile) => {
+        acc[tile.xyTileId] = tile
+        return acc
+      },
+      {},
+    )
+
+    const newMapObject = produce(mapObject, (draftMapObject) => {
+      const oldTileIndex = mapObject[oldTile.xyTileId]
       if (!oldTileIndex) throw Error("Trying to update a non existent tile!")
-      draftMapArray[oldTileIndex] = { ...oldTile, ...newTile }
-      return draftMapArray
-    })
-    setMapArray(newMapArray)
-  }
+      // For all four directions
+      const directions: [number, number][] = [
+        [-1, 0],
+        [0, -1],
+        [1, 0],
+        [0, 1],
+      ]
 
-  const floodFillMap = ({
-    startingTile,
-    fillTileType,
-  }: {
-    startingTile: Tile
-    fillTileType: TileType
-  }) => {
-    const mapObject = mapArray.reduce<{ [key: string]: Tile }>((acc, tile) => {
-      acc[tile.xyTileId] = tile
-      return acc
-    }, {})
-
-    const queue = [startingTile.xyTileId]
-    const visited = new Set<string>(startingTile.xyTileId)
-
-    while (queue.length > 0) {
-      const currentTileId = queue.shift()
-
-      if (!currentTileId) throw Error("Queue should never be empty here!")
-
-      // Skip if we have already visited the tile add to visited if we have not
-      if (visited.has(currentTileId)) continue
-      visited.add(currentTileId)
-
-      // Skip if the tile does not exist (off the edges of the map)
-      if (!mapObject.hasOwnProperty(currentTileId)) continue
-
-      // get the currentTile
-      const [xRaw, yRaw] = currentTileId.split(":")
-      if (!xRaw || !yRaw)
-        throw Error("XYTileId did was not formatted properly!")
-      const x = parseInt(xRaw)
-      const y = parseInt(yRaw)
-      const currentTile = mapObject[`${x}:${y}`]
-      if (!currentTile) throw Error("Tile should never be undefined here!")
-
-      // If the current tile should be changed, change and continue.
-      if (currentTile.type === startingTile.type) {
-        mapObject[currentTileId] = {
-          ...currentTile,
-          type: fillTileType,
-        }
-        queue.push(
-          `${x + 1}:${y}`,
-          `${x - 1}:${y}`,
-          `${x}:${y + 1}`,
-          `${x}:${y - 1}`,
-        )
+      // When adding everything but ocean, make all nearby ocean tiles empty
+      if (newTile.type !== TILE_TYPES.OCEAN) {
+        directions.forEach(([x, y]) => {
+          const neighborTile = mapObject[`${oldTile.x + x}:${oldTile.y + y}`]
+          if (!neighborTile) return
+          if (neighborTile.type !== TILE_TYPES.OCEAN) return
+          draftMapObject[neighborTile.xyTileId] = {
+            ...neighborTile,
+            type: "EMPTY",
+          }
+        })
       }
-    }
 
-    const newMapArray = Object.values(mapObject)
-    setMapArray(newMapArray)
+      draftMapObject[oldTileIndex.xyTileId] = { ...oldTile, ...newTile }
+      return draftMapObject
+    })
+
+    setMapArray(Object.values(newMapObject))
   }
 
   return (
@@ -122,28 +94,19 @@ const MapCreation = () => {
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           {mapArray?.map((tile) => (
             <React.Fragment key={tile.xyTileId}>
-              {/* <DumbPixiTileBorder {...tile} /> */}
               <DumbPixiTile
                 key={tile.xyTileId}
                 {...tile}
                 interactive
                 onclick={() => {
-                  console.log("hello")
                   switch (clickType) {
                     case "TILE": {
-                      if (isFloodFillActive) {
-                        floodFillMap({
-                          startingTile: tile,
-                          fillTileType: selectedTileType,
-                        })
-                      } else {
-                        updateMapTile({
-                          oldTile: tile,
-                          newTile: {
-                            type: selectedTileType,
-                          },
-                        })
-                      }
+                      updateMapTile({
+                        oldTile: tile,
+                        newTile: {
+                          type: selectedTileType,
+                        },
+                      })
                     }
                   }
                 }}
@@ -159,15 +122,6 @@ const MapCreation = () => {
             clickType === "TILE" ? "outline outline-red-600" : ""
           }`}
         >
-          <div className="flex flex-row gap-3 p-2">
-            Flood Fill
-            <Switch
-              checked={isFloodFillActive}
-              onCheckedChange={() =>
-                setFloodFillActiveState(!isFloodFillActive)
-              }
-            />
-          </div>
           {Object.values(TILE_TYPES).map((tileType) => (
             <button
               className={`flex w-fit items-center gap-2 p-1 ${
