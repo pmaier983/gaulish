@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import dynamic from "next/dynamic"
 
 import { useElementSize } from "~/hooks/useElementSize"
@@ -11,6 +11,7 @@ import {
   TILE_TYPES,
   type TileType,
   TILE_TYPE_TO_TYPE_ID,
+  TILE_SIZE,
 } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Switch } from "~/components/Switch"
@@ -39,8 +40,13 @@ const MapCreation = () => {
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
   const [isFloodFillActive, setFloodFillActiveState] = useState(false)
-  const [mapSize, setMapSize] = useState(30)
-  const [mapArray, setMapArray] = useState(createMap(mapSize, mapSize))
+  const [mapSize, setMapSize] = useState(50)
+  const [mapArray, setMapArray] = useState(
+    createMap({
+      width: mapSize,
+      height: mapSize,
+    }),
+  )
 
   const updateMapTile = ({
     oldTile,
@@ -120,13 +126,14 @@ const MapCreation = () => {
       <div className="w-2/3" ref={sizeRef}>
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           {mapArray?.map((tile) => (
-            <>
+            <React.Fragment key={tile.xyTileId}>
               <DumbPixiTileBorder {...tile} />
               <DumbPixiTile
                 key={tile.xyTileId}
                 {...tile}
                 interactive
                 onclick={() => {
+                  console.log("hello")
                   switch (clickType) {
                     case "TILE": {
                       if (isFloodFillActive) {
@@ -146,7 +153,7 @@ const MapCreation = () => {
                   }
                 }}
               />
-            </>
+            </React.Fragment>
           ))}
         </MapWrapper>
       </div>
@@ -163,7 +170,12 @@ const MapCreation = () => {
           <button
             className="rounded border border-red-800 bg-red-500 p-1"
             onClick={() => {
-              setMapArray(createMap(mapSize, mapSize))
+              setMapArray(
+                createMap({
+                  width: mapSize,
+                  height: mapSize,
+                }),
+              )
             }}
           >
             Set Map Size
