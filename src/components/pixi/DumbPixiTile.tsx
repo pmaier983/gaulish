@@ -5,6 +5,7 @@ import * as PIXI from "pixi.js"
 import { FONT_PERCENT_SIZE, TILE_SIZE } from "~/components/constants"
 import { useGlobalStore } from "~/state/globalStore"
 import { getTileImageString } from "~/utils"
+import { useState } from "react"
 
 type DumbPixiTileProps = Tile & _ReactPixi.ISprite
 
@@ -12,6 +13,7 @@ type DumbPixiTileProps = Tile & _ReactPixi.ISprite
  * A Dumb Pixi Tile Component that should lack any gamestate logic
  */
 export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
+  const [hasCoordinatesVisible, setCoordinatesVisibility] = useState(false)
   const { isUserAdmin } = useGlobalStore((state) => ({
     isUserAdmin: state.isUserAdmin,
   }))
@@ -21,6 +23,8 @@ export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
   const tileXPosition = x * TILE_SIZE
   const tileYPosition = y * TILE_SIZE
 
+  if (type_id === 4 || type_id === 0) return null
+
   return (
     <>
       <Sprite
@@ -29,9 +33,15 @@ export const DumbPixiTile = ({ x, y, type_id, ...rest }: DumbPixiTileProps) => {
         width={TILE_SIZE}
         height={TILE_SIZE}
         texture={texture}
+        mouseover={() => {
+          setCoordinatesVisibility(true)
+        }}
+        mouseout={() => {
+          setCoordinatesVisibility(false)
+        }}
         {...rest}
       />
-      {isUserAdmin && (
+      {hasCoordinatesVisible && isUserAdmin && (
         <Text
           text={`${x}:${y}`}
           x={tileXPosition}

@@ -4,14 +4,12 @@ import dynamic from "next/dynamic"
 import { useElementSize } from "~/hooks/useElementSize"
 import { createMap } from "~/components/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
-import { DumbPixiTileBorder } from "~/components/pixi/DumbPixiTileBorder"
 import { produce } from "immer"
 import type { Tile } from "schema"
 import {
   TILE_TYPES,
   type TileType,
   TILE_TYPE_TO_TYPE_ID,
-  TILE_SIZE,
 } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
 import { Switch } from "~/components/Switch"
@@ -40,11 +38,12 @@ const MapCreation = () => {
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
   const [isFloodFillActive, setFloodFillActiveState] = useState(false)
-  const [mapSize, setMapSize] = useState(50)
+  const [mapSize] = useState({ width: 100, height: 100 })
   const [mapArray, setMapArray] = useState(
     createMap({
-      width: mapSize,
-      height: mapSize,
+      width: mapSize.width,
+      height: mapSize.height,
+      hasRandomTypeId: true,
     }),
   )
 
@@ -127,7 +126,7 @@ const MapCreation = () => {
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           {mapArray?.map((tile) => (
             <React.Fragment key={tile.xyTileId}>
-              <DumbPixiTileBorder {...tile} />
+              {/* <DumbPixiTileBorder {...tile} /> */}
               <DumbPixiTile
                 key={tile.xyTileId}
                 {...tile}
@@ -159,28 +158,6 @@ const MapCreation = () => {
       </div>
       {/* TODO: convert this into a form */}
       <div className="flex flex-col gap-2 p-5">
-        <div className="flex flex-row items-center gap-3">
-          Map size:
-          <input
-            className="border border-black bg-gray-300"
-            type="number"
-            value={mapSize}
-            onChange={(e) => setMapSize(parseInt(e.target.value))}
-          />
-          <button
-            className="rounded border border-red-800 bg-red-500 p-1"
-            onClick={() => {
-              setMapArray(
-                createMap({
-                  width: mapSize,
-                  height: mapSize,
-                }),
-              )
-            }}
-          >
-            Set Map Size
-          </button>
-        </div>
         <div
           className={`relative flex flex-col p-2 ${
             clickType === "TILE" ? "outline outline-red-600" : ""

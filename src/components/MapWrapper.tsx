@@ -31,7 +31,7 @@ const MapWrapper = ({
     <PixiStage
       width={mapWidth}
       height={mapHeight}
-      options={{ backgroundColor: 0xaaaaaa }}
+      options={{ backgroundColor: 0x006994 }}
       className={className}
     >
       <PixiViewport width={mapWidth} height={mapHeight}>

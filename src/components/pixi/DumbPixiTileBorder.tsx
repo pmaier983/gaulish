@@ -17,7 +17,7 @@ export const DumbPixiTileBorder = ({ x, y, ...rest }: DumbPixiTileProps) => {
   const draw = useCallback(
     (g: PIXI.Graphics) => {
       g.clear()
-      g.lineStyle(TILE_SIZE * 0.1, "#000", 1) // Choose the border color
+      g.lineStyle(TILE_SIZE * 0.4, "#000", 1) // Choose the border color
       g.drawRect(tileXPosition, tileYPosition, TILE_SIZE, TILE_SIZE)
       g.endFill()
     },
