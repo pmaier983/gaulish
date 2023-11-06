@@ -1,5 +1,5 @@
 import type { Tile } from "schema"
-import { TILE_TYPES } from "~/components/constants"
+import { TILE_TYPES, type TileType } from "~/components/constants"
 
 const COUNT_OF_TILE_TYPES = Object.keys(TILE_TYPES).length
 
@@ -32,15 +32,15 @@ export const createMap = ({
   return tiles
 }
 
-interface CreateDevMapOptions {
+interface CreateCreationMapInputs {
   width: number
   height: number
 }
 
-export const createDevMap = ({
+export const createCreationMap = ({
   width,
   height,
-}: CreateDevMapOptions): Tile[] => {
+}: CreateCreationMapInputs): Tile[] => {
   const tiles: Tile[] = []
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
@@ -61,5 +61,41 @@ export const createDevMap = ({
       }
     }
   }
+  return tiles
+}
+
+interface CreateDevMapInputs {
+  width: number
+  height: number
+}
+
+const RANDOM_TILES: TileType[] = ["GRASSLAND", "MOUNTAIN", "FOREST"]
+
+export const createDevMap = ({ width, height }: CreateDevMapInputs) => {
+  const tiles: Tile[] = []
+
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      // Check if the x and y coordinates are within the 'X' boundaries
+      if ([0, 1, -1].includes(x - y) || (x + y) % width <= 2) {
+        tiles.push({
+          type: "OCEAN",
+          x: x,
+          y: y,
+          xyTileId: `${x}:${y}`,
+        })
+      } else {
+        tiles.push({
+          type:
+            RANDOM_TILES[Math.floor(Math.random() * RANDOM_TILES.length)] ??
+            "EMPTY",
+          x: x,
+          y: y,
+          xyTileId: `${x}:${y}`,
+        })
+      }
+    }
+  }
+
   return tiles
 }

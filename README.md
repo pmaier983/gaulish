@@ -21,6 +21,8 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - Standard Icons are 24px x 24px
 - Ship Type Icons are 32px x 32px (To give more room for detail)
 
+- Soft Cap of 16 384 spites (https://github.com/pixijs/pixijs/issues/91)
+
 ## ------------- TODO List -------------
 
 ### High Priority
@@ -55,8 +57,8 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
-- [ ] type_id -> Type string!
 - [ ] Implement proper rendering using SpriteSheets & Texture
+- [ ] Setup a proper Pixi loading screen
 
 ### MVP Requirements
 
