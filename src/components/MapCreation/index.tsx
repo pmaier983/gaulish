@@ -1,13 +1,14 @@
 import React, { useState } from "react"
 import dynamic from "next/dynamic"
+import { produce } from "immer"
 
 import { useElementSize } from "~/hooks/useElementSize"
 import { createDevMap } from "~/components/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
-import { produce } from "immer"
-import type { Tile } from "schema"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
+import type { Tile } from "schema"
+import { DevTileTest } from "~/components/dev/DevTileTest"
 
 const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
   ssr: false,
@@ -30,6 +31,7 @@ const MAP_HEIGHT = 100
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreation = () => {
+  return <DevTileTest />
   const { sizeRef, size } = useElementSize()
   const [selectedTileType, setSelectedTileType] = useState<TileType>(
     TILE_TYPES.EMPTY,
