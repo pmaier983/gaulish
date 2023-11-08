@@ -12,7 +12,8 @@ import { TILE_SIZE } from "~/components/constants"
 const MAP_WIDTH = 200
 const MAP_HEIGHT = 200
 
-// TODO: find a way to wait until all the textures are loaded before rendering
+// TODO: Use Pixi.assets (https://pixijs.download/dev/docs/PIXI.Assets.html) to load the images
+// TODO: Setup SpriteSheets (https://pixijs.download/dev/docs/PIXI.Spritesheet.html)
 // TODO: find a way to show a loading spinner or something
 // TODO: separate the map into chunks (and set the chunks to cullable)
 // TODO: set Cull Area to a rectangle
