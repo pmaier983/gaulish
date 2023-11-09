@@ -15,7 +15,7 @@ const MAP_HEIGHT = 200
 // TODO: Use Pixi.assets (https://pixijs.download/dev/docs/PIXI.Assets.html) to load the images
 // TODO: Setup SpriteSheets (https://pixijs.download/dev/docs/PIXI.Spritesheet.html)
 // TODO: find a way to show a loading spinner or something
-// TODO: separate the map into chunks (and set the chunks to cullable)
+// TODO: separate the map into chunks (and set the chunks to cull-able)
 // TODO: set Cull Area to a rectangle
 
 // This file is to figure out how Texture & Sprite-sheets work in Pixi.js

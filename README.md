@@ -57,10 +57,9 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
-- [ ] Implement proper rendering using SpriteSheets & Texture
-- [ ] Setup a proper Pixi loading screen
 
 ### MVP Requirements
 
 - [ ] Map Creator
+- [ ] Ability to handle sizable tile map (10k+)
 - [ ] Initial User Setup
