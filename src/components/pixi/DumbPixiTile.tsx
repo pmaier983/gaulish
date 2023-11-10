@@ -23,9 +23,6 @@ export const DumbPixiTile = ({ x, y, type, ...rest }: DumbPixiTileProps) => {
   const tileXPosition = x * TILE_SIZE
   const tileYPosition = y * TILE_SIZE
 
-  // Avoid the cost of rendering all the Ocean tiles
-  if (type === "OCEAN") return null
-
   return (
     <>
       <Sprite

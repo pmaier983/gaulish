@@ -18,6 +18,17 @@ const MAP_HEIGHT = 200
 // TODO: separate the map into chunks (and set the chunks to cull-able)
 // TODO: set Cull Area to a rectangle
 
+/**
+ * How to Render The Map
+ *
+ * 1. Layer 1 (The Stable Tiles)
+ * - Render all the tiles in blocks of (X) - I'm guessing 4-16 tiles?
+ * - Render with an opacity of 0 if the tile is not in the visible set
+ *
+ * 2. Layer 2 (Everything Else)
+ * - Not sure how much this matters
+ */
+
 // This file is to figure out how Texture & Sprite-sheets work in Pixi.js
 export const DevTileTest = () => {
   const [cacheAsBitmap, setCacheAsBitmap] = useState(false)
