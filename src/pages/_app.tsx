@@ -15,6 +15,7 @@ import { api } from "~/utils/api"
 
 import "~/styles/globals.css"
 import { ABLY_CLIENT_ID } from "~/utils"
+import { useSpritesheet } from "~/hooks/useSpritesheet"
 
 // This is a variable font https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide
 const Font = Alegreya({ subsets: ["latin"], variable: "--default-font" })
@@ -58,19 +59,24 @@ const MyApp: AppType<{ session: Session | null }> = ({
   Component,
   pageProps: { session },
   ...rest
-}) => (
-  <>
-    <SessionProvider session={session}>
-      <div className={`flex h-full flex-col ${Font.className}`}>
-        <AuthWrapper>
-          <Toaster position="bottom-center" />
-          <Component {...rest} />
-        </AuthWrapper>
-      </div>
-    </SessionProvider>
-    <Analytics />
-  </>
-)
+}) => {
+  // Start loading spritesheet data ASAP!
+  useSpritesheet()
+
+  return (
+    <>
+      <SessionProvider session={session}>
+        <div className={`flex h-full flex-col ${Font.className}`}>
+          <AuthWrapper>
+            <Toaster position="bottom-center" />
+            <Component {...rest} />
+          </AuthWrapper>
+        </div>
+      </SessionProvider>
+      <Analytics />
+    </>
+  )
+}
 
 // eslint-disable-next-line import/no-default-export
 export default api.withTRPC(MyApp)

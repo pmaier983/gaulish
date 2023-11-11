@@ -2,7 +2,7 @@ import { type NextRouter } from "next/router"
 
 export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
-export const TILE_SIZE = 10
+export const TILE_SIZE = 32
 
 export const FONT_PERCENT_SIZE = 0.2
 
@@ -25,6 +25,14 @@ export const TILE_TYPES = {
   GRASSLAND: "GRASSLAND",
   MOUNTAIN: "MOUNTAIN",
   OCEAN: "OCEAN",
+} as const
+
+export const TILE_TYPES_TO_LOWERCASE = {
+  EMPTY: "empty",
+  FOREST: "forest",
+  GRASSLAND: "grassland",
+  MOUNTAIN: "mountain",
+  OCEAN: "ocean",
 } as const
 
 export type TileType = keyof typeof TILE_TYPES
