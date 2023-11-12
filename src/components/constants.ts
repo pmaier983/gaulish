@@ -4,6 +4,8 @@ export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
 
 export const TILE_SIZE = 32
 
+export const TILE_GROUP_SIZE = 32
+
 export const FONT_PERCENT_SIZE = 0.2
 
 export const LOG_PAGE_SIZE = 10

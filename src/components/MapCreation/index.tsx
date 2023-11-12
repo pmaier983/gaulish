@@ -8,9 +8,12 @@ import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
 import type { Tile } from "schema"
-import { DevTileTest } from "~/components/dev/DevTileTest"
 
 const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
+  ssr: false,
+})
+
+const DevTileTest = dynamic(() => import("~/components/dev/DevTileTest"), {
   ssr: false,
 })
 

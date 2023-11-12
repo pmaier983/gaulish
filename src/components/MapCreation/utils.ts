@@ -99,3 +99,31 @@ export const createDevMap = ({ width, height }: CreateDevMapInputs) => {
 
   return tiles
 }
+
+interface GetTileGroupsInputs {
+  tiles: Tile[]
+  tileGroupSize: number
+}
+
+export const getTileGroups = ({
+  tiles,
+  tileGroupSize,
+}: GetTileGroupsInputs): Tile[][] =>
+  tiles
+    .reduce<Tile[][][]>((acc, cur) => {
+      const tileGroupX = Math.floor(cur.x / tileGroupSize)
+      const tileGroupY = Math.floor(cur.y / tileGroupSize)
+
+      if (!acc[tileGroupX]) {
+        acc[tileGroupX] = []
+      }
+
+      if (!acc[tileGroupX]?.[tileGroupY]) {
+        acc[tileGroupX]![tileGroupY] = []
+      }
+
+      acc[tileGroupX]![tileGroupY]!.push(cur)
+
+      return acc
+    }, [])
+    .flat()
