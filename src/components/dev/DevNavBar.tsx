@@ -20,11 +20,14 @@ export const DevNavBar = () => {
             (currentNavBarVisibility) => !currentNavBarVisibility,
           )
         }
-        className="rounded-sm bg-emerald-400 px-3"
+        className="rounded-sm bg-gray-400 px-3"
       >
         Hide
       </button>
-      <Link href="/app/dev" className="rounded-sm bg-slate-400 px-3">
+      <Link href="/app" className="rounded-sm bg-emerald-400 px-3">
+        App
+      </Link>
+      <Link href="/app/dev" className="rounded-sm bg-red-400 px-3">
         Dev
       </Link>
       <Link href="/app/map-creation" className="rounded-sm bg-amber-400 px-3">
