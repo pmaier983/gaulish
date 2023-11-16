@@ -1,5 +1,8 @@
 import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
+import { shallow } from "zustand/shallow"
+import { produce } from "immer"
+import equal from "fast-deep-equal"
 
 import type { Path, Tile, City, Ship } from "schema"
 import { OPPOSITE_DIRECTIONS, type Direction } from "~/components/constants"
@@ -12,8 +15,6 @@ import {
   uniqueBy,
 } from "~/utils"
 import { type RouterOutputs } from "~/utils/api"
-import { shallow } from "zustand/shallow"
-import { produce } from "immer"
 
 export type ShipComposite = RouterOutputs["ships"]["getUsersShips"][0]
 
@@ -35,7 +36,7 @@ export interface SelectedShipPath {
   isLastTileInPath: boolean
 }
 
-export interface VisibilityObject {
+export interface VisibleTilesObject {
   [xyTileId: string]: boolean
 }
 
@@ -72,7 +73,7 @@ export interface GamestateStore {
   selectedShipPathArray: Path["pathArray"]
   selectedShipPathObject: SelectedShipPathObject
 
-  visibleTilesObject: VisibilityObject
+  visibleTilesObject: VisibleTilesObject
 
   mapArray: Tile[]
   knownTilesObject: KnownTilesObject
@@ -213,6 +214,9 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         })
       })
 
+      // Update nothing if the new map object is the same as the old one
+      if (equal(newMapObject, get().mapObject)) return
+
       set({ mapObject: newMapObject })
     },
 
@@ -269,13 +273,16 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       ]
 
       const newVisibleTilesObject =
-        deduplicatedVisibleXYTileIds.reduce<VisibilityObject>(
+        deduplicatedVisibleXYTileIds.reduce<VisibleTilesObject>(
           (acc, xyTileId) => {
             acc[xyTileId] = true
             return acc
           },
           {},
         )
+
+      // Update nothing if the new visible tiles object is the same as the old one
+      if (equal(newVisibleTilesObject, get().visibleTilesObject)) return
 
       set({ visibleTilesObject: newVisibleTilesObject })
     },
@@ -302,6 +309,10 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         },
         {},
       )
+
+      // Update nothing if the new known tiles object is the same as the old one
+      if (equal(newKnownTilesObject, get().knownTilesObject)) return
+
       return set({ knownTilesObject: newKnownTilesObject })
     },
 

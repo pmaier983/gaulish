@@ -1,13 +1,23 @@
 import * as PIXI from "pixi.js"
-
-import MapWrapper from "~/components/MapWrapper"
-import { useElementSize } from "~/hooks/useElementSize"
-import { createDevMap, getTileGroups } from "~/components/MapCreation/utils"
+import dynamic from "next/dynamic"
+import { useAtom } from "jotai"
 import { Container } from "@pixi/react"
+
+import { useElementSize } from "~/hooks/useElementSize"
+import { createDevMap, getTileGroups } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_GROUP_SIZE, TILE_SIZE } from "~/components/constants"
-import { useAtom } from "jotai"
 import { spritesheetStateAtom } from "~/state/atoms"
+
+const MapWrapper = dynamic(
+  () =>
+    import("~/components/map/MapWrapper").then(
+      (allExports) => allExports.MapWrapper_DO_NOT_USE_DIRECTLY,
+    ),
+  {
+    ssr: false,
+  },
+)
 
 const MAP_WIDTH = 125
 const MAP_HEIGHT = 125

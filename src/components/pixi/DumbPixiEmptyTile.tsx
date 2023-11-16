@@ -33,5 +33,6 @@ export const DumbPixiEmptyTile = ({
     },
     [fill, tileXPosition, tileYPosition],
   )
+
   return <Graphics draw={draw} {...rest} />
 }

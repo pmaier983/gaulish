@@ -2,16 +2,13 @@ import React, { useState } from "react"
 import dynamic from "next/dynamic"
 import { produce } from "immer"
 
+import type { Tile } from "schema"
 import { useElementSize } from "~/hooks/useElementSize"
-import { createDevMap } from "~/components/MapCreation/utils"
+import { createDevMap } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
-import type { Tile } from "schema"
-
-const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
-  ssr: false,
-})
+import { MapWrapper } from "~/components/map/MapWrapper"
 
 const DevTileTest = dynamic(() => import("~/components/dev/DevTileTest"), {
   ssr: false,

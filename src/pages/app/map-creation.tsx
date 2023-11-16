@@ -4,7 +4,7 @@ import { DevNavBar } from "~/components/dev/DevNavBar"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"
 
-const MapCreation = dynamic(() => import("~/components/MapCreation"), {
+const MapCreation = dynamic(() => import("~/components/map/MapCreation"), {
   ssr: false,
 })
 

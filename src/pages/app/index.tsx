@@ -1,43 +1,32 @@
-import dynamic from "next/dynamic"
 import * as Dialog from "@radix-ui/react-dialog"
-
-import { useElementSize } from "~/hooks/useElementSize"
 
 import styles from "./index.module.css"
 import { useGamestate } from "~/hooks/useGamestate"
-import { useGamestateStore } from "~/state/gamestateStore"
 import { Leaderboard } from "~/components/Leaderboard"
 import { Sidebar } from "~/components/Sidebar"
 import { useGlobalStore } from "~/state/globalStore"
-import { ProfilePicture } from "~/components/ProfilePicture"
-import { MapFooter } from "~/components/MapFooter"
-import { DevNavBar } from "~/components/dev/DevNavBar"
 import { Footer } from "~/components/Footer"
 import { CityDialog } from "~/components/dialogs/CityDialog"
 import { useCityDialogStore } from "~/state/cityDialogStore"
-import { MapPixiTile } from "~/components/MapPixiTile"
+import dynamic from "next/dynamic"
 
-const MapWrapper = dynamic(() => import("~/components/MapWrapper"), {
-  ssr: false,
-})
+export const GameMap = dynamic(
+  () =>
+    import("~/components/map/GameMap").then(
+      (allExports) => allExports.GameMap_DO_NOT_USE_DIRECTLY,
+    ),
+  {
+    ssr: false,
+  },
+)
 
 const App = () => {
-  const { sizeRef, size } = useElementSize()
-  const { mapArray, selectedShip } = useGamestateStore((state) => ({
-    mapArray: state.mapArray,
-    selectedShip: state.selectedShip,
-  }))
-  const {
-    isLeaderboardDisabled,
-    isSidebarDisabled,
-    isChatDisabled,
-    isMapDisabled,
-  } = useGlobalStore((state) => ({
-    isLeaderboardDisabled: state.isLeaderboardDisabled,
-    isSidebarDisabled: state.isSidebarDisabled,
-    isChatDisabled: state.isChatDisabled,
-    isMapDisabled: state.isMapDisabled,
-  }))
+  const { isLeaderboardDisabled, isSidebarDisabled, isChatDisabled } =
+    useGlobalStore((state) => ({
+      isLeaderboardDisabled: state.isLeaderboardDisabled,
+      isSidebarDisabled: state.isSidebarDisabled,
+      isChatDisabled: state.isChatDisabled,
+    }))
 
   const { isOpen, toggleOpenState } = useCityDialogStore((state) => ({
     isOpen: state.isOpen,
@@ -56,22 +45,7 @@ const App = () => {
         {isSidebarDisabled && <div className={styles.isDisabledOverlay} />}
         <Sidebar />
       </div>
-      <div className={styles.main} ref={sizeRef}>
-        {isMapDisabled && <div className={styles.isDisabledOverlay} />}
-        <MapFooter />
-        <DevNavBar />
-        <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
-        <MapWrapper
-          mapWidth={size.width}
-          mapHeight={size.height}
-          mapArray={mapArray}
-          className={selectedShip ? "border-8 border-red-500" : ""}
-        >
-          {mapArray?.map((tile) => (
-            <MapPixiTile key={tile.xyTileId} {...tile} />
-          ))}
-        </MapWrapper>
-      </div>
+      <GameMap className={styles.main} />
       <div className={styles.footer}>
         {isChatDisabled && <div className={styles.isDisabledOverlay} />}
         <Footer />
