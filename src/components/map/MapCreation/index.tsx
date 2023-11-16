@@ -8,11 +8,20 @@ import { createDevMap } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
-import { MapWrapper } from "~/components/map/MapWrapper"
 
 const DevTileTest = dynamic(() => import("~/components/dev/DevTileTest"), {
   ssr: false,
 })
+
+const MapWrapper = dynamic(
+  () =>
+    import("~/components/map/MapWrapper").then(
+      (allExports) => allExports.MapWrapper_DO_NOT_USE_DIRECTLY,
+    ),
+  {
+    ssr: false,
+  },
+)
 
 const CLICK_TYPES = {
   TILE: "TILE",
