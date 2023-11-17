@@ -75,14 +75,12 @@ export const GameMap_DO_NOT_USE_DIRECTLY = ({ className }: MapProps) => {
         mapHeight={size.height}
         className={selectedShip ? "border-8 border-red-500" : ""}
       >
-        <>
-          <MapGroupedPixiTileBase
-            mapArray={mapArray}
-            knownTilesObject={knownTilesObject}
-            visibleTilesObject={visibleTilesObject}
-          />
-          <MapPixiOverTiles />
-        </>
+        <MapGroupedPixiTileBase
+          mapArray={mapArray}
+          knownTilesObject={knownTilesObject}
+          visibleTilesObject={visibleTilesObject}
+        />
+        <MapPixiOverTiles />
       </MapWrapper>
     </div>
   )
