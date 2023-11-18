@@ -24,9 +24,5 @@ export const DumbPixiTileBorder = ({ x, y, ...rest }: DumbPixiTileProps) => {
     [tileXPosition, tileYPosition],
   )
 
-  return (
-    <>
-      <Graphics draw={draw} {...rest} />
-    </>
-  )
+  return <Graphics draw={draw} {...rest} />
 }

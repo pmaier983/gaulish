@@ -10,6 +10,7 @@ import { ProfilePicture } from "~/components/ProfilePicture"
 import { spritesheetStateAtom } from "~/state/atoms"
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { MapPixiOverTiles } from "~/components/map/MapPixiOverTiles"
+import { MapPixiOverlays } from "~/components/map/MapPixiOverlays"
 
 const MapWrapper = dynamic(
   () =>
@@ -75,10 +76,11 @@ export const GameMap_DO_NOT_USE_DIRECTLY = ({ className }: MapProps) => {
         mapHeight={size.height}
         className={selectedShip ? "border-8 border-red-500" : ""}
       >
-        <MapGroupedPixiTileBase
+        <MapGroupedPixiTileBase mapArray={mapArray} />
+        <MapPixiOverlays
           mapArray={mapArray}
-          knownTilesObject={knownTilesObject}
           visibleTilesObject={visibleTilesObject}
+          knownTilesObject={knownTilesObject}
         />
         <MapPixiOverTiles />
       </MapWrapper>
