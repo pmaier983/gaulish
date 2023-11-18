@@ -5,17 +5,10 @@ import { memo } from "react"
 import type { Tile } from "schema"
 import { TILE_GROUP_SIZE, TILE_SIZE } from "~/components/constants"
 import { getTileGroups } from "~/components/map/MapCreation/utils"
-import { DumbPixiOverlay } from "~/components/pixi/DumbPixiOverlay"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
-import type {
-  KnownTilesObject,
-  VisibleTilesObject,
-} from "~/state/gamestateStore"
 
 interface MapGroupedPixiTileBaseProps {
   mapArray: Tile[]
-  visibleTilesObject: VisibleTilesObject
-  knownTilesObject: KnownTilesObject
 }
 
 let count = 0
@@ -30,11 +23,7 @@ let count = 0
  */
 // TODO: why is the interactive (onclick) of DumbPixiTile not working for the whole map here?
 export const MapGroupedPixiTileBase = memo(
-  ({
-    mapArray,
-    visibleTilesObject,
-    knownTilesObject,
-  }: MapGroupedPixiTileBaseProps) => {
+  ({ mapArray }: MapGroupedPixiTileBaseProps) => {
     // The tiles are grouped into square groups
     const groupedTiles = getTileGroups({
       tiles: mapArray,
@@ -77,38 +66,6 @@ export const MapGroupedPixiTileBase = memo(
                   return (
                     <DumbPixiTile key={`baseTile-${tile.xyTileId}`} {...tile} />
                   )
-                })}
-              </Container>
-              <Container
-                key={`overlayTileContainer-${groupX}:${groupY}`}
-                cullArea={
-                  new PIXI.Rectangle(
-                    groupX * TILE_SIZE, // x
-                    groupY * TILE_SIZE, // y
-                    TILE_SIZE, // width
-                    TILE_SIZE, // height
-                  )
-                }
-              >
-                {tileGroup.map((tile) => {
-                  // if its not a known tile render a full overlay
-                  if (!knownTilesObject.hasOwnProperty(tile.xyTileId))
-                    return (
-                      <DumbPixiOverlay
-                        key={`hiddenTile-${tile.xyTileId}`}
-                        tile={tile}
-                        opacity={1}
-                      />
-                    )
-                  // if its not a visible tile render semi-transparent overlay
-                  if (!visibleTilesObject.hasOwnProperty(tile.xyTileId))
-                    return (
-                      <DumbPixiOverlay
-                        key={`knownTile-${tile.xyTileId}`}
-                        tile={tile}
-                        opacity={0.5}
-                      />
-                    )
                 })}
               </Container>
             </>
