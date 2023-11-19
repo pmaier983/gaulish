@@ -44,7 +44,7 @@ export const createCreationMap = ({
   const tiles: Tile[] = []
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
-      if (x % 10 === 0 && y % 10 === 0) {
+      if (x % 20 === 0 && y % 20 === 0) {
         tiles.push({
           type: "MOUNTAIN",
           x: x,
