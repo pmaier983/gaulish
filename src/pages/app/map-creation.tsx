@@ -1,8 +1,19 @@
+import type { GetServerSidePropsContext } from "next"
+import { getServerSession } from "next-auth"
 import dynamic from "next/dynamic"
-import { DevNavBar } from "~/components/dev/DevNavBar"
 
+import { DevNavBar } from "~/components/dev/DevNavBar"
 import { FullPageRedirect } from "~/components/FullPageRedirect"
+import { authOptions } from "~/server/auth"
 import { useGlobalStore } from "~/state/globalStore"
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      session: await getServerSession(context.req, context.res, authOptions),
+    },
+  }
+}
 
 const MapCreation = dynamic(() => import("~/components/map/MapCreation"), {
   ssr: false,

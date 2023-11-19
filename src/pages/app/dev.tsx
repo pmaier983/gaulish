@@ -5,6 +5,17 @@ import { FullPageRedirect } from "~/components/FullPageRedirect"
 import { useGlobalStore } from "~/state/globalStore"
 import { api } from "~/utils/api"
 import { ImageGeneration } from "~/components/ImageGeneration"
+import type { GetServerSidePropsContext } from "next"
+import { authOptions } from "~/server/auth"
+import { getServerSession } from "next-auth"
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      session: await getServerSession(context.req, context.res, authOptions),
+    },
+  }
+}
 
 const Dev = () => {
   const { data } = useSession()

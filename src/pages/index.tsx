@@ -1,9 +1,19 @@
-import { type NextPage } from "next"
+import { type GetServerSidePropsContext, type NextPage } from "next"
 import Head from "next/head"
 import Link from "next/link"
 import { signIn, useSession } from "next-auth/react"
 
 import styles from "./index.module.css"
+import { getServerSession } from "next-auth"
+import { authOptions } from "~/server/auth"
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      session: await getServerSession(context.req, context.res, authOptions),
+    },
+  }
+}
 
 // Setup i18n
 // Setup Fonts

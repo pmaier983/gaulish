@@ -46,7 +46,7 @@ const AuthWrapper = ({ children }: { children: React.ReactNode }) => {
   }, [isUserAdmin, setIsUserAdmin])
 
   if (
-    status === "unauthenticated" &&
+    status !== "authenticated" &&
     !AUTH_FREE_PAGES.includes(router.pathname)
   ) {
     return <FullPageRedirect />

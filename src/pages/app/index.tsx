@@ -1,4 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog"
+import dynamic from "next/dynamic"
+import { getServerSession } from "next-auth"
+import type { GetServerSidePropsContext } from "next"
 
 import styles from "./index.module.css"
 import { useGamestate } from "~/hooks/useGamestate"
@@ -8,7 +11,15 @@ import { useGlobalStore } from "~/state/globalStore"
 import { Footer } from "~/components/Footer"
 import { CityDialog } from "~/components/dialogs/CityDialog"
 import { useCityDialogStore } from "~/state/cityDialogStore"
-import dynamic from "next/dynamic"
+import { authOptions } from "~/server/auth"
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  return {
+    props: {
+      session: await getServerSession(context.req, context.res, authOptions),
+    },
+  }
+}
 
 export const GameMap = dynamic(
   () =>
