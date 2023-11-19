@@ -8,10 +8,7 @@ import {
   DEFAULT_MAP_CREATION_SIZE,
   type MapCreationMode,
 } from "~/components/map/MapCreation/constants"
-import {
-  createCreationMap,
-  createDevMap,
-} from "~/components/map/MapCreation/utils"
+import { createCreationMap } from "~/components/map/MapCreation/utils"
 import { useLocalStorage } from "~/hooks/useLocalStorage"
 
 /**
@@ -51,7 +48,7 @@ const MapCreationWrapper = () => {
     setMapArray(newDevMap)
   }
 
-  const baseProps = {
+  const commonProps = {
     setMapCreationMode: setMapCreationMode,
     mapArray,
     setMapArray,
@@ -59,12 +56,43 @@ const MapCreationWrapper = () => {
     setMapSize,
   }
 
+  const renderMapCreationToolbar = () => (
+    <div className="flex flex-col">
+      <div className="h-8">Padding To Account for Dev Nav Bar... Fix this?</div>
+      <div className="p-2">
+        <button
+          className="rounded-sm bg-red-400 px-3"
+          onClick={() => {
+            setMapArray(
+              createCreationMap({
+                width: mapSize,
+                height: mapSize,
+              }),
+            )
+          }}
+        >
+          Reset Map
+        </button>
+      </div>
+    </div>
+  )
+
   switch (mapCreationMode) {
     case MAP_CREATION_MODES.MAP_CREATION: {
-      return <MapCreation {...baseProps} />
+      return (
+        <>
+          {renderMapCreationToolbar()}
+          <MapCreation {...commonProps} />
+        </>
+      )
     }
     case MAP_CREATION_MODES.MAP_TOPPINGS: {
-      return <MapToppings {...baseProps} />
+      return (
+        <>
+          {renderMapCreationToolbar()}
+          <MapToppings {...commonProps} />
+        </>
+      )
     }
   }
 }

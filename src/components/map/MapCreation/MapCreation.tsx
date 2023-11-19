@@ -88,7 +88,7 @@ export const MapCreation = ({
       <div className="w-2/3" ref={sizeRef}>
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           {mapArray
-            .filter((tile) => tile.type !== "EMPTY")
+            .filter((tile) => tile.type !== "OCEAN")
             ?.map((tile) => (
               <React.Fragment key={tile.xyTileId}>
                 <DumbPixiTile

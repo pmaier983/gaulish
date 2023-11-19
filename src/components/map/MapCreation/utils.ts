@@ -46,14 +46,14 @@ export const createCreationMap = ({
     for (let y = 0; y < height; y++) {
       if (x % 20 === 0 && y % 20 === 0) {
         tiles.push({
-          type: "MOUNTAIN",
+          type: "GRASSLAND",
           x: x,
           y: y,
           xyTileId: `${x}:${y}`,
         })
       } else {
         tiles.push({
-          type: "EMPTY",
+          type: "OCEAN",
           x: x,
           y: y,
           xyTileId: `${x}:${y}`,
