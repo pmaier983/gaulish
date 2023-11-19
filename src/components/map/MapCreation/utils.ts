@@ -55,7 +55,7 @@ export const createCreationMap = ({
         continue
       }
       // If a single tile in space (20 cells is the space...)
-      if (x % 20 === 0 && y % 20 === 0) {
+      if (x % 10 === 0 && y % 10 === 0) {
         tiles.push({
           type: "GRASSLAND",
           x: x,

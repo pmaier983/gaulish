@@ -48,51 +48,29 @@ const MapCreationWrapper = () => {
     setMapArray(newDevMap)
   }
 
+  const mapObject = mapArray.reduce<{ [xyTileId: string]: Tile }>(
+    (acc, tile) => {
+      acc[tile.xyTileId] = tile
+      return acc
+    },
+    {},
+  )
+
   const commonProps = {
     setMapCreationMode: setMapCreationMode,
     mapArray,
     setMapArray,
     mapSize,
     setMapSize,
+    mapObject,
   }
-
-  const renderMapCreationToolbar = () => (
-    <div className="flex flex-col">
-      <div className="h-8">Padding To Account for Dev Nav Bar... Fix this?</div>
-      <div className="p-2">
-        <button
-          className="rounded-sm bg-red-400 px-3"
-          onClick={() => {
-            setMapArray(
-              createCreationMap({
-                width: mapSize,
-                height: mapSize,
-              }),
-            )
-          }}
-        >
-          Reset Map
-        </button>
-      </div>
-    </div>
-  )
 
   switch (mapCreationMode) {
     case MAP_CREATION_MODES.MAP_CREATION: {
-      return (
-        <>
-          {renderMapCreationToolbar()}
-          <MapCreation {...commonProps} />
-        </>
-      )
+      return <MapCreation {...commonProps} />
     }
     case MAP_CREATION_MODES.MAP_TOPPINGS: {
-      return (
-        <>
-          {renderMapCreationToolbar()}
-          <MapToppings {...commonProps} />
-        </>
-      )
+      return <MapToppings {...commonProps} />
     }
   }
 }

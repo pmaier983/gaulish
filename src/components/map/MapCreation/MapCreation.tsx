@@ -3,8 +3,13 @@ import dynamic from "next/dynamic"
 import React, { useState } from "react"
 import type { Tile } from "schema"
 import { ImageIcon } from "~/components/ImageIcon"
-import { TILE_TYPES, type TileType } from "~/components/constants"
+import {
+  CARDINAL_DIRECTIONS_ARRAY,
+  TILE_TYPES,
+  type TileType,
+} from "~/components/constants"
 import type { SetMapCreationMode } from "~/components/map/MapCreation/constants"
+import { createCreationMap } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { useElementSize } from "~/hooks/useElementSize"
 
@@ -21,6 +26,7 @@ const MapWrapper = dynamic(
 interface MapCreationProps {
   className?: string
   mapArray: Tile[]
+  mapObject: { [xyTileId: string]: Tile }
   setMapCreationMode: SetMapCreationMode
   setMapArray: (newMapArray: Tile[]) => void
   mapSize: number
@@ -30,7 +36,9 @@ interface MapCreationProps {
 export const MapCreation = ({
   className,
   mapArray,
+  mapObject,
   setMapArray,
+  mapSize,
 }: MapCreationProps) => {
   const { sizeRef, size } = useElementSize()
   const [selectedTileType, setSelectedTileType] = useState<TileType>("EMPTY")
@@ -42,14 +50,6 @@ export const MapCreation = ({
     oldTile: Tile
     newTile: Partial<Tile>
   }) => {
-    const mapObject = mapArray.reduce<{ [xyTileId: string]: Tile }>(
-      (acc, tile) => {
-        acc[tile.xyTileId] = tile
-        return acc
-      },
-      {},
-    )
-
     const newMapObject = produce(mapObject, (draftMapObject) => {
       const oldTileIndex = mapObject[oldTile.xyTileId]
       if (!oldTileIndex) throw Error("Trying to update a non existent tile!")
@@ -103,6 +103,16 @@ export const MapCreation = ({
                       },
                     })
                   }}
+                  onmouseover={(event) => {
+                    if (event.shiftKey) {
+                      updateMapTile({
+                        oldTile: tile,
+                        newTile: {
+                          type: selectedTileType,
+                        },
+                      })
+                    }
+                  }}
                 />
               </React.Fragment>
             ))}
@@ -127,6 +137,87 @@ export const MapCreation = ({
               {tileType}
             </button>
           ))}
+        </div>
+        <div className="flex flex-row gap-2 p-2">
+          <button
+            className="rounded-sm bg-red-400 px-3"
+            onClick={() => {
+              setMapArray(
+                createCreationMap({
+                  width: mapSize,
+                  height: mapSize,
+                }),
+              )
+            }}
+          >
+            Reset Map
+          </button>
+          <button
+            className="rounded-sm bg-blue-400 px-3"
+            onClick={() => {
+              setMapArray(
+                mapArray.map((tile) =>
+                  tile.type === "EMPTY"
+                    ? {
+                        ...tile,
+                        type: "OCEAN",
+                      }
+                    : tile,
+                ),
+              )
+            }}
+          >
+            Empty to Ocean
+          </button>
+          <button
+            className="rounded-sm border border-black px-3"
+            onClick={() => {
+              setMapArray(
+                mapArray.map((tile) =>
+                  tile.type === "OCEAN"
+                    ? {
+                        ...tile,
+                        type: "EMPTY",
+                      }
+                    : tile,
+                ),
+              )
+            }}
+          >
+            Ocean to Empty
+          </button>
+          <button
+            className="rounded-sm bg-green-400 px-3"
+            onClick={() => {
+              setMapArray(
+                mapArray.map((tile) => {
+                  if (tile.type === "OCEAN") {
+                    const isNearIsland = CARDINAL_DIRECTIONS_ARRAY.reduce(
+                      (acc, [x, y]) => {
+                        if (
+                          !["OCEAN", "EMPTY"].includes(
+                            mapObject[`${tile.x + x}:${tile.y + y}`]!.type,
+                          )
+                        ) {
+                          return true
+                        }
+                        return acc
+                      },
+                      false,
+                    )
+                    if (!isNearIsland) return tile
+                    return {
+                      ...tile,
+                      type: "EMPTY",
+                    }
+                  }
+                  return tile
+                }),
+              )
+            }}
+          >
+            Outline Islands
+          </button>
         </div>
       </div>
     </div>

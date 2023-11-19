@@ -4,6 +4,7 @@ import type { SetMapCreationMode } from "~/components/map/MapCreation/constants"
 interface MapToppingsProps {
   className?: string
   mapArray: Tile[]
+  mapObject: { [xyTileId: string]: Tile }
   setMapCreationMode: SetMapCreationMode
   setMapArray: (newMapArray: Tile[]) => void
   mapSize: number

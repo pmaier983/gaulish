@@ -1,8 +1,8 @@
 import { Sprite, type _ReactPixi } from "@pixi/react"
-import { type Tile } from "schema"
-
-import { TILE_SIZE, TILE_TYPES_TO_LOWERCASE } from "~/components/constants"
 import { useAtom } from "jotai"
+
+import { type Tile } from "schema"
+import { TILE_SIZE, TILE_TYPES_TO_LOWERCASE } from "~/components/constants"
 import { spritesheetAtom } from "~/state/atoms"
 
 type DumbPixiTileProps = Tile & _ReactPixi.ISprite
