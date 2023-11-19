@@ -124,10 +124,10 @@ export const useGamestate = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       calculateMapObject()
-      calculateVisibleTilesObject(data?.user.id ?? "")
+      calculateVisibleTilesObject(data?.user?.id ?? "")
     }, 100)
     return () => clearInterval(intervalId)
-  }, [calculateMapObject, calculateVisibleTilesObject, data?.user.id])
+  }, [calculateMapObject, calculateVisibleTilesObject, data?.user?.id])
 
   // TODO: add command Z functionality
   const shipNavigationHandler = useCallback(

@@ -3,6 +3,8 @@ import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
+  type Awaitable,
+  type Session,
 } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 import { env } from "~/env.mjs"
@@ -67,6 +69,13 @@ export const authOptions: NextAuthOptions = {
       }
     },
   },
+  callbacks: {
+    // This adds the actual session to the next-auth `session` object
+    session: (session) => {
+      // TODO: expires is not present here, how to fix this?
+      return (session ?? null) as unknown as Awaitable<Session | DefaultSession>
+    },
+  },
 }
 
 /**
@@ -77,6 +86,4 @@ export const authOptions: NextAuthOptions = {
 export const getServerAuthSession = (ctx: {
   req: GetServerSidePropsContext["req"]
   res: GetServerSidePropsContext["res"]
-}) => {
-  return getServerSession(ctx.req, ctx.res, authOptions)
-}
+}) => getServerSession(ctx.req, ctx.res, authOptions)
