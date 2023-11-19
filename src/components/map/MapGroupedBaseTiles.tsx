@@ -44,31 +44,29 @@ export const MapGroupedPixiTileBase = memo(
           const groupY = Math.floor(firstTileOfGroup.y / TILE_GROUP_SIZE)
 
           return (
-            <>
-              <Container
-                key={`baseTileContainer-${groupX}:${groupY}`}
-                cacheAsBitmap={true}
-                cullArea={
-                  new PIXI.Rectangle(
-                    groupX * TILE_SIZE, // x
-                    groupY * TILE_SIZE, // y
-                    TILE_SIZE, // width
-                    TILE_SIZE, // height
-                  )
+            <Container
+              key={`baseTileContainer-${groupX}:${groupY}`}
+              cacheAsBitmap={true}
+              cullArea={
+                new PIXI.Rectangle(
+                  groupX * TILE_SIZE, // x
+                  groupY * TILE_SIZE, // y
+                  TILE_SIZE, // width
+                  TILE_SIZE, // height
+                )
+              }
+            >
+              {tileGroup.map((tile) => {
+                count++
+                if (count % 100 === 0) {
+                  console.log("Render Base Group Tile", count)
                 }
-              >
-                {tileGroup.map((tile) => {
-                  count++
-                  if (count % 100 === 0) {
-                    console.log("Render Base Group Tile", count)
-                  }
 
-                  return (
-                    <DumbPixiTile key={`baseTile-${tile.xyTileId}`} {...tile} />
-                  )
-                })}
-              </Container>
-            </>
+                return (
+                  <DumbPixiTile key={`baseTile-${tile.xyTileId}`} {...tile} />
+                )
+              })}
+            </Container>
           )
         })}
       </>

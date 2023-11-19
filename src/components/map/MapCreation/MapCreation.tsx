@@ -8,9 +8,9 @@ import {
   TILE_TYPES,
   type TileType,
 } from "~/components/constants"
+import { InteractiveGroupedMap } from "~/components/map/MapCreation/InteractiveGroupedMap"
 import type { SetMapCreationMode } from "~/components/map/MapCreation/constants"
 import { createCreationMap } from "~/components/map/MapCreation/utils"
-import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { useElementSize } from "~/hooks/useElementSize"
 
 const MapWrapper = dynamic(
@@ -43,79 +43,16 @@ export const MapCreation = ({
   const { sizeRef, size } = useElementSize()
   const [selectedTileType, setSelectedTileType] = useState<TileType>("EMPTY")
 
-  const updateMapTile = ({
-    oldTile,
-    newTile,
-  }: {
-    oldTile: Tile
-    newTile: Partial<Tile>
-  }) => {
-    const newMapObject = produce(mapObject, (draftMapObject) => {
-      const oldTileIndex = mapObject[oldTile.xyTileId]
-      if (!oldTileIndex) throw Error("Trying to update a non existent tile!")
-      // For all four directions
-      const directions: [number, number][] = [
-        [-1, 0],
-        [0, -1],
-        [1, 0],
-        [0, 1],
-      ]
-
-      // When adding everything but ocean, make all nearby ocean tiles empty
-      if (newTile.type !== "OCEAN") {
-        directions.forEach(([x, y]) => {
-          const neighborTile = mapObject[`${oldTile.x + x}:${oldTile.y + y}`]
-          if (!neighborTile) return
-          if (neighborTile.type !== "OCEAN") return
-          draftMapObject[neighborTile.xyTileId] = {
-            ...neighborTile,
-            type: "EMPTY",
-          }
-        })
-      }
-
-      draftMapObject[oldTileIndex.xyTileId] = { ...oldTile, ...newTile }
-      return draftMapObject
-    })
-
-    const newMapArray = Object.values(newMapObject)
-
-    setMapArray(newMapArray)
-  }
-
   return (
     <div className={`${className} flex h-full flex-row p-10`}>
       <div className="w-2/3" ref={sizeRef}>
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
-          {mapArray
-            .filter((tile) => tile.type !== "OCEAN")
-            ?.map((tile) => (
-              <React.Fragment key={tile.xyTileId}>
-                <DumbPixiTile
-                  key={tile.xyTileId}
-                  {...tile}
-                  interactive
-                  onclick={() => {
-                    updateMapTile({
-                      oldTile: tile,
-                      newTile: {
-                        type: selectedTileType,
-                      },
-                    })
-                  }}
-                  onmouseover={(event) => {
-                    if (event.shiftKey) {
-                      updateMapTile({
-                        oldTile: tile,
-                        newTile: {
-                          type: selectedTileType,
-                        },
-                      })
-                    }
-                  }}
-                />
-              </React.Fragment>
-            ))}
+          <InteractiveGroupedMap
+            mapArray={mapArray}
+            setMapArray={setMapArray}
+            mapObject={mapObject}
+            selectedTileType={selectedTileType}
+          />
         </MapWrapper>
       </div>
       {/* TODO: convert this into a form */}

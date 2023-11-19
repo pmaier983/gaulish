@@ -1,3 +1,4 @@
+import { useAtom } from "jotai"
 import React, { useState } from "react"
 
 import type { Tile } from "schema"
@@ -10,6 +11,7 @@ import {
 } from "~/components/map/MapCreation/constants"
 import { createCreationMap } from "~/components/map/MapCreation/utils"
 import { useLocalStorage } from "~/hooks/useLocalStorage"
+import { spritesheetStateAtom } from "~/state/atoms"
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -63,6 +65,12 @@ const MapCreationWrapper = () => {
     mapSize,
     setMapSize,
     mapObject,
+  }
+
+  const [{ isSpritesheetLoaded }] = useAtom(spritesheetStateAtom)
+
+  if (!isSpritesheetLoaded) {
+    return "Loading Spritesheet..."
   }
 
   switch (mapCreationMode) {
