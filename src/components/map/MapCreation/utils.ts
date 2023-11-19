@@ -44,6 +44,17 @@ export const createCreationMap = ({
   const tiles: Tile[] = []
   for (let x = 0; x < width; x++) {
     for (let y = 0; y < height; y++) {
+      // If on an edge
+      if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
+        tiles.push({
+          type: "MOUNTAIN",
+          x: x,
+          y: y,
+          xyTileId: `${x}:${y}`,
+        })
+        continue
+      }
+      // If a single tile in space (20 cells is the space...)
       if (x % 20 === 0 && y % 20 === 0) {
         tiles.push({
           type: "GRASSLAND",
