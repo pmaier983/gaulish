@@ -44,6 +44,7 @@ export const GameMap_DO_NOT_USE_DIRECTLY = ({ className }: MapProps) => {
   const { isMapDisabled } = useGlobalStore((state) => ({
     isMapDisabled: state.isMapDisabled,
   }))
+
   const { selectedShip, mapArray, visibleTilesObject, knownTilesObject } =
     useGamestateStore((state) => ({
       mapArray: state.mapArray,

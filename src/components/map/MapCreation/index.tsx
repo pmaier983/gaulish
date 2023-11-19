@@ -4,14 +4,10 @@ import { produce } from "immer"
 
 import type { Tile } from "schema"
 import { useElementSize } from "~/hooks/useElementSize"
-import { createDevMap } from "~/components/map/MapCreation/utils"
+import { createCreationMap } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
-
-const DevTileTest = dynamic(() => import("~/components/dev/DevTileTest"), {
-  ssr: false,
-})
 
 const MapWrapper = dynamic(
   () =>
@@ -29,8 +25,8 @@ const CLICK_TYPES = {
 
 type ClickType = keyof typeof CLICK_TYPES
 
-const MAP_WIDTH = 100
-const MAP_HEIGHT = 100
+const MAP_WIDTH = 300
+const MAP_HEIGHT = 300
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -40,14 +36,13 @@ const MAP_HEIGHT = 100
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreation = () => {
-  return <DevTileTest />
   const { sizeRef, size } = useElementSize()
   const [selectedTileType, setSelectedTileType] = useState<TileType>(
     TILE_TYPES.EMPTY,
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
   const [mapArray, setMapArray] = useState(
-    createDevMap({
+    createCreationMap({
       width: MAP_WIDTH,
       height: MAP_HEIGHT,
     }),
@@ -103,27 +98,29 @@ const MapCreation = () => {
     <div className="flex h-full flex-row p-10">
       <div className="w-2/3" ref={sizeRef}>
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
-          {mapArray?.map((tile) => (
-            <React.Fragment key={tile.xyTileId}>
-              <DumbPixiTile
-                key={tile.xyTileId}
-                {...tile}
-                interactive
-                onclick={() => {
-                  switch (clickType) {
-                    case "TILE": {
-                      updateMapTile({
-                        oldTile: tile,
-                        newTile: {
-                          type: selectedTileType,
-                        },
-                      })
+          {mapArray
+            .filter((tile) => tile.type !== "EMPTY")
+            ?.map((tile) => (
+              <React.Fragment key={tile.xyTileId}>
+                <DumbPixiTile
+                  key={tile.xyTileId}
+                  {...tile}
+                  interactive
+                  onclick={() => {
+                    switch (clickType) {
+                      case "TILE": {
+                        updateMapTile({
+                          oldTile: tile,
+                          newTile: {
+                            type: selectedTileType,
+                          },
+                        })
+                      }
                     }
-                  }
-                }}
-              />
-            </React.Fragment>
-          ))}
+                  }}
+                />
+              </React.Fragment>
+            ))}
         </MapWrapper>
       </div>
       {/* TODO: convert this into a form */}
