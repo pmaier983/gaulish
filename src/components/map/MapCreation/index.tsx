@@ -8,6 +8,7 @@ import { createCreationMap } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 import { TILE_TYPES, type TileType } from "~/components/constants"
 import { ImageIcon } from "~/components/ImageIcon"
+import { useLocalStorage } from "~/hooks/useLocalStorage"
 
 const MapWrapper = dynamic(
   () =>
@@ -41,11 +42,19 @@ const MapCreation = () => {
     TILE_TYPES.EMPTY,
   )
   const [clickType] = useState<ClickType>(CLICK_TYPES.TILE)
+
+  const [storedMapArray, setStoredMapArray] = useLocalStorage(
+    "storedMapArray",
+    [] as Tile[],
+  )
+
   const [mapArray, setMapArray] = useState(
-    createCreationMap({
-      width: MAP_WIDTH,
-      height: MAP_HEIGHT,
-    }),
+    storedMapArray.length === 0
+      ? createCreationMap({
+          width: MAP_WIDTH,
+          height: MAP_HEIGHT,
+        })
+      : storedMapArray,
   )
 
   const updateMapTile = ({
@@ -91,7 +100,10 @@ const MapCreation = () => {
       return draftMapObject
     })
 
-    setMapArray(Object.values(newMapObject))
+    const newMapArray = Object.values(newMapObject)
+
+    setStoredMapArray(newMapArray)
+    setMapArray(newMapArray)
   }
 
   return (
