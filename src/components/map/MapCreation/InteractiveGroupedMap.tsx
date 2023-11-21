@@ -1,8 +1,8 @@
-import { Container } from "@pixi/react"
 import { produce } from "immer"
+import { Fragment, useState } from "react"
 
 import type { Tile } from "schema"
-import type { TileType } from "~/components/constants"
+import { TILE_SIZE, type TileType } from "~/components/constants"
 import { DEFAULT_MAP_CREATION_GROUPED_TILES_SIZE } from "~/components/map/MapCreation/constants"
 import { getTileGroups } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
@@ -20,6 +20,8 @@ export const InteractiveGroupedMap = ({
   setMapArray,
   selectedTileType,
 }: InteractiveGroupedMapProps) => {
+  const [focusedGroupedIndex, setFocusedGroupedIndex] = useState(0)
+
   const groupedTiles = getTileGroups({
     tiles: mapArray,
     tileGroupSize: DEFAULT_MAP_CREATION_GROUPED_TILES_SIZE,
@@ -35,26 +37,6 @@ export const InteractiveGroupedMap = ({
     const newMapObject = produce(mapObject, (draftMapObject) => {
       const oldTileIndex = mapObject[oldTile.xyTileId]
       if (!oldTileIndex) throw Error("Trying to update a non existent tile!")
-      // For all four directions
-      const directions: [number, number][] = [
-        [-1, 0],
-        [0, -1],
-        [1, 0],
-        [0, 1],
-      ]
-
-      // When adding everything but ocean, make all nearby ocean tiles empty
-      if (newTile.type !== "OCEAN") {
-        directions.forEach(([x, y]) => {
-          const neighborTile = mapObject[`${oldTile.x + x}:${oldTile.y + y}`]
-          if (!neighborTile) return
-          if (neighborTile.type !== "OCEAN") return
-          draftMapObject[neighborTile.xyTileId] = {
-            ...neighborTile,
-            type: "EMPTY",
-          }
-        })
-      }
 
       draftMapObject[oldTileIndex.xyTileId] = { ...oldTile, ...newTile }
       return draftMapObject
@@ -67,7 +49,7 @@ export const InteractiveGroupedMap = ({
 
   return (
     <>
-      {groupedTiles.map((tileGroup) => {
+      {groupedTiles.map((tileGroup, groupIndex) => {
         const firstTileOfGroup = tileGroup.at(0)
 
         if (!firstTileOfGroup)
@@ -81,16 +63,32 @@ export const InteractiveGroupedMap = ({
           firstTileOfGroup.y / DEFAULT_MAP_CREATION_GROUPED_TILES_SIZE,
         )
 
+        const isFocusedGroup = focusedGroupedIndex === groupIndex
+
+        if (!isFocusedGroup) {
+          return (
+            <DumbPixiTile
+              key={`groupedTileOverlay-${groupX}:${groupY}`}
+              x={groupX}
+              y={groupY}
+              size={DEFAULT_MAP_CREATION_GROUPED_TILES_SIZE * TILE_SIZE}
+              type={"EMPTY"}
+              interactive
+              onclick={() => {
+                setFocusedGroupedIndex(groupIndex)
+              }}
+            />
+          )
+        }
+
         return (
-          <Container
-            key={`groupedTiles-${groupX}:${groupY}`}
-            cacheAsBitmap={true}
-          >
+          <Fragment key={`tiles-${groupX}:${groupY}`}>
             {tileGroup.map((tile) => {
               return (
                 <DumbPixiTile
                   key={`tile-${tile.xyTileId}`}
                   {...tile}
+                  interactive
                   onclick={() => {
                     updateMapTile({
                       oldTile: tile,
@@ -112,7 +110,7 @@ export const InteractiveGroupedMap = ({
                 />
               )
             })}
-          </Container>
+          </Fragment>
         )
       })}
     </>
