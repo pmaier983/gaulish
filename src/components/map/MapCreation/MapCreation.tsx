@@ -19,6 +19,7 @@ interface ColorData {
 
 export const MapCreation = ({ className }: MapCreationProps) => {
   const [imageSrc, setImageSrc] = useState<string>()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [colorsArray, setColorsArray] = useState<ColorData[]>()
 
   const extractPixelData = (imageSrc: string) => {
