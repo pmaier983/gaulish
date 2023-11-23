@@ -1,35 +1,63 @@
 {
   "frames": {
-    "empty.webp": {
+    "desert.webp": {
       "frame": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "forest.webp": {
+    "empty.webp": {
       "frame": { "x": 32, "y": 0, "w": 32, "h": 32 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "grassland.webp": {
+    "forest.webp": {
       "frame": { "x": 64, "y": 0, "w": 32, "h": 32 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "mountain.webp": {
+    "grassland.webp": {
       "frame": { "x": 96, "y": 0, "w": 32, "h": 32 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
       "sourceSize": { "w": 32, "h": 32 }
     },
-    "ocean.webp": {
+    "gravel.webp": {
       "frame": { "x": 128, "y": 0, "w": 32, "h": 32 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "lava.webp": {
+      "frame": { "x": 160, "y": 0, "w": 32, "h": 32 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "mountain.webp": {
+      "frame": { "x": 192, "y": 0, "w": 32, "h": 32 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "ocean.webp": {
+      "frame": { "x": 224, "y": 0, "w": 32, "h": 32 },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+      "sourceSize": { "w": 32, "h": 32 }
+    },
+    "snow.webp": {
+      "frame": { "x": 256, "y": 0, "w": 32, "h": 32 },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
@@ -41,8 +69,8 @@
     "version": "1.1",
     "image": "spritesheet.png",
     "format": "RGBA8888",
-    "size": { "w": 160, "h": 32 },
+    "size": { "w": 288, "h": 32 },
     "scale": "1",
-    "smartupdate": "$TexturePacker:SmartUpdate:2e9c2084eee518588b58c4a87f076234:5b62ac9641e29c534e24fbcaad93aead:94325d7fdc5fe8052418dee14da1edb6$"
+    "smartupdate": "$TexturePacker:SmartUpdate:ecf401c2f9cf9ac6e35293f080c963a5:80fbd0ab358aee7548ebbd53f9661a66:729adc6043343cfda41c447ce8f464d6$"
   }
 }

@@ -132,6 +132,26 @@ export const IMAGE_ICONS_TO_DETAILS: {
     alt: "An ocean tile",
     defaultSize: 32,
   },
+  [IMAGE_ICONS.DESERT]: {
+    path: "/assets/tiles/desert.webp",
+    alt: "A desert tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.GRAVEL]: {
+    path: "/assets/tiles/gravel.webp",
+    alt: "A gravel tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.LAVA]: {
+    path: "/assets/tiles/lava.webp",
+    alt: "A lava tile",
+    defaultSize: 32,
+  },
+  [IMAGE_ICONS.SNOW]: {
+    path: "/assets/tiles/snow.webp",
+    alt: "A snow tile",
+    defaultSize: 32,
+  },
 }
 
 interface ImageIconProps

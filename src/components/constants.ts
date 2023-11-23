@@ -27,6 +27,10 @@ export const TILE_TYPES = {
   GRASSLAND: "GRASSLAND",
   MOUNTAIN: "MOUNTAIN",
   OCEAN: "OCEAN",
+  DESERT: "DESERT",
+  GRAVEL: "GRAVEL",
+  SNOW: "SNOW",
+  LAVA: "LAVA",
 } as const
 
 export const TILE_TYPES_TO_LOWERCASE = {
@@ -35,6 +39,10 @@ export const TILE_TYPES_TO_LOWERCASE = {
   GRASSLAND: "grassland",
   MOUNTAIN: "mountain",
   OCEAN: "ocean",
+  DESERT: "desert",
+  GRAVEL: "gravel",
+  SNOW: "snow",
+  LAVA: "lava",
 } as const
 
 export type TileType = keyof typeof TILE_TYPES
