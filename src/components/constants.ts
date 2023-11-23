@@ -34,16 +34,29 @@ export const TILE_TYPES = {
 } as const
 
 export const TILE_TYPES_TO_LOWERCASE = {
-  EMPTY: "empty",
-  FOREST: "forest",
-  GRASSLAND: "grassland",
-  MOUNTAIN: "mountain",
-  OCEAN: "ocean",
-  DESERT: "desert",
-  GRAVEL: "gravel",
-  SNOW: "snow",
-  LAVA: "lava",
-} as const
+  [TILE_TYPES.EMPTY]: "empty",
+  [TILE_TYPES.FOREST]: "forest",
+  [TILE_TYPES.GRASSLAND]: "grassland",
+  [TILE_TYPES.MOUNTAIN]: "mountain",
+  [TILE_TYPES.OCEAN]: "ocean",
+  [TILE_TYPES.DESERT]: "desert",
+  [TILE_TYPES.GRAVEL]: "gravel",
+  [TILE_TYPES.SNOW]: "snow",
+  [TILE_TYPES.LAVA]: "lava",
+} as const satisfies { [key in TileType]: string }
+
+// Colors from this pallet: https://www.pixilart.com/palettes/tiles-advances-79993
+export const TILE_TYPES_TO_COLOR = {
+  [TILE_TYPES.EMPTY]: { r: 255, g: 255, b: 255 }, // #FFFFFF
+  [TILE_TYPES.FOREST]: { r: 36, g: 97, b: 21 }, // #246115
+  [TILE_TYPES.GRASSLAND]: { r: 99, g: 176, b: 52 }, // #63B034
+  [TILE_TYPES.MOUNTAIN]: { r: 122, g: 122, b: 122 }, // #7A7A7A
+  [TILE_TYPES.OCEAN]: { r: 46, g: 65, b: 240 }, // #2E41F0
+  [TILE_TYPES.DESERT]: { r: 217, g: 209, b: 159 }, // #D9D19F
+  [TILE_TYPES.GRAVEL]: { r: 87, g: 85, b: 83 }, // #575553
+  [TILE_TYPES.SNOW]: { r: 236, g: 247, b: 246 }, // #ECF7F6
+  [TILE_TYPES.LAVA]: { r: 203, g: 86, b: 16 }, // #CB5610
+} as const satisfies { [key in TileType]: { r: number; g: number; b: number } }
 
 export type TileType = keyof typeof TILE_TYPES
 
