@@ -45,8 +45,14 @@ export const TILE_TYPES_TO_LOWERCASE = {
   [TILE_TYPES.LAVA]: "lava",
 } as const satisfies { [key in TileType]: string }
 
+export interface ColorData {
+  r: number
+  g: number
+  b: number
+}
+
 // Colors from this pallet: https://www.pixilart.com/palettes/tiles-advances-79993
-export const TILE_TYPES_TO_COLOR = {
+export const TILE_TYPES_TO_RGB = {
   [TILE_TYPES.EMPTY]: { r: 255, g: 255, b: 255 }, // #FFFFFF
   [TILE_TYPES.FOREST]: { r: 36, g: 97, b: 21 }, // #246115
   [TILE_TYPES.GRASSLAND]: { r: 99, g: 176, b: 52 }, // #63B034
@@ -56,7 +62,17 @@ export const TILE_TYPES_TO_COLOR = {
   [TILE_TYPES.GRAVEL]: { r: 87, g: 85, b: 83 }, // #575553
   [TILE_TYPES.SNOW]: { r: 236, g: 247, b: 246 }, // #ECF7F6
   [TILE_TYPES.LAVA]: { r: 203, g: 86, b: 16 }, // #CB5610
-} as const satisfies { [key in TileType]: { r: number; g: number; b: number } }
+} as const satisfies { [key in TileType]: ColorData }
+
+export const RGB_TO_TILE_TYPE = (
+  Object.entries(TILE_TYPES_TO_RGB) as [TileType, ColorData][]
+).reduce<{
+  [key: string]: TileType
+}>((acc, [tileType, rgbColor]) => {
+  const key = Object.values(rgbColor).join(":")
+  acc[key] = tileType
+  return acc
+}, {})
 
 export type TileType = keyof typeof TILE_TYPES
 

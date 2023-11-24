@@ -24,14 +24,13 @@ const MapCreationWrapper = () => {
   const [mapSize, setLocalMapSize] = useState(DEFAULT_MAP_CREATION_SIZE)
   const [storedMapArray, setStoredMapArray] = useLocalStorage(
     "storedMapCreationArray",
-    createCreationMap({
-      width: mapSize,
-      height: mapSize,
-    }),
+    [] as Tile[],
   )
   const [mapArray, setLocalMapArray] = useState(storedMapArray)
   const [mapCreationMode, setMapCreationMode] = useState<MapCreationMode>(
-    MAP_CREATION_MODES.MAP_CREATION,
+    mapArray.length > 0
+      ? MAP_CREATION_MODES.MAP_TOPPINGS
+      : MAP_CREATION_MODES.MAP_CREATION,
   )
 
   const setMapArray = (newMapArray: Tile[]) => {
@@ -59,12 +58,31 @@ const MapCreationWrapper = () => {
   )
 
   const commonProps = {
-    setMapCreationMode: setMapCreationMode,
+    setMapCreationMode,
     mapArray,
     setMapArray,
     mapSize,
     setMapSize,
     mapObject,
+  }
+
+  const renderMapCreationToolbar = () => {
+    return (
+      <>
+        <div className="h-10" />
+        <div className="self-center">
+          <button
+            className="rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
+            onClick={() => {
+              setMapArray([])
+              setMapCreationMode(MAP_CREATION_MODES.MAP_CREATION)
+            }}
+          >
+            Clear Map
+          </button>
+        </div>
+      </>
+    )
   }
 
   const [{ isSpritesheetLoaded }] = useAtom(spritesheetStateAtom)
@@ -75,10 +93,20 @@ const MapCreationWrapper = () => {
 
   switch (mapCreationMode) {
     case MAP_CREATION_MODES.MAP_CREATION: {
-      return <MapCreation {...commonProps} />
+      return (
+        <>
+          {renderMapCreationToolbar()}
+          <MapCreation {...commonProps} />
+        </>
+      )
     }
     case MAP_CREATION_MODES.MAP_TOPPINGS: {
-      return <MapToppings {...commonProps} />
+      return (
+        <>
+          {renderMapCreationToolbar()}
+          <MapToppings {...commonProps} />
+        </>
+      )
     }
   }
 }
