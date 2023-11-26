@@ -1,10 +1,12 @@
 import { Container } from "@pixi/react"
-import { memo } from "react"
+import { Fragment, memo } from "react"
 
 import type { Tile } from "schema"
 import { TILE_GROUP_SIZE } from "~/components/constants"
 import { getTileGroups } from "~/components/map/MapCreation/utils"
+import { DumbPixiTileText } from "~/components/pixi/DumbPixiTileText"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
+import { useGlobalStore } from "~/state/globalStore"
 
 interface MapGroupedPixiTileBaseProps {
   mapArray: Tile[]
@@ -23,6 +25,10 @@ let count = 0
 // TODO: why is the interactive (onclick) of DumbPixiTile not working for the whole map here?
 export const MapGroupedPixiTileBase = memo(
   ({ mapArray }: MapGroupedPixiTileBaseProps) => {
+    const { isUserAdmin } = useGlobalStore((state) => ({
+      isUserAdmin: state.isUserAdmin,
+    }))
+
     // The tiles are grouped into square groups
     const groupedTiles = getTileGroups({
       tiles: mapArray,
@@ -47,14 +53,22 @@ export const MapGroupedPixiTileBase = memo(
               key={`baseTileContainer-${groupX}:${groupY}`}
               cacheAsBitmap
             >
-              {tileGroup.map((tile) => {
+              {tileGroup.map((tile, tileIndex) => {
                 count++
-                if (count % 100 === 0) {
+                if (count % 5000 === 0) {
                   console.log("Render Base Group Tile", count)
                 }
 
+                // Only show tile text every 10th tile and if user is admin
+                const hasText = isUserAdmin && tileIndex % 10 === 0
+
                 return (
-                  <DumbPixiTile key={`baseTile-${tile.xyTileId}`} {...tile} />
+                  <Fragment key={`baseTile-${tile.xyTileId}`}>
+                    <DumbPixiTile {...tile} />
+                    {hasText && (
+                      <DumbPixiTileText text={tile.xyTileId} {...tile} />
+                    )}
+                  </Fragment>
                 )
               })}
             </Container>
