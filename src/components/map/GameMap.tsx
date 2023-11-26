@@ -65,26 +65,30 @@ export const GameMap_DO_NOT_USE_DIRECTLY = ({ className }: MapProps) => {
     )
 
   return (
-    <div className={className} ref={sizeRef}>
+    <div className={className}>
       {isMapDisabled && (
         <div className="absolute h-full w-full bg-black opacity-50" />
       )}
       <MapFooter />
       <DevNavBar />
       <ProfilePicture className="absolute right-0 h-20 w-20 pr-4 pt-4" />
-      <MapWrapper
-        mapWidth={size.width}
-        mapHeight={size.height}
-        className={selectedShip ? "border-8 border-red-500" : ""}
+      <div
+        ref={sizeRef}
+        className={`flex flex-1 ${
+          selectedShip ? "border-8 border-red-500" : ""
+        }`}
       >
-        <MapGroupedPixiTileBase mapArray={mapArray} />
-        <MapPixiOverlays
-          mapArray={mapArray}
-          visibleTilesObject={visibleTilesObject}
-          knownTilesObject={knownTilesObject}
-        />
-        <MapPixiOverTiles />
-      </MapWrapper>
+        {/* TODO: figure out why this weird overflow issue is happening */}
+        <MapWrapper mapWidth={size.width - 1} mapHeight={size.height - 1}>
+          <MapGroupedPixiTileBase mapArray={mapArray} />
+          <MapPixiOverlays
+            mapArray={mapArray}
+            visibleTilesObject={visibleTilesObject}
+            knownTilesObject={knownTilesObject}
+          />
+          <MapPixiOverTiles />
+        </MapWrapper>
+      </div>
     </div>
   )
 }
