@@ -1,9 +1,8 @@
 import { Container } from "@pixi/react"
-import * as PIXI from "pixi.js"
 import { memo } from "react"
 
 import type { Tile } from "schema"
-import { TILE_GROUP_SIZE, TILE_SIZE } from "~/components/constants"
+import { TILE_GROUP_SIZE } from "~/components/constants"
 import { getTileGroups } from "~/components/map/MapCreation/utils"
 import { DumbPixiTile } from "~/components/pixi/DumbPixiTile"
 
@@ -46,15 +45,7 @@ export const MapGroupedPixiTileBase = memo(
           return (
             <Container
               key={`baseTileContainer-${groupX}:${groupY}`}
-              cacheAsBitmap={true}
-              cullArea={
-                new PIXI.Rectangle(
-                  groupX * TILE_SIZE, // x
-                  groupY * TILE_SIZE, // y
-                  TILE_SIZE, // width
-                  TILE_SIZE, // height
-                )
-              }
+              cacheAsBitmap
             >
               {tileGroup.map((tile) => {
                 count++

@@ -53,6 +53,7 @@ export const MapCreation = ({
       canvas.height = img.height
       setMapSize({ width: img.width, height: img.height })
       ctx.drawImage(img, 0, 0)
+
       // rawPixelData is in the form: [R, G, B, A, R, G, B, A, ...]
       const rawPixelData = ctx.getImageData(0, 0, img.width, img.height).data
 
@@ -62,8 +63,6 @@ export const MapCreation = ({
         const r = rawPixelData[i]!
         const g = rawPixelData[i + 1]!
         const b = rawPixelData[i + 2]!
-        // Ignore alpha for now
-        // const a = rawPixelData[i + 3]!
 
         tempColorsArray.push({ r, g, b })
       }
