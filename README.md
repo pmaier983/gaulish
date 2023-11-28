@@ -64,5 +64,4 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 ### MVP Requirements
 
 - [ ] Map Creator
-- [ ] Ability to handle sizable tile map (10k+)
 - [ ] Initial User Setup
