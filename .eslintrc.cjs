@@ -26,6 +26,14 @@ const config = {
   ],
   rules: {
     "import/no-default-export": "warn",
+    "@typescript-eslint/no-misused-promises": [
+      2,
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
+      },
+    ],
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {
