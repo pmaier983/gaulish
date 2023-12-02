@@ -36,7 +36,7 @@ export const MapToppings = ({
   mapArray,
   mapSize,
 }: MapToppingsProps) => {
-  const { register, handleSubmit } = useForm<Coordinates>()
+  const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
   const onStartNPC: SubmitHandler<Coordinates> = (data, e) => {
@@ -59,19 +59,20 @@ export const MapToppings = ({
         >
           <label htmlFor="x">X:</label>
           <input
-            {...register("x", { max: mapSize, min: 0 })}
+            {...register("x", { required: true, max: mapSize, min: 0 })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
           <label htmlFor="y">Y:</label>
           <input
-            {...register("y", { max: mapSize, min: 0 })}
+            {...register("y", { required: true,max: mapSize, min: 0 })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
           <input
             type="submit"
-            className="rounded border-2 border-green-900 bg-green-400 p-1 text-black hover:cursor-pointer hover:bg-green-500 hover:text-white"
+            className="rounded border-2 border-green-900 bg-green-400 p-1 text-black hover:cursor-pointer hover:bg-green-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!formState.isValid}
           />
         </form>
       </div>
