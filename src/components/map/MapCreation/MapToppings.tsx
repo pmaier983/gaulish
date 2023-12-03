@@ -2,9 +2,9 @@ import { useForm, type SubmitHandler } from "react-hook-form"
 import dynamic from "next/dynamic"
 import type { Tile } from "schema"
 
-import type { SetMapCreationMode } from "~/components/map/MapCreation/constants"
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
+import { useMapCreationStore } from "~/state/mapCreationStore"
 
 const MapWrapper = dynamic(
   () =>
@@ -18,12 +18,7 @@ const MapWrapper = dynamic(
 
 interface MapToppingsProps {
   className?: string
-  mapArray: Tile[]
   mapObject: { [xyTileId: string]: Tile }
-  setMapCreationMode: SetMapCreationMode
-  setMapArray: (newMapArray: Tile[]) => void
-  mapSize: number
-  setMapSize: (newSize: number) => void
 }
 
 interface Coordinates {
@@ -31,11 +26,12 @@ interface Coordinates {
   y: number
 }
 
-export const MapToppings = ({
-  className,
-  mapArray,
-  mapSize,
-}: MapToppingsProps) => {
+export const MapToppings = ({ className }: MapToppingsProps) => {
+  const { mapWidth, mapHeight, mapArray } = useMapCreationStore((state) => ({
+    mapWidth: state.mapWidth,
+    mapHeight: state.mapHeight,
+    mapArray: state.mapArray,
+  }))
   const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
@@ -59,13 +55,13 @@ export const MapToppings = ({
         >
           <label htmlFor="x">X:</label>
           <input
-            {...register("x", { required: true, max: mapSize, min: 0 })}
+            {...register("x", { required: true, max: mapWidth, min: 0 })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
           <label htmlFor="y">Y:</label>
           <input
-            {...register("y", { required: true,max: mapSize, min: 0 })}
+            {...register("y", { required: true, max: mapHeight, min: 0 })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />

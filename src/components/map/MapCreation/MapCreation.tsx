@@ -3,16 +3,11 @@ import React, { useState } from "react"
 import type { Tile } from "schema"
 import { RGB_TO_TILE_TYPE, type ColorData } from "~/components/constants"
 
-import type { MapCreationMode } from "~/components/map/MapCreation/constants"
+import { useMapCreationStore } from "~/state/mapCreationStore"
 
 interface MapCreationProps {
   className?: string
-  mapArray: Tile[]
   mapObject: { [xyTileId: string]: Tile }
-  setMapArray: (newMapArray: Tile[]) => void
-  setMapCreationMode: (newCreationMode: MapCreationMode) => void
-  mapSize: number
-  setMapSize: (newSize: number) => void
 }
 
 const getIsValidMap = (colorMapData: ColorData[]) => {
@@ -29,11 +24,11 @@ const getIsValidMap = (colorMapData: ColorData[]) => {
   return true
 }
 
-export const MapCreation = ({
-  setMapCreationMode,
-  setMapArray,
-  className,
-}: MapCreationProps) => {
+export const MapCreation = ({ className }: MapCreationProps) => {
+  const { setMapArray, setMapCreationMode } = useMapCreationStore((state) => ({
+    setMapArray: state.setMapArray,
+    setMapCreationMode: state.setMapCreationMode,
+  }))
   const [mapSize, setMapSize] = useState({ width: 0, height: 0 })
   const [imageSrc, setImageSrc] = useState<string>()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

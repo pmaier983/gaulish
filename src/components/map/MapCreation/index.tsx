@@ -1,17 +1,12 @@
 import { useAtom } from "jotai"
-import React, { useState } from "react"
+import React from "react"
 
 import type { Tile } from "schema"
 import { MapCreation } from "~/components/map/MapCreation/MapCreation"
 import { MapToppings } from "~/components/map/MapCreation/MapToppings"
-import {
-  MAP_CREATION_MODES,
-  DEFAULT_MAP_CREATION_SIZE,
-  type MapCreationMode,
-} from "~/components/map/MapCreation/constants"
-import { createCreationMap } from "~/components/map/MapCreation/utils"
-import { useLocalStorage } from "~/hooks/useLocalStorage"
+import { MAP_CREATION_MODES } from "~/components/map/MapCreation/constants"
 import { spritesheetStateAtom } from "~/state/atoms"
+import { useMapCreationStore } from "~/state/mapCreationStore"
 
 /**
   First attempt at map creation using PixiJS and the PixiViewport library.
@@ -21,33 +16,16 @@ import { spritesheetStateAtom } from "~/state/atoms"
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreationWrapper = () => {
-  const [mapSize, setLocalMapSize] = useState(DEFAULT_MAP_CREATION_SIZE)
-  const [storedMapArray, setStoredMapArray] = useLocalStorage(
-    "storedMapCreationArray",
-    [] as Tile[],
-  )
-  const [mapArray, setLocalMapArray] = useState(storedMapArray)
-  const [mapCreationMode, setMapCreationMode] = useState<MapCreationMode>(
-    mapArray.length > 0
-      ? MAP_CREATION_MODES.MAP_TOPPINGS
-      : MAP_CREATION_MODES.MAP_CREATION,
-  )
+  const { mapCreationMode, mapArray, setMapArray, setMapCreationMode } =
+    useMapCreationStore((state) => ({
+      mapCreationMode: state.mapCreationMode,
+      mapWidth: state.mapWidth,
+      mapHeight: state.mapHeight,
+      mapArray: state.mapArray,
 
-  const setMapArray = (newMapArray: Tile[]) => {
-    setLocalMapArray(newMapArray)
-    setStoredMapArray(newMapArray)
-  }
-
-  const setMapSize = (newSize: number) => {
-    setLocalMapSize(newSize)
-
-    const newDevMap = createCreationMap({
-      width: newSize,
-      height: newSize,
-    })
-
-    setMapArray(newDevMap)
-  }
+      setMapArray: state.setMapArray,
+      setMapCreationMode: state.setMapCreationMode,
+    }))
 
   const mapObject = mapArray.reduce<{ [xyTileId: string]: Tile }>(
     (acc, tile) => {
@@ -56,15 +34,6 @@ const MapCreationWrapper = () => {
     },
     {},
   )
-
-  const commonProps = {
-    setMapCreationMode,
-    mapArray,
-    setMapArray,
-    mapSize,
-    setMapSize,
-    mapObject,
-  }
 
   const renderMapCreationToolbar = () => {
     return (
@@ -96,7 +65,7 @@ const MapCreationWrapper = () => {
       return (
         <>
           {renderMapCreationToolbar()}
-          <MapCreation {...commonProps} />
+          <MapCreation mapObject={mapObject} />
         </>
       )
     }
@@ -104,7 +73,7 @@ const MapCreationWrapper = () => {
       return (
         <>
           {renderMapCreationToolbar()}
-          <MapToppings {...commonProps} />
+          <MapToppings mapObject={mapObject} />
         </>
       )
     }
