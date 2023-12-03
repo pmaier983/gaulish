@@ -28,10 +28,12 @@ interface MapCreationStoreActions {
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
 
-const initialMapCreationState: MapCreationStoreState = {
-  mapCreationMode: "MAP_CREATION",
+const storedMapArray = getLocalStorageValue<Tile[]>("STORED_MAP_ARRAY", [])
 
-  mapArray: getLocalStorageValue<Tile[]>("STORED_MAP_ARRAY", []),
+const initialMapCreationState: MapCreationStoreState = {
+  mapCreationMode: storedMapArray.length > 0 ? "MAP_TOPPINGS" : "MAP_CREATION",
+
+  mapArray: storedMapArray,
 
   mapWidth: 0,
   mapHeight: 0,

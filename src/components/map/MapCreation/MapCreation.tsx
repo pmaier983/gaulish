@@ -13,6 +13,9 @@ interface MapCreationProps {
 const getIsValidMap = (colorMapData: ColorData[]) => {
   if (colorMapData.length === 0) return false
 
+  // Limit tile max to 100k
+  if (colorMapData.length > 100000) return false
+
   for (let i = 0; i < colorMapData.length; i++) {
     const rgbColor = colorMapData[i]
     if (!rgbColor) return false
