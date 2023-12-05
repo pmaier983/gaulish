@@ -57,7 +57,6 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Handle mobile better? (font resizing, modal management?)
 - [ ] Setup some indication of price updates
 - [ ] Polish all the log messages
-- [ ] Implement proper rendering using SpriteSheets & Texture
 - [ ] Setup a proper Pixi loading screen
 - [ ] Give LunarRaid (pixi.js guy) some special something? A custom ship or idk what?
 
