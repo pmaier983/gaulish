@@ -59,6 +59,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Polish all the log messages
 - [ ] Setup a proper Pixi loading screen
 - [ ] Give LunarRaid (pixi.js guy) some special something? A custom ship or idk what?
+- [ ] Consider Shifting over to Stylex (https://github.com/facebook/stylex)
 
 ### MVP Requirements
 
