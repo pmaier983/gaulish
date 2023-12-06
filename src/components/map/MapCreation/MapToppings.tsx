@@ -27,17 +27,20 @@ interface Coordinates {
 }
 
 export const MapToppings = ({ className }: MapToppingsProps) => {
-  const { mapWidth, mapHeight, mapArray } = useMapCreationStore((state) => ({
-    mapWidth: state.mapWidth,
-    mapHeight: state.mapHeight,
-    mapArray: state.mapArray,
-  }))
+  const { mapWidth, mapHeight, mapArray, setMapToppingAction } =
+    useMapCreationStore((state) => ({
+      mapWidth: state.mapWidth,
+      mapHeight: state.mapHeight,
+      mapArray: state.mapArray,
+
+      setMapToppingAction: state.setMapToppingAction,
+    }))
   const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
   const onStartNPC: SubmitHandler<Coordinates> = (data, e) => {
     e?.preventDefault()
-    console.log(data)
+    setMapToppingAction("ADD_NPC")
   }
 
   return (

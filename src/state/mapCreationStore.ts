@@ -10,8 +10,15 @@ import {
 } from "~/hooks/useLocalStorage"
 import { createCreationMap } from "~/components/map/MapCreation/utils"
 
+export const MAP_TOPPING_ACTIONS = {
+  ADD_NPC: "ADD_NPC",
+}
+
+export type MapToppingAction = keyof typeof MAP_TOPPING_ACTIONS
+
 export interface MapCreationStoreState {
   mapCreationMode: MapCreationMode
+  mapToppingAction?: MapToppingAction
 
   mapArray: Tile[]
   mapWidth: number
@@ -24,6 +31,8 @@ interface MapCreationStoreActions {
   setMapArray: (mapArray: Tile[]) => void
   setMapCreationMode: (mode: MapCreationMode) => void
   setMapSize: (width: number, height: number) => void
+
+  setMapToppingAction: (action: MapToppingAction) => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -58,6 +67,8 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
 
       set({ mapWidth, mapHeight, mapArray: newDevMap })
     },
+
+    setMapToppingAction: (mapToppingAction) => set({ mapToppingAction }),
 
     restart: () => set(initialMapCreationState),
   })),
