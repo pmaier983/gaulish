@@ -31,7 +31,7 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 - [ ] Provide more valuable info in the error messages? (or otherwise figure out debugging)
 - [ ] Setup Monitoring & error logging
 - [ ] Setup a method for A/B testing
-- [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible)
+- [ ] Setup Analytics (https://create.t3.gg/en/other-recs#plausible) (https://youtu.be/6xXSsu0YXWo?si=zy2NbvT3jvLkEJhv) (Also explore outside of T3 ecosystem just in case)
 - [ ] Setup Stripe
 - [ ] Figure out why eslint is not throwing warnings when running next eslint
 - [ ] Collect Data on what size screen users are using
