@@ -27,14 +27,19 @@ interface Coordinates {
 }
 
 export const MapToppings = ({ className }: MapToppingsProps) => {
-  const { mapWidth, mapHeight, mapArray, setMapToppingAction } =
-    useMapCreationStore((state) => ({
-      mapWidth: state.mapWidth,
-      mapHeight: state.mapHeight,
-      mapArray: state.mapArray,
-
-      setMapToppingAction: state.setMapToppingAction,
-    }))
+  const {
+    mapWidth,
+    mapHeight,
+    mapArray,
+    mapToppingAction,
+    setMapToppingAction,
+  } = useMapCreationStore((state) => ({
+    mapWidth: state.mapWidth,
+    mapHeight: state.mapHeight,
+    mapArray: state.mapArray,
+    mapToppingAction: state.mapToppingAction,
+    setMapToppingAction: state.setMapToppingAction,
+  }))
   const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
@@ -43,12 +48,28 @@ export const MapToppings = ({ className }: MapToppingsProps) => {
     setMapToppingAction("ADD_NPC")
   }
 
+  const isMapFocused = mapToppingAction === "ADD_NPC"
+
   return (
-    <div className={`${className} flex flex-1 flex-row gap-8 p-8`}>
-      <div className="flex flex-1" ref={sizeRef}>
+    <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
+      <div
+        className={`flex flex-1 flex-col gap-2 ${
+          isMapFocused ? "border-8 border-red-600" : ""
+        }`}
+        ref={sizeRef}
+      >
         <MapWrapper mapHeight={size.height} mapWidth={size.width}>
           <MapGroupedPixiTileBase mapArray={mapArray} />
         </MapWrapper>
+        <button
+          className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => {
+            setMapToppingAction(undefined)
+          }}
+          disabled={mapToppingAction === undefined}
+        >
+          Cancel Map Topping Action
+        </button>
       </div>
       <div className="flex-1">
         {/* form to start submitting the npc stuff */}
@@ -70,7 +91,7 @@ export const MapToppings = ({ className }: MapToppingsProps) => {
           />
           <input
             type="submit"
-            className="rounded border-2 border-green-900 bg-green-400 p-1 text-black hover:cursor-pointer hover:bg-green-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!formState.isValid}
           />
         </form>

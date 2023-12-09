@@ -14,11 +14,11 @@ export const MAP_TOPPING_ACTIONS = {
   ADD_NPC: "ADD_NPC",
 }
 
-export type MapToppingAction = keyof typeof MAP_TOPPING_ACTIONS
+export type MapToppingAction = keyof typeof MAP_TOPPING_ACTIONS | undefined
 
 export interface MapCreationStoreState {
   mapCreationMode: MapCreationMode
-  mapToppingAction?: MapToppingAction
+  mapToppingAction: MapToppingAction
 
   mapArray: Tile[]
   mapWidth: number
@@ -44,8 +44,8 @@ const initialMapCreationState: MapCreationStoreState = {
 
   mapArray: storedMapArray,
 
-  mapWidth: 0,
-  mapHeight: 0,
+  mapWidth: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.x), 0),
+  mapHeight: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.y), 0),
 }
 
 export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
