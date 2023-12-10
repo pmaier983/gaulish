@@ -43,6 +43,7 @@ const initialMapCreationState: MapCreationStoreState = {
   mapCreationMode: storedMapArray.length > 0 ? "MAP_TOPPINGS" : "MAP_CREATION",
 
   mapArray: storedMapArray,
+  mapToppingAction: undefined,
 
   mapWidth: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.x), 0),
   mapHeight: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.y), 0),
