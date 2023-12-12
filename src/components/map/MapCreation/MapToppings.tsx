@@ -52,23 +52,34 @@ export const MapToppings = ({ className }: MapToppingsProps) => {
 
   return (
     <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
-      <div
-        className={`flex flex-1 flex-col gap-2 ${
-          isMapFocused ? "border-8 border-red-600" : ""
-        }`}
-        ref={sizeRef}
-      >
-        <MapWrapper mapHeight={size.height} mapWidth={size.width}>
+      <div className={`relative flex flex-1 flex-col gap-2`} ref={sizeRef}>
+        <MapWrapper
+          mapHeight={size.height}
+          mapWidth={size.width}
+          className={`${
+            isMapFocused ? "outline outline-8 outline-red-600" : ""
+          }`}
+        >
           <MapGroupedPixiTileBase mapArray={mapArray} />
         </MapWrapper>
         <button
-          className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50"
+          className="absolute bottom-2 left-2 rounded border-2 border-black bg-red-300 p-2 hover:bg-red-400 disabled:hidden"
           onClick={() => {
             setMapToppingAction(undefined)
           }}
           disabled={mapToppingAction === undefined}
         >
           Cancel Map Topping Action
+        </button>
+        <button
+          className="absolute bottom-2 right-2 rounded border-2 border-black bg-green-300 p-2 hover:bg-red-400 disabled:hidden"
+          onClick={() => {
+            // TODO: flesh out submit functionality
+            setMapToppingAction(undefined)
+          }}
+          disabled={true}
+        >
+          Submit Map Topping Action
         </button>
       </div>
       <div className="flex-1">
