@@ -1,10 +1,13 @@
+import { useCallback, useEffect } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import dynamic from "next/dynamic"
-import type { Tile } from "schema"
+import toast from "react-hot-toast"
 
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
 import { useMapCreationStore } from "~/state/mapCreationStore"
+import { getXYFromXYTileId } from "~/utils"
+import type { Tile } from "schema"
 
 const MapWrapper = dynamic(
   () =>
@@ -16,39 +19,132 @@ const MapWrapper = dynamic(
   },
 )
 
-interface MapToppingsProps {
-  className?: string
-  mapObject: { [xyTileId: string]: Tile }
-}
-
 interface Coordinates {
   x: number
   y: number
 }
 
-export const MapToppings = ({ className }: MapToppingsProps) => {
+// TODO: consider unifying with whats in useGamestate
+const VALID_KEYS = [
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "w",
+  "a",
+  "s",
+  "d",
+  "Escape",
+  "z",
+]
+
+interface MapToppingsProps {
+  className?: string
+  mapObject: { [xyTileId: string]: Tile }
+}
+
+export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   const {
     mapWidth,
     mapHeight,
     mapArray,
     mapToppingAction,
-    setMapToppingAction,
+    npcPathArray,
+    startAddingNpcPath,
+    cancelToppingAction,
+    removeFromNpcPath,
+    addToNpcPath,
   } = useMapCreationStore((state) => ({
     mapWidth: state.mapWidth,
     mapHeight: state.mapHeight,
     mapArray: state.mapArray,
     mapToppingAction: state.mapToppingAction,
-    setMapToppingAction: state.setMapToppingAction,
+    npcPathArray: state.npcPathArray,
+    startAddingNpcPath: state.startAddingNpcPath,
+    cancelToppingAction: state.cancelToppingAction,
+    removeFromNpcPath: state.removeFromNpcPath,
+    addToNpcPath: state.addToNpcPath,
   }))
   const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
   const onStartNPC: SubmitHandler<Coordinates> = (data, e) => {
     e?.preventDefault()
-    setMapToppingAction("ADD_NPC")
+    startAddingNpcPath(`${data.x}:${data.y}`)
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
+
+  // TODO: add command Z functionality
+  const npcPathHandler = useCallback(
+    (e: KeyboardEvent) => {
+      e.preventDefault()
+
+      const currentTile = npcPathArray.at(-1)
+      const { x, y } = getXYFromXYTileId(currentTile ?? "")
+
+      if (!VALID_KEYS.includes(e.key)) {
+        toast.error(
+          "Use WASD or arrow keys to navigate the ship (or push ESC to cancel)",
+        )
+      }
+
+      if (["ArrowUp", "w"].includes(e.key)) {
+        const northTileId = `${x}:${y - 1}`
+        if (mapObject.hasOwnProperty(northTileId)) {
+          addToNpcPath(northTileId)
+        }
+      }
+      if (["ArrowLeft", "a"].includes(e.key)) {
+        const westTileId = `${x - 1}:${y}`
+        if (mapObject.hasOwnProperty(westTileId)) {
+          addToNpcPath(westTileId)
+        }
+      }
+      if (["ArrowDown", "s"].includes(e.key)) {
+        const southTileId = `${x}:${y + 1}`
+        if (mapObject.hasOwnProperty(southTileId)) {
+          addToNpcPath(southTileId)
+        }
+      }
+      if (["ArrowRight", "d"].includes(e.key)) {
+        const eastTileId = `${x + 1}:${y}`
+        if (mapObject.hasOwnProperty(eastTileId)) {
+          addToNpcPath(eastTileId)
+        }
+      }
+
+      // TODO: how to get cmd-z functional
+      // If CMD or z is pressed, undo the last move
+      if (e.key === "z" || e.ctrlKey || e.metaKey) {
+        removeFromNpcPath()
+      }
+
+      // If escape is pressed, cancel the ship path
+      if (e.key === "Escape") {
+        cancelToppingAction()
+      }
+    },
+    [
+      npcPathArray,
+      mapObject,
+      addToNpcPath,
+      removeFromNpcPath,
+      cancelToppingAction,
+    ],
+  )
+
+  console.log("npc", npcPathArray)
+
+  useEffect(() => {
+    if (mapToppingAction === "ADD_NPC") {
+      window.addEventListener("keyup", npcPathHandler)
+
+      return () => {
+        window.removeEventListener("keyup", npcPathHandler)
+      }
+    }
+  }, [mapToppingAction, npcPathHandler])
 
   return (
     <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
@@ -65,7 +161,7 @@ export const MapToppings = ({ className }: MapToppingsProps) => {
         <button
           className="absolute bottom-2 left-2 rounded border-2 border-black bg-red-300 p-2 hover:bg-red-400 disabled:hidden"
           onClick={() => {
-            setMapToppingAction(undefined)
+            cancelToppingAction()
           }}
           disabled={mapToppingAction === undefined}
         >
@@ -75,7 +171,7 @@ export const MapToppings = ({ className }: MapToppingsProps) => {
           className="absolute bottom-2 right-2 rounded border-2 border-black bg-green-300 p-2 hover:bg-red-400 disabled:hidden"
           onClick={() => {
             // TODO: flesh out submit functionality
-            setMapToppingAction(undefined)
+            cancelToppingAction()
           }}
           disabled={true}
         >

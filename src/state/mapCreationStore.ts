@@ -3,7 +3,7 @@ import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
 import type { MapCreationMode } from "~/components/map/MapCreation/constants"
-import type { Tile } from "schema"
+import { type Path, type Tile } from "schema"
 import {
   getLocalStorageValue,
   setLocalStorageValue,
@@ -23,6 +23,8 @@ export interface MapCreationStoreState {
   mapArray: Tile[]
   mapWidth: number
   mapHeight: number
+
+  npcPathArray: Path["pathArray"]
 }
 
 interface MapCreationStoreActions {
@@ -32,7 +34,10 @@ interface MapCreationStoreActions {
   setMapCreationMode: (mode: MapCreationMode) => void
   setMapSize: (width: number, height: number) => void
 
-  setMapToppingAction: (action: MapToppingAction) => void
+  startAddingNpcPath: (initialXYTileId: string) => void
+  addToNpcPath: (newXYTileId: string) => void
+  removeFromNpcPath: () => void
+  cancelToppingAction: () => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -41,16 +46,17 @@ const storedMapArray = getLocalStorageValue<Tile[]>("STORED_MAP_ARRAY", [])
 
 const initialMapCreationState: MapCreationStoreState = {
   mapCreationMode: storedMapArray.length > 0 ? "MAP_TOPPINGS" : "MAP_CREATION",
-
-  mapArray: storedMapArray,
   mapToppingAction: undefined,
 
+  mapArray: storedMapArray,
   mapWidth: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.x), 0),
   mapHeight: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.y), 0),
+
+  npcPathArray: [],
 }
 
 export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
-  devtools((set) => ({
+  devtools((set, get) => ({
     ...initialMapCreationState,
 
     setMapArray: (mapArray) => {
@@ -69,7 +75,26 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       set({ mapWidth, mapHeight, mapArray: newDevMap })
     },
 
-    setMapToppingAction: (mapToppingAction) => set({ mapToppingAction }),
+    startAddingNpcPath: (initialXYTileId) => {
+      set({ mapToppingAction: "ADD_NPC", npcPathArray: [initialXYTileId] })
+    },
+
+    addToNpcPath: (newPathXYTileId) => {
+      set({ npcPathArray: [...get().npcPathArray, newPathXYTileId] })
+    },
+
+    removeFromNpcPath: () => {
+      const npcPathArray = get().npcPathArray
+      const npcPathArrayLessLastItem = npcPathArray.slice(
+        0,
+        npcPathArray.length - 1,
+      )
+      set({ npcPathArray: npcPathArrayLessLastItem })
+    },
+
+    cancelToppingAction: () => {
+      set({ mapToppingAction: undefined, npcPathArray: [] })
+    },
 
     restart: () => set(initialMapCreationState),
   })),
