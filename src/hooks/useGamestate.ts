@@ -139,7 +139,7 @@ export const useGamestate = () => {
 
       if (!VALID_KEYS.includes(e.key)) {
         toast.error(
-          "Use WASD or arrow keys to navigate the ship (or push ESC to cancel",
+          "Use WASD or arrow keys to navigate the ship (or push ESC to cancel)",
         )
       }
 
