@@ -8,6 +8,8 @@ import { useElementSize } from "~/hooks/useElementSize"
 import { useMapCreationStore } from "~/state/mapCreationStore"
 import { getXYFromXYTileId } from "~/utils"
 import type { Tile } from "schema"
+import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
+import { generateSelectedShipPathObject } from "~/state/gamestateStore"
 
 const MapWrapper = dynamic(
   () =>
@@ -146,6 +148,8 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     }
   }, [mapToppingAction, npcPathHandler])
 
+  const npcShipPathObject = generateSelectedShipPathObject(npcPathArray)
+
   return (
     <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
       <div className={`relative flex flex-1 flex-col gap-2`} ref={sizeRef}>
@@ -156,7 +160,27 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             isMapFocused ? "outline outline-8 outline-red-600" : ""
           }`}
         >
-          <MapGroupedPixiTileBase mapArray={mapArray} />
+          <>
+            <MapGroupedPixiTileBase mapArray={mapArray} />
+            {npcPathArray.map((npcPath) => {
+              const shipPath = npcShipPathObject[npcPath]
+              const tile = mapObject[npcPath]
+              if (!shipPath)
+                throw Error(
+                  "mapArray has a tile that selectedShipPathObject does not!",
+                )
+              if (!tile) {
+                throw Error("mapArray has a tile that mapObject does not!")
+              }
+              return (
+                <DumbPixiShipPath
+                  key={`shipPath-${npcPath}`}
+                  tile={tile}
+                  selectedShipPath={shipPath}
+                />
+              )
+            })}
+          </>
         </MapWrapper>
         <button
           className="absolute bottom-2 left-2 rounded border-2 border-black bg-red-300 p-2 hover:bg-red-400 disabled:hidden"
