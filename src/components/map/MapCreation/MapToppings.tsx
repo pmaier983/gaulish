@@ -136,8 +136,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     ],
   )
 
-  console.log("npc", npcPathArray)
-
   useEffect(() => {
     if (mapToppingAction === "ADD_NPC") {
       window.addEventListener("keyup", npcPathHandler)
