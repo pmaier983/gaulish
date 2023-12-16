@@ -38,8 +38,7 @@ const MapCreationWrapper = () => {
   const renderMapCreationToolbar = () => {
     return (
       <>
-        <div className="h-10" />
-        <div className="self-center">
+        <div className="self-center pt-10">
           <button
             className="rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
             onClick={() => {
