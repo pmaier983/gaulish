@@ -70,7 +70,7 @@ export interface GamestateStoreActions {
 
 export interface GamestateStore {
   selectedShip?: Ship
-  selectedShipPathArray: Path["pathArray"]
+  selectedShipPathArray: string[]
   selectedShipPathObject: SelectedShipPathObject
 
   visibleTilesObject: VisibleTilesObject
