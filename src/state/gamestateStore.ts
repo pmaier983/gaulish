@@ -4,7 +4,7 @@ import { shallow } from "zustand/shallow"
 import { produce } from "immer"
 import equal from "fast-deep-equal"
 
-import type { Path, Tile, City, Ship } from "schema"
+import type { Tile, City, Ship } from "schema"
 import { OPPOSITE_DIRECTIONS, type Direction } from "~/components/constants"
 import {
   getDirectionTowardsPrevTile,
