@@ -5,14 +5,14 @@ import { produce } from "immer"
 import equal from "fast-deep-equal"
 
 import type { Tile, City, Ship } from "schema"
-import { OPPOSITE_DIRECTIONS, type Direction } from "~/components/constants"
+import { type Direction } from "~/components/constants"
 import {
-  getDirectionTowardsPrevTile,
   getNpcCurrentXYTileId,
   getShipCurrentXYTileId,
   getTilesMoved,
   getDiamondAroundXYTileId,
   uniqueBy,
+  generateSelectedShipPathObject,
 } from "~/utils"
 import { type RouterOutputs } from "~/utils/api"
 
@@ -427,68 +427,3 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
   })),
   shallow,
 )
-
-export const generateSelectedShipPathObject = (
-  shipPathArray: GamestateStore["selectedShipPathArray"],
-) => {
-  const shipPathObject = shipPathArray.reduce<SelectedShipPathObject>(
-    (acc, curTileId, i) => {
-      // For the First Tile
-      if (i === 0) {
-        acc[curTileId] = {
-          index: i,
-          directionLinesToDraw: [],
-          isLastTileInPath: i === shipPathArray.length - 1,
-        }
-        return acc
-      }
-
-      const prevTileId = shipPathArray[i - 1]
-
-      const directionTowardsPrevTile = getDirectionTowardsPrevTile(
-        curTileId,
-        prevTileId,
-      )
-
-      // If we have already passed over this tile
-      if (acc[curTileId]) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const currentTile = acc[curTileId]!
-
-        acc[curTileId] = {
-          ...currentTile,
-          directionLinesToDraw: [
-            ...currentTile.directionLinesToDraw,
-            directionTowardsPrevTile,
-          ],
-        }
-      } else {
-        // If we have never seen this tile before!
-        acc[curTileId] = {
-          index: i,
-          previousTileId: prevTileId,
-          directionLinesToDraw: [directionTowardsPrevTile],
-          isLastTileInPath: i === shipPathArray.length - 1,
-        }
-      }
-
-      // We also need to update the previous tile to include the direction to point towards
-      if (prevTileId) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const prevTile = acc[prevTileId]!
-
-        acc[prevTileId] = {
-          ...prevTile,
-          directionLinesToDraw: [
-            ...prevTile.directionLinesToDraw,
-            OPPOSITE_DIRECTIONS[directionTowardsPrevTile],
-          ],
-        }
-      }
-
-      return acc
-    },
-    {},
-  )
-  return shipPathObject
-}

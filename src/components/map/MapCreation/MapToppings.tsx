@@ -6,10 +6,9 @@ import toast from "react-hot-toast"
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
 import { useMapCreationStore } from "~/state/mapCreationStore"
-import { getXYFromXYTileId } from "~/utils"
+import { generateSelectedShipPathObject, getXYFromXYTileId } from "~/utils"
 import type { Tile } from "schema"
 import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
-import { generateSelectedShipPathObject } from "~/state/gamestateStore"
 
 const MapWrapper = dynamic(
   () =>
