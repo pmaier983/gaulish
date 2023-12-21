@@ -27,7 +27,6 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 
 ### High Priority
 
-- [ ] Build MVP and deploy
 - [ ] Provide more valuable info in the error messages? (or otherwise figure out debugging)
 - [ ] Setup Monitoring & error logging
 - [ ] Setup a method for A/B testing
