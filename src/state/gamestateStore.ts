@@ -5,14 +5,12 @@ import { produce } from "immer"
 import equal from "fast-deep-equal"
 
 import type { Tile, City, Ship } from "schema"
-import { type Direction } from "~/components/constants"
 import {
   getNpcCurrentXYTileId,
   getShipCurrentXYTileId,
   getTilesMoved,
   getDiamondAroundXYTileId,
   uniqueBy,
-  generateSelectedShipPathObject,
 } from "~/utils"
 import { type RouterOutputs } from "~/utils/api"
 
@@ -29,19 +27,8 @@ export type MapObject = { [xyTileId: string]: TileComposite }
 
 export type CityObject = { [xyTileId: string]: City }
 
-export interface SelectedShipPath {
-  previousTileId?: string
-  directionLinesToDraw: Direction[]
-  index: number
-  isLastTileInPath: boolean
-}
-
 export interface VisibleTilesObject {
   [xyTileId: string]: boolean
-}
-
-export type SelectedShipPathObject = {
-  [xyTileId: string]: SelectedShipPath
 }
 
 export interface KnownTilesObject {
@@ -71,7 +58,6 @@ export interface GamestateStoreActions {
 export interface GamestateStore {
   selectedShip?: Ship
   selectedShipPathArray: string[]
-  selectedShipPathObject: SelectedShipPathObject
 
   visibleTilesObject: VisibleTilesObject
 
@@ -91,7 +77,6 @@ export interface GamestateStore {
 
 const initialGamestate: GamestateStore = {
   selectedShipPathArray: [],
-  selectedShipPathObject: {},
   visibleTilesObject: {},
   cityObject: {},
   cityArray: [],
@@ -335,7 +320,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         return set({
           selectedShip: undefined,
           selectedShipPathArray: [],
-          selectedShipPathObject: {},
         })
       }
 
@@ -353,9 +337,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
       return set({
         selectedShip: ship,
         selectedShipPathArray: selectedShipPathArray,
-        selectedShipPathObject: generateSelectedShipPathObject(
-          selectedShipPathArray,
-        ),
       })
     },
 
@@ -374,8 +355,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
 
         return set({
           selectedShipPathArray: newShipPathArray,
-          selectedShipPathObject:
-            generateSelectedShipPathObject(newShipPathArray),
           // If you pass in an empty array, cancel ship selection
           selectedShip:
             someFormOfTileId.length === 0 ? undefined : get().selectedShip,
@@ -388,7 +367,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         if (get().selectedShipPathArray.length <= 1) {
           return set({
             selectedShipPathArray: [],
-            selectedShipPathObject: {},
             selectedShip: undefined,
           })
         }
@@ -399,8 +377,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
         // Remove the last tile from the path
         return set({
           selectedShipPathArray: newShipPathArray,
-          selectedShipPathObject:
-            generateSelectedShipPathObject(newShipPathArray),
         })
       }
 
@@ -418,8 +394,6 @@ export const useGamestateStore = createWithEqualityFn<Gamestate>()(
 
       return set({
         selectedShipPathArray: newShipPathArray,
-        selectedShipPathObject:
-          generateSelectedShipPathObject(newShipPathArray),
       })
     },
 

@@ -3,12 +3,12 @@ import { type Path, type Npc, type City, type Cargo } from "schema"
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { OPPOSITE_DIRECTIONS, type TileType } from "~/components/constants"
 import {
-  type ShipComposite,
-  type CityObject,
-  type SelectedShipPathObject,
-} from "~/state/gamestateStore"
+  OPPOSITE_DIRECTIONS,
+  type Direction,
+  type TileType,
+} from "~/components/constants"
+import { type ShipComposite, type CityObject } from "~/state/gamestateStore"
 import { DIRECTIONS } from "~/components/constants"
 
 export function cn(...inputs: ClassValue[]) {
@@ -353,6 +353,16 @@ export const getRandomNumberWithSeed = (seed: number) => {
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 }
 
+export interface SelectedShipPath {
+  previousTileId?: string
+  directionLinesToDraw: Direction[]
+  index: number
+}
+
+export type SelectedShipPathObject = {
+  [xyTileId: string]: SelectedShipPath
+}
+
 // TODO: possible move to another utils file?
 export const generateSelectedShipPathObject = (shipPathArray: string[]) => {
   const shipPathObject = shipPathArray.reduce<SelectedShipPathObject>(
@@ -362,7 +372,6 @@ export const generateSelectedShipPathObject = (shipPathArray: string[]) => {
         acc[curTileId] = {
           index: i,
           directionLinesToDraw: [],
-          isLastTileInPath: i === shipPathArray.length - 1,
         }
         return acc
       }
@@ -392,7 +401,6 @@ export const generateSelectedShipPathObject = (shipPathArray: string[]) => {
           index: i,
           previousTileId: prevTileId,
           directionLinesToDraw: [directionTowardsPrevTile],
-          isLastTileInPath: i === shipPathArray.length - 1,
         }
       }
 
@@ -414,5 +422,6 @@ export const generateSelectedShipPathObject = (shipPathArray: string[]) => {
     },
     {},
   )
+
   return shipPathObject
 }

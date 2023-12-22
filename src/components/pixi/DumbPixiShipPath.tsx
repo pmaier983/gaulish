@@ -4,7 +4,7 @@ import type * as PIXI from "pixi.js"
 
 import { type Tile } from "schema"
 import { DIRECTIONS, TILE_SIZE } from "~/components/constants"
-import { generateSelectedShipPathObject } from "~/state/gamestateStore"
+import { generateSelectedShipPathObject } from "~/utils"
 
 interface DumbPixiShipPathProps {
   tile: Tile
@@ -27,22 +27,21 @@ export const DumbPixiShipPath = ({ tile, shipPath }: DumbPixiShipPathProps) => {
     throw new Error("This tile has no path information to render")
   }
 
+  const lastTileId = shipPath.at(-1)
+
   const draw = useCallback(
     (g: PIXI.Graphics) => {
+      g.clear()
       g.beginFill(fill)
 
-      if (selectedShipPathTile.isLastTileInPath) {
+      // If is last tile in path
+      if (lastTileId === tile.xyTileId) {
         g.drawRect(
           tileXPosition + TILE_SIZE / 4,
           tileYPosition + TILE_SIZE / 4,
           TILE_SIZE / 2,
           TILE_SIZE / 2,
         )
-      }
-
-      // If the last tile in the path, draw the "ship"
-      if (selectedShipPathTile.directionLinesToDraw.length === 0) {
-        g.endFill()
       }
 
       selectedShipPathTile.directionLinesToDraw.forEach((direction) => {
@@ -88,7 +87,14 @@ export const DumbPixiShipPath = ({ tile, shipPath }: DumbPixiShipPathProps) => {
 
       g.endFill()
     },
-    [pathBarWidth, selectedShipPathTile, tileXPosition, tileYPosition],
+    [
+      lastTileId,
+      pathBarWidth,
+      selectedShipPathTile.directionLinesToDraw,
+      tile.xyTileId,
+      tileXPosition,
+      tileYPosition,
+    ],
   )
 
   return <Graphics draw={draw} />

@@ -6,7 +6,7 @@ import toast from "react-hot-toast"
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
 import { useMapCreationStore } from "~/state/mapCreationStore"
-import { generateSelectedShipPathObject, getXYFromXYTileId } from "~/utils"
+import { getXYFromXYTileId } from "~/utils"
 import type { Tile } from "schema"
 import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
 

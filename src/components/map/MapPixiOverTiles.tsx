@@ -11,31 +11,25 @@ export const MapPixiOverTiles = memo(() => {
     mapArray,
     mapObject,
     cityObject,
-    selectedShipPathObject,
+    selectedShipPathArray,
     knownTilesObject,
   } = useGamestateStore((state) => ({
     mapArray: state.mapArray,
     mapObject: state.mapObject,
     cityObject: state.cityObject,
-    // TODO: Remove this path object entirely!
-    selectedShipPathObject: state.selectedShipPathObject,
+    selectedShipPathArray: state.selectedShipPathArray,
     knownTilesObject: state.knownTilesObject,
   }))
 
   // TODO: Simplify the store so we don't need to do this!
-  const { npcTiles, shipTiles, cityTiles, shipPathTiles } = mapArray.reduce<{
+  const { npcTiles, shipTiles, cityTiles } = mapArray.reduce<{
     cityTiles: Tile[]
     npcTiles: Tile[]
     shipTiles: Tile[]
-    shipPathTiles: Tile[]
   }>(
     (acc, tile) => {
       const mapTile = mapObject[tile.xyTileId]
       if (!mapTile) throw Error("mapArray has a tile that mapObject does not!")
-
-      if (selectedShipPathObject[tile.xyTileId]) {
-        acc["shipPathTiles"] = [...acc["shipPathTiles"], tile]
-      }
 
       // If the tile is unknown, don't render anything below
       if (!knownTilesObject.hasOwnProperty(tile.xyTileId)) return acc
@@ -58,7 +52,6 @@ export const MapPixiOverTiles = memo(() => {
       cityTiles: [],
       npcTiles: [],
       shipTiles: [],
-      shipPathTiles: [],
     },
   )
 
@@ -97,17 +90,17 @@ export const MapPixiOverTiles = memo(() => {
           <DumbPixiCity key={`city-${tile.xyTileId}`} tile={tile} city={city} />
         )
       })}
-      {shipPathTiles.map((tile) => {
-        const shipPath = selectedShipPathObject[tile.xyTileId]
-        if (!shipPath)
+      {selectedShipPathArray.map((xyTileId) => {
+        const tile = mapObject[xyTileId]
+        if (!tile)
           throw Error(
-            "mapArray has a tile that selectedShipPathObject does not!",
+            "selectedShipPathArray has a xyTileId that mapObject does not!",
           )
         return (
           <DumbPixiShipPath
             key={`shipPath-${tile.xyTileId}`}
             tile={tile}
-            shipPath={shipPathTiles.map((tile) => tile.xyTileId)}
+            shipPath={selectedShipPathArray}
           />
         )
       })}
