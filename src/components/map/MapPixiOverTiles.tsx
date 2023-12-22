@@ -17,6 +17,7 @@ export const MapPixiOverTiles = memo(() => {
     mapArray: state.mapArray,
     mapObject: state.mapObject,
     cityObject: state.cityObject,
+    // TODO: Remove this path object entirely!
     selectedShipPathObject: state.selectedShipPathObject,
     knownTilesObject: state.knownTilesObject,
   }))
@@ -106,7 +107,7 @@ export const MapPixiOverTiles = memo(() => {
           <DumbPixiShipPath
             key={`shipPath-${tile.xyTileId}`}
             tile={tile}
-            selectedShipPath={shipPath}
+            shipPath={shipPathTiles.map((tile) => tile.xyTileId)}
           />
         )
       })}

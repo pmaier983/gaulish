@@ -66,6 +66,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     removeFromNpcPath: state.removeFromNpcPath,
     addToNpcPath: state.addToNpcPath,
   }))
+
   const { register, handleSubmit, formState } = useForm<Coordinates>()
   const { size, sizeRef } = useElementSize()
 
@@ -145,8 +146,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     }
   }, [mapToppingAction, npcPathHandler])
 
-  const npcShipPathObject = generateSelectedShipPathObject(npcPathArray)
-
   return (
     <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
       <div className={`relative flex flex-1 flex-col gap-2`} ref={sizeRef}>
@@ -160,20 +159,17 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           <>
             <MapGroupedPixiTileBase mapArray={mapArray} />
             {npcPathArray.map((npcPath) => {
-              const shipPath = npcShipPathObject[npcPath]
               const tile = mapObject[npcPath]
-              if (!shipPath)
-                throw Error(
-                  "mapArray has a tile that selectedShipPathObject does not!",
-                )
+
               if (!tile) {
                 throw Error("mapArray has a tile that mapObject does not!")
               }
+
               return (
                 <DumbPixiShipPath
                   key={`shipPath-${npcPath}`}
                   tile={tile}
-                  selectedShipPath={shipPath}
+                  shipPath={npcPathArray}
                 />
               )
             })}
