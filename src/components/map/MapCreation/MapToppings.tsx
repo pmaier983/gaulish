@@ -53,6 +53,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     npcPathArray,
     startAddingNpcPath,
     cancelToppingAction,
+    submitMapToppingAction,
     removeFromNpcPath,
     addToNpcPath,
   } = useMapCreationStore((state) => ({
@@ -63,6 +64,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     npcPathArray: state.npcPathArray,
     startAddingNpcPath: state.startAddingNpcPath,
     cancelToppingAction: state.cancelToppingAction,
+    submitMapToppingAction: state.submitMapToppingAction,
     removeFromNpcPath: state.removeFromNpcPath,
     addToNpcPath: state.addToNpcPath,
   }))
@@ -77,7 +79,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
 
-  // TODO: add command Z functionality
   const npcPathHandler = useCallback(
     (e: KeyboardEvent) => {
       e.preventDefault()
@@ -188,7 +189,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           className="absolute bottom-2 right-2 rounded border-2 border-black bg-green-300 p-2 hover:bg-red-400 disabled:hidden"
           onClick={() => {
             // TODO: flesh out submit functionality
-            cancelToppingAction()
+            submitMapToppingAction()
           }}
           disabled={true}
         >

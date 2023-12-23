@@ -38,6 +38,7 @@ interface MapCreationStoreActions {
   addToNpcPath: (newXYTileId: string) => void
   removeFromNpcPath: () => void
   cancelToppingAction: () => void
+  submitMapToppingAction: () => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -94,6 +95,18 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
 
     cancelToppingAction: () => {
       set({ mapToppingAction: undefined, npcPathArray: [] })
+    },
+
+    submitMapToppingAction: () => {
+      const currentMapToppingAction = get().mapToppingAction
+      switch (currentMapToppingAction) {
+        case "ADD_NPC": {
+          // TODO: add npc's to a local storage list (and locally)
+        }
+        default: {
+          throw new Error("Invalid map topping action")
+        }
+      }
     },
 
     restart: () => set(initialMapCreationState),
