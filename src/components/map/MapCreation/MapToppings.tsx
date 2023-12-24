@@ -2,6 +2,13 @@ import { useCallback, useEffect } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import dynamic from "next/dynamic"
 import toast from "react-hot-toast"
+import { zodResolver } from "@hookform/resolvers/zod"
+import {
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@radix-ui/react-select"
+import * as z from "zod"
 
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
@@ -11,11 +18,6 @@ import type { Tile } from "schema"
 import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
 import { SHIP_TYPES, type ShipType } from "~/components/constants"
 import { Select, SelectItem } from "~/components/ui/Select"
-import {
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@radix-ui/react-select"
 
 const MapWrapper = dynamic(
   () =>
@@ -27,11 +29,11 @@ const MapWrapper = dynamic(
   },
 )
 
-interface NpcCreationForm {
-  x: number
-  y: number
-  npcShipType: ShipType
-}
+const NpcCreationFormSchema = z.object({
+  x: z.number().min(0),
+  y: z.number().min(0),
+  npcShipType: z.nativeEnum(SHIP_TYPES),
+})
 
 // TODO: consider unifying with whats in useGamestate
 const VALID_KEYS = [
@@ -54,8 +56,6 @@ interface MapToppingsProps {
 
 export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   const {
-    mapWidth,
-    mapHeight,
     mapArray,
     mapToppingAction,
     npcPathArray,
@@ -75,10 +75,21 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     addToNpcPath: state.addToNpcPath,
   }))
 
-  const { register, handleSubmit, formState } = useForm<NpcCreationForm>()
+  const { register, handleSubmit, formState, getValues, setValue } = useForm<
+    z.infer<typeof NpcCreationFormSchema>
+  >({
+    resolver: zodResolver(NpcCreationFormSchema),
+    // For formState.isValid to work, we need to set mode to onChange
+    // And also avoid using easy register methods like (min, max, required) etc.
+    // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
+    mode: "onChange",
+  })
   const { size, sizeRef } = useElementSize()
 
-  const onStartNPC: SubmitHandler<NpcCreationForm> = (data, e) => {
+  const onStartNPC: SubmitHandler<z.infer<typeof NpcCreationFormSchema>> = (
+    data,
+    e,
+  ) => {
     e?.preventDefault()
     startAddingNpcPath(`${data.x}:${data.y}`)
   }
@@ -209,6 +220,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
         </button>
       </div>
       <div className="flex-1">
+        <button onClick={() => console.log(getValues())}>Click me</button>
         {/* form to start submitting the npc stuff */}
         <form
           onSubmit={handleSubmit(onStartNPC)}
@@ -216,7 +228,13 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
         >
           {/* Random Div to avoid flex messing with Select Styling */}
           <div className="rounded border border-black p-1">
-            <Select {...register("npcShipType", { required: true })}>
+            <Select
+              {...register("npcShipType")}
+              // TODO: setup validation to ensure 100% of the time this is ShipType
+              onValueChange={(value: ShipType) =>
+                setValue("npcShipType", value)
+              }
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Npc ShipType" />
               </SelectTrigger>
@@ -235,13 +253,13 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           </div>
           <label htmlFor="x">X:</label>
           <input
-            {...register("x", { required: true, max: mapWidth, min: 0 })}
+            {...register("x", { setValueAs: (value) => parseInt(value) })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
           <label htmlFor="y">Y:</label>
           <input
-            {...register("y", { required: true, max: mapHeight, min: 0 })}
+            {...register("y", { setValueAs: (value) => parseInt(value) })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
