@@ -75,7 +75,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     addToNpcPath: state.addToNpcPath,
   }))
 
-  const { register, handleSubmit, formState, getValues, setValue } = useForm<
+  const { register, handleSubmit, formState, setValue } = useForm<
     z.infer<typeof NpcCreationFormSchema>
   >({
     resolver: zodResolver(NpcCreationFormSchema),
@@ -220,7 +220,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
         </button>
       </div>
       <div className="flex-1">
-        <button onClick={() => console.log(getValues())}>Click me</button>
         {/* form to start submitting the npc stuff */}
         <form
           onSubmit={handleSubmit(onStartNPC)}
@@ -253,13 +252,17 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           </div>
           <label htmlFor="x">X:</label>
           <input
-            {...register("x", { setValueAs: (value) => parseInt(value) })}
+            {...register("x", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
           <label htmlFor="y">Y:</label>
           <input
-            {...register("y", { setValueAs: (value) => parseInt(value) })}
+            {...register("y", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
             type="number"
             className="w-12 border-2 border-black p-1"
           />
