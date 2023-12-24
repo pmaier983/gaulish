@@ -3,18 +3,23 @@ import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
 import type { MapCreationMode } from "~/components/map/MapCreation/constants"
-import { type Path, type Tile } from "schema"
+import { type Path, type Tile, type Npc } from "schema"
 import {
   getLocalStorageValue,
   setLocalStorageValue,
 } from "~/hooks/useLocalStorage"
 import { createCreationMap } from "~/components/map/MapCreation/utils"
+import type { ShipType } from "~/components/constants"
 
 export const MAP_TOPPING_ACTIONS = {
   ADD_NPC: "ADD_NPC",
 }
 
 export type MapToppingAction = keyof typeof MAP_TOPPING_ACTIONS | undefined
+
+export interface StoredNpc extends Omit<Npc, "pathId"> {
+  pathArray: Path["pathArray"]
+}
 
 export interface MapCreationStoreState {
   mapCreationMode: MapCreationMode
@@ -25,6 +30,7 @@ export interface MapCreationStoreState {
   mapHeight: number
 
   npcPathArray: Path["pathArray"]
+  npcs: StoredNpc[]
 }
 
 interface MapCreationStoreActions {
@@ -38,7 +44,14 @@ interface MapCreationStoreActions {
   addToNpcPath: (newXYTileId: string) => void
   removeFromNpcPath: () => void
   cancelToppingAction: () => void
-  submitMapToppingAction: () => void
+
+  addNewNpc: ({
+    pathArray,
+    npcShipType,
+  }: {
+    pathArray: Path["pathArray"]
+    npcShipType: ShipType
+  }) => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -54,6 +67,7 @@ const initialMapCreationState: MapCreationStoreState = {
   mapHeight: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.y), 0),
 
   npcPathArray: [],
+  npcs: [],
 }
 
 export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
@@ -93,20 +107,10 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       set({ npcPathArray: npcPathArrayLessLastItem })
     },
 
+    addNewNpc: () => {},
+
     cancelToppingAction: () => {
       set({ mapToppingAction: undefined, npcPathArray: [] })
-    },
-
-    submitMapToppingAction: () => {
-      const currentMapToppingAction = get().mapToppingAction
-      switch (currentMapToppingAction) {
-        case "ADD_NPC": {
-          // TODO: add npc's to a local storage list (and locally)
-        }
-        default: {
-          throw new Error("Invalid map topping action")
-        }
-      }
     },
 
     restart: () => set(initialMapCreationState),

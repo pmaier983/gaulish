@@ -9,6 +9,13 @@ import { useMapCreationStore } from "~/state/mapCreationStore"
 import { getXYFromXYTileId } from "~/utils"
 import type { Tile } from "schema"
 import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
+import { SHIP_TYPES, type ShipType } from "~/components/constants"
+import { Select, SelectItem } from "~/components/ui/Select"
+import {
+  SelectContent,
+  SelectTrigger,
+  SelectValue,
+} from "@radix-ui/react-select"
 
 const MapWrapper = dynamic(
   () =>
@@ -20,9 +27,10 @@ const MapWrapper = dynamic(
   },
 )
 
-interface Coordinates {
+interface NpcCreationForm {
   x: number
   y: number
+  npcShipType: ShipType
 }
 
 // TODO: consider unifying with whats in useGamestate
@@ -53,7 +61,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     npcPathArray,
     startAddingNpcPath,
     cancelToppingAction,
-    submitMapToppingAction,
     removeFromNpcPath,
     addToNpcPath,
   } = useMapCreationStore((state) => ({
@@ -64,15 +71,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     npcPathArray: state.npcPathArray,
     startAddingNpcPath: state.startAddingNpcPath,
     cancelToppingAction: state.cancelToppingAction,
-    submitMapToppingAction: state.submitMapToppingAction,
     removeFromNpcPath: state.removeFromNpcPath,
     addToNpcPath: state.addToNpcPath,
   }))
 
-  const { register, handleSubmit, formState } = useForm<Coordinates>()
+  const { register, handleSubmit, formState } = useForm<NpcCreationForm>()
   const { size, sizeRef } = useElementSize()
 
-  const onStartNPC: SubmitHandler<Coordinates> = (data, e) => {
+  const onStartNPC: SubmitHandler<NpcCreationForm> = (data, e) => {
     e?.preventDefault()
     startAddingNpcPath(`${data.x}:${data.y}`)
   }
@@ -189,7 +195,13 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           className="absolute bottom-2 right-2 rounded border-2 border-black bg-green-300 p-2 hover:bg-red-400 disabled:hidden"
           onClick={() => {
             // TODO: flesh out submit functionality
-            submitMapToppingAction()
+            switch (mapToppingAction) {
+              case "ADD_NPC":
+                toast.success("Submitted NPC Path")
+                break
+              default:
+                toast.error("No action to submit")
+            }
           }}
           disabled={true}
         >
@@ -200,8 +212,27 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
         {/* form to start submitting the npc stuff */}
         <form
           onSubmit={handleSubmit(onStartNPC)}
-          className="flex flex-row items-center gap-2"
+          className="flex items-center gap-2"
         >
+          {/* Random Div to avoid flex messing with Select Styling */}
+          <div className="rounded border border-black p-1">
+            <Select {...register("npcShipType", { required: true })}>
+              <SelectTrigger>
+                <SelectValue placeholder="Npc ShipType" />
+              </SelectTrigger>
+              <SelectContent position="item-aligned">
+                {Object.values(SHIP_TYPES).map((shipType) => (
+                  <SelectItem
+                    value={shipType}
+                    key={shipType}
+                    className="hover:cursor-pointer"
+                  >
+                    {shipType}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <label htmlFor="x">X:</label>
           <input
             {...register("x", { required: true, max: mapWidth, min: 0 })}
