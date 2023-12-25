@@ -18,6 +18,7 @@ import type { Tile } from "schema"
 import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
 import { SHIP_TYPES, type ShipType } from "~/components/constants"
 import { Select, SelectItem } from "~/components/ui/Select"
+import { DumbPixiNpcPath } from "~/components/pixi/DumbPixiNpcPath"
 
 const MapWrapper = dynamic(
   () =>
@@ -86,7 +87,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
-    mode: "onChange",
+    mode: "all",
   })
   const { size, sizeRef } = useElementSize()
 
@@ -184,6 +185,9 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           <>
             <MapGroupedPixiTileBase mapArray={mapArray} />
             <DumbPixiShipPath shipPath={npcPathArray} />
+            {npcs.map((npc) => (
+              <DumbPixiNpcPath npc={npc} key={npc.id} />
+            ))}
           </>
         </MapWrapper>
         <button
@@ -224,7 +228,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
               {...register("npcShipType")}
               // TODO: setup validation to ensure 100% of the time this is ShipType
               onValueChange={(value: ShipType) =>
-                setValue("npcShipType", value)
+                setValue("npcShipType", value, { shouldValidate: true })
               }
             >
               <SelectTrigger>
