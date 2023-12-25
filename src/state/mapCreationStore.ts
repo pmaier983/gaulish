@@ -9,7 +9,10 @@ import {
   setLocalStorageValue,
 } from "~/hooks/useLocalStorage"
 import { createCreationMap } from "~/components/map/MapCreation/utils"
-import type { ShipType } from "~/components/constants"
+import {
+  SHIP_TYPE_TO_SHIP_PROPERTIES,
+  type ShipType,
+} from "~/components/constants"
 
 export const MAP_TOPPING_ACTIONS = {
   ADD_NPC: "ADD_NPC",
@@ -30,6 +33,7 @@ export interface MapCreationStoreState {
   mapHeight: number
 
   npcPathArray: Path["pathArray"]
+  currentNpcShipType?: ShipType
   npcs: StoredNpc[]
 }
 
@@ -40,18 +44,18 @@ interface MapCreationStoreActions {
   setMapCreationMode: (mode: MapCreationMode) => void
   setMapSize: (width: number, height: number) => void
 
-  startAddingNpcPath: (initialXYTileId: string) => void
+  startAddNpcToppingAction: ({
+    initialXYTileId,
+    shipType,
+  }: {
+    initialXYTileId: string
+    shipType: ShipType
+  }) => void
   addToNpcPath: (newXYTileId: string) => void
   removeFromNpcPath: () => void
   cancelToppingAction: () => void
 
-  addNewNpc: ({
-    pathArray,
-    npcShipType,
-  }: {
-    pathArray: Path["pathArray"]
-    npcShipType: ShipType
-  }) => void
+  submitAddNpcToppingAction: () => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -67,7 +71,8 @@ const initialMapCreationState: MapCreationStoreState = {
   mapHeight: storedMapArray.reduce((acc, tile) => Math.max(acc, tile.y), 0),
 
   npcPathArray: [],
-  npcs: [],
+  currentNpcShipType: undefined,
+  npcs: getLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", []),
 }
 
 export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
@@ -90,8 +95,12 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       set({ mapWidth, mapHeight, mapArray: newDevMap })
     },
 
-    startAddingNpcPath: (initialXYTileId) => {
-      set({ mapToppingAction: "ADD_NPC", npcPathArray: [initialXYTileId] })
+    startAddNpcToppingAction: ({ initialXYTileId, shipType }) => {
+      set({
+        mapToppingAction: "ADD_NPC",
+        npcPathArray: [initialXYTileId],
+        currentNpcShipType: shipType,
+      })
     },
 
     addToNpcPath: (newPathXYTileId) => {
@@ -107,10 +116,42 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       set({ npcPathArray: npcPathArrayLessLastItem })
     },
 
-    addNewNpc: () => {},
+    submitAddNpcToppingAction: () => {
+      const currentNpcShipType = get().currentNpcShipType
+
+      if (!currentNpcShipType) {
+        console.error("Cannot submit NPC topping action without a ShipType")
+        return
+      }
+
+      const currentNpcs = get().npcs
+
+      const newNpc: StoredNpc = {
+        id: currentNpcs.length + 1,
+        shipType: currentNpcShipType,
+        pathArray: get().npcPathArray,
+        name: `Enemy ${currentNpcShipType}`,
+        speed: SHIP_TYPE_TO_SHIP_PROPERTIES[currentNpcShipType].speed,
+      }
+
+      const newNpcs = [...currentNpcs, newNpc]
+
+      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", newNpcs)
+
+      set({
+        mapToppingAction: undefined,
+        npcPathArray: [],
+        currentNpcShipType: undefined,
+        npcs: newNpcs,
+      })
+    },
 
     cancelToppingAction: () => {
-      set({ mapToppingAction: undefined, npcPathArray: [] })
+      set({
+        mapToppingAction: undefined,
+        npcPathArray: [],
+        currentNpcShipType: undefined,
+      })
     },
 
     restart: () => set(initialMapCreationState),

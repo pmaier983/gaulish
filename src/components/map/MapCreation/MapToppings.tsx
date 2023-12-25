@@ -59,20 +59,24 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     mapArray,
     mapToppingAction,
     npcPathArray,
-    startAddingNpcPath,
+    npcs,
+    startAddNpcToppingAction,
     cancelToppingAction,
     removeFromNpcPath,
     addToNpcPath,
+    submitAddNpcToppingAction,
   } = useMapCreationStore((state) => ({
     mapWidth: state.mapWidth,
     mapHeight: state.mapHeight,
     mapArray: state.mapArray,
     mapToppingAction: state.mapToppingAction,
     npcPathArray: state.npcPathArray,
-    startAddingNpcPath: state.startAddingNpcPath,
+    npcs: state.npcs,
+    startAddNpcToppingAction: state.startAddNpcToppingAction,
     cancelToppingAction: state.cancelToppingAction,
     removeFromNpcPath: state.removeFromNpcPath,
     addToNpcPath: state.addToNpcPath,
+    submitAddNpcToppingAction: state.submitAddNpcToppingAction,
   }))
 
   const { register, handleSubmit, formState, setValue } = useForm<
@@ -91,7 +95,10 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     e,
   ) => {
     e?.preventDefault()
-    startAddingNpcPath(`${data.x}:${data.y}`)
+    startAddNpcToppingAction({
+      initialXYTileId: `${data.x}:${data.y}`,
+      shipType: data.npcShipType,
+    })
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
@@ -165,7 +172,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   }, [mapToppingAction, npcPathHandler])
 
   return (
-    <div className={`${className} flex flex-1 flex-row gap-8 p-2`}>
+    <div className={`${className} flex flex-1 flex-col-reverse gap-8 p-2`}>
       <div className={`relative flex flex-1 flex-col gap-2`} ref={sizeRef}>
         <MapWrapper
           mapHeight={size.height}
@@ -208,22 +215,22 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             // TODO: flesh out submit functionality
             switch (mapToppingAction) {
               case "ADD_NPC":
-                toast.success("Submitted NPC Path")
+                submitAddNpcToppingAction()
                 break
               default:
                 toast.error("No action to submit")
             }
           }}
-          disabled={true}
+          disabled={mapToppingAction === undefined}
         >
           Submit Map Topping Action
         </button>
       </div>
-      <div className="flex-1">
+      <div>
         {/* form to start submitting the npc stuff */}
         <form
           onSubmit={handleSubmit(onStartNPC)}
-          className="flex items-center gap-2"
+          className="z isolate flex items-center gap-2"
         >
           {/* Random Div to avoid flex messing with Select Styling */}
           <div className="rounded border border-black p-1">
@@ -237,7 +244,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
               <SelectTrigger>
                 <SelectValue placeholder="Npc ShipType" />
               </SelectTrigger>
-              <SelectContent position="item-aligned">
+              <SelectContent position="item-aligned" className="bg-white">
                 {Object.values(SHIP_TYPES).map((shipType) => (
                   <SelectItem
                     value={shipType}
