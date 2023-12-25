@@ -183,21 +183,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
         >
           <>
             <MapGroupedPixiTileBase mapArray={mapArray} />
-            {npcPathArray.map((npcPath) => {
-              const tile = mapObject[npcPath]
-
-              if (!tile) {
-                throw Error("mapArray has a tile that mapObject does not!")
-              }
-
-              return (
-                <DumbPixiShipPath
-                  key={`shipPath-${npcPath}`}
-                  tile={tile}
-                  shipPath={npcPathArray}
-                />
-              )
-            })}
+            <DumbPixiShipPath shipPath={npcPathArray} />
           </>
         </MapWrapper>
         <button

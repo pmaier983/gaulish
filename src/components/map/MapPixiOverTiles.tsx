@@ -90,20 +90,7 @@ export const MapPixiOverTiles = memo(() => {
           <DumbPixiCity key={`city-${tile.xyTileId}`} tile={tile} city={city} />
         )
       })}
-      {selectedShipPathArray.map((xyTileId) => {
-        const tile = mapObject[xyTileId]
-        if (!tile)
-          throw Error(
-            "selectedShipPathArray has a xyTileId that mapObject does not!",
-          )
-        return (
-          <DumbPixiShipPath
-            key={`shipPath-${tile.xyTileId}`}
-            tile={tile}
-            shipPath={selectedShipPathArray}
-          />
-        )
-      })}
+      <DumbPixiShipPath shipPath={selectedShipPathArray} />
     </>
   )
 })
