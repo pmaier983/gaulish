@@ -56,7 +56,7 @@ export const DumbPixiNpcPath = ({ npc }: DumbPixiNpcPathProps) => {
         interactive
       />
       <Text
-        text={`🔴 ${npc.shipType}`}
+        text={`${npc.shipType}:${npc.id}`}
         x={tileXPosition}
         y={tileYPosition + TILE_SIZE * 0.5 - fontSize / 2}
         width={TILE_SIZE}

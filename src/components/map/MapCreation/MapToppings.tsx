@@ -36,6 +36,10 @@ const NpcCreationFormSchema = z.object({
   npcShipType: z.nativeEnum(SHIP_TYPES),
 })
 
+const NpcRemovalFormSchema = z.object({
+  id: z.number().min(0),
+})
+
 // TODO: consider unifying with whats in useGamestate
 const VALID_KEYS = [
   "ArrowUp",
@@ -65,6 +69,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     cancelToppingAction,
     removeFromNpcPath,
     addToNpcPath,
+    removeNpc,
     submitAddNpcToppingAction,
   } = useMapCreationStore((state) => ({
     mapWidth: state.mapWidth,
@@ -77,18 +82,26 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     cancelToppingAction: state.cancelToppingAction,
     removeFromNpcPath: state.removeFromNpcPath,
     addToNpcPath: state.addToNpcPath,
+    removeNpc: state.removeNpc,
     submitAddNpcToppingAction: state.submitAddNpcToppingAction,
   }))
 
-  const { register, handleSubmit, formState, setValue } = useForm<
-    z.infer<typeof NpcCreationFormSchema>
-  >({
+  const createNpcForm = useForm<z.infer<typeof NpcCreationFormSchema>>({
     resolver: zodResolver(NpcCreationFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
-    mode: "all",
+    mode: "onChange",
   })
+
+  const removeNpcForm = useForm<z.infer<typeof NpcRemovalFormSchema>>({
+    resolver: zodResolver(NpcRemovalFormSchema),
+    // For formState.isValid to work, we need to set mode to onChange
+    // And also avoid using easy register methods like (min, max, required) etc.
+    // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
+    mode: "onChange",
+  })
+
   const { size, sizeRef } = useElementSize()
 
   const onStartNPC: SubmitHandler<z.infer<typeof NpcCreationFormSchema>> = (
@@ -100,6 +113,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
       initialXYTileId: `${data.x}:${data.y}`,
       shipType: data.npcShipType,
     })
+  }
+
+  const onRemoveNPC: SubmitHandler<z.infer<typeof NpcRemovalFormSchema>> = (
+    data,
+    e,
+  ) => {
+    e?.preventDefault()
+    removeNpc(data.id)
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
@@ -216,19 +237,21 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           Submit Map Topping Action
         </button>
       </div>
-      <div>
+      <div className="flex flex-row gap-10">
         {/* form to start submitting the npc stuff */}
         <form
-          onSubmit={handleSubmit(onStartNPC)}
+          onSubmit={createNpcForm.handleSubmit(onStartNPC)}
           className="z isolate flex items-center gap-2"
         >
           {/* Random Div to avoid flex messing with Select Styling */}
           <div className="rounded border border-black p-1">
             <Select
-              {...register("npcShipType")}
+              {...createNpcForm.register("npcShipType")}
               // TODO: setup validation to ensure 100% of the time this is ShipType
               onValueChange={(value: ShipType) =>
-                setValue("npcShipType", value, { shouldValidate: true })
+                createNpcForm.setValue("npcShipType", value, {
+                  shouldValidate: true,
+                })
               }
             >
               <SelectTrigger>
@@ -249,7 +272,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           </div>
           <label htmlFor="x">X:</label>
           <input
-            {...register("x", {
+            {...createNpcForm.register("x", {
               setValueAs: (value: string) => parseInt(value),
             })}
             type="number"
@@ -257,7 +280,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           />
           <label htmlFor="y">Y:</label>
           <input
-            {...register("y", {
+            {...createNpcForm.register("y", {
               setValueAs: (value: string) => parseInt(value),
             })}
             type="number"
@@ -266,7 +289,25 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           <input
             type="submit"
             className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50"
-            disabled={!formState.isValid}
+            disabled={!createNpcForm.formState.isValid}
+          />
+        </form>
+        <form
+          onSubmit={removeNpcForm.handleSubmit(onRemoveNPC)}
+          className="z isolate flex items-center gap-2"
+        >
+          <label htmlFor="id">Ship To Remove:</label>
+          <input
+            {...removeNpcForm.register("id", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
+            type="number"
+            className="w-12 border-2 border-black p-1"
+          />
+          <input
+            type="submit"
+            className="rounded border-2 border-red-900 bg-red-400 p-1 text-black hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!removeNpcForm.formState.isValid}
           />
         </form>
       </div>

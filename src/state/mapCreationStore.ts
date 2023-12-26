@@ -56,6 +56,7 @@ interface MapCreationStoreActions {
   cancelToppingAction: () => void
 
   submitAddNpcToppingAction: () => void
+  removeNpc: (npcId: number) => void
 }
 
 export type MapCreationStore = MapCreationStoreActions & MapCreationStoreState
@@ -144,6 +145,16 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
         currentNpcShipType: undefined,
         npcs: newNpcs,
       })
+    },
+
+    removeNpc: (npcId) => {
+      const npcs = get().npcs
+
+      const newNpcs = npcs.filter((npc) => npc.id !== npcId)
+
+      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", newNpcs)
+
+      set({ npcs: newNpcs })
     },
 
     cancelToppingAction: () => {
