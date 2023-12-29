@@ -40,6 +40,11 @@ const NpcRemovalFormSchema = z.object({
   id: z.number().min(0),
 })
 
+const CityCreationFormSchema = z.object({
+  x: z.number().min(0),
+  y: z.number().min(0),
+})
+
 // TODO: consider unifying with whats in useGamestate
 const VALID_KEYS = [
   "ArrowUp",
@@ -102,6 +107,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     mode: "onChange",
   })
 
+  const cityCreationForm = useForm<z.infer<typeof CityCreationFormSchema>>({
+    resolver: zodResolver(CityCreationFormSchema),
+    // For formState.isValid to work, we need to set mode to onChange
+    // And also avoid using easy register methods like (min, max, required) etc.
+    // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
+    mode: "onChange",
+  })
+
   const { size, sizeRef } = useElementSize()
 
   const onStartNPC: SubmitHandler<z.infer<typeof NpcCreationFormSchema>> = (
@@ -121,6 +134,13 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   ) => {
     e?.preventDefault()
     removeNpc(data.id)
+  }
+
+  const onCityAddition: SubmitHandler<
+    z.infer<typeof CityCreationFormSchema>
+  > = (data, e) => {
+    e?.preventDefault()
+    // TODO: add city here
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
@@ -308,6 +328,32 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             type="submit"
             className="rounded border-2 border-red-900 bg-red-400 p-1 text-black hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!removeNpcForm.formState.isValid}
+          />
+        </form>
+        <form
+          onSubmit={cityCreationForm.handleSubmit(onCityAddition)}
+          className="z isolate flex items-center gap-2"
+        >
+          <label htmlFor="x">X:</label>
+          <input
+            {...cityCreationForm.register("x", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
+            type="number"
+            className="w-12 border-2 border-black p-1"
+          />
+          <label htmlFor="y">Y:</label>
+          <input
+            {...cityCreationForm.register("y", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
+            type="number"
+            className="w-12 border-2 border-black p-1"
+          />
+          <input
+            type="submit"
+            className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!cityCreationForm.formState.isValid}
           />
         </form>
       </div>
