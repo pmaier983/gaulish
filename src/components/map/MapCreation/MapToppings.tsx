@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import dynamic from "next/dynamic"
 import toast from "react-hot-toast"
@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@radix-ui/react-select"
 import * as z from "zod"
+import * as Dialog from "@radix-ui/react-dialog"
 
 import { MapGroupedPixiTileBase } from "~/components/map/MapGroupedBaseTiles"
 import { useElementSize } from "~/hooks/useElementSize"
@@ -19,6 +20,7 @@ import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
 import { SHIP_TYPES, type ShipType } from "~/components/constants"
 import { Select, SelectItem } from "~/components/ui/Select"
 import { DumbPixiNpcPath } from "~/components/pixi/DumbPixiNpcPath"
+import { CityCreationDialog } from "~/components/map/MapCreation/CityCreationDialog"
 
 const MapWrapper = dynamic(
   () =>
@@ -107,6 +109,15 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     mode: "onChange",
   })
 
+  const [isCityDialogOpen, setCityDialogOpenState] = useState(false)
+  const toggleCityDialogOpenState = (newIsOpenState?: boolean) => {
+    if (typeof newIsOpenState === "boolean") {
+      setCityDialogOpenState(newIsOpenState)
+      return
+    }
+    setCityDialogOpenState((prevIsOpenState) => !prevIsOpenState)
+  }
+
   const cityCreationForm = useForm<z.infer<typeof CityCreationFormSchema>>({
     resolver: zodResolver(CityCreationFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
@@ -140,7 +151,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     z.infer<typeof CityCreationFormSchema>
   > = (data, e) => {
     e?.preventDefault()
-    // TODO: add city here
+    toggleCityDialogOpenState(true)
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
@@ -356,6 +367,12 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             disabled={!cityCreationForm.formState.isValid}
           />
         </form>
+        <Dialog.Root
+          open={isCityDialogOpen}
+          onOpenChange={toggleCityDialogOpenState}
+        >
+          <CityCreationDialog />
+        </Dialog.Root>
       </div>
     </div>
   )
