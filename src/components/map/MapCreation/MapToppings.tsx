@@ -32,17 +32,17 @@ const MapWrapper = dynamic(
   },
 )
 
-const NpcCreationFormSchema = z.object({
+const npcCreationFormSchema = z.object({
   x: z.number().min(0),
   y: z.number().min(0),
   npcShipType: z.nativeEnum(SHIP_TYPES),
 })
 
-const NpcRemovalFormSchema = z.object({
+const npcRemovalFormSchema = z.object({
   id: z.number().min(0),
 })
 
-const CityCreationFormSchema = z.object({
+const cityCreationFormSchema = z.object({
   x: z.number().min(0),
   y: z.number().min(0),
 })
@@ -93,16 +93,16 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     submitAddNpcToppingAction: state.submitAddNpcToppingAction,
   }))
 
-  const createNpcForm = useForm<z.infer<typeof NpcCreationFormSchema>>({
-    resolver: zodResolver(NpcCreationFormSchema),
+  const createNpcForm = useForm<z.infer<typeof npcCreationFormSchema>>({
+    resolver: zodResolver(npcCreationFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
     mode: "onChange",
   })
 
-  const removeNpcForm = useForm<z.infer<typeof NpcRemovalFormSchema>>({
-    resolver: zodResolver(NpcRemovalFormSchema),
+  const removeNpcForm = useForm<z.infer<typeof npcRemovalFormSchema>>({
+    resolver: zodResolver(npcRemovalFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
@@ -118,8 +118,8 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     setCityDialogOpenState((prevIsOpenState) => !prevIsOpenState)
   }
 
-  const cityCreationForm = useForm<z.infer<typeof CityCreationFormSchema>>({
-    resolver: zodResolver(CityCreationFormSchema),
+  const cityCreationForm = useForm<z.infer<typeof cityCreationFormSchema>>({
+    resolver: zodResolver(cityCreationFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
@@ -128,7 +128,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
 
   const { size, sizeRef } = useElementSize()
 
-  const onStartNPC: SubmitHandler<z.infer<typeof NpcCreationFormSchema>> = (
+  const onStartNPC: SubmitHandler<z.infer<typeof npcCreationFormSchema>> = (
     data,
     e,
   ) => {
@@ -139,7 +139,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
     })
   }
 
-  const onRemoveNPC: SubmitHandler<z.infer<typeof NpcRemovalFormSchema>> = (
+  const onRemoveNPC: SubmitHandler<z.infer<typeof npcRemovalFormSchema>> = (
     data,
     e,
   ) => {
@@ -148,7 +148,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   }
 
   const onCityAddition: SubmitHandler<
-    z.infer<typeof CityCreationFormSchema>
+    z.infer<typeof cityCreationFormSchema>
   > = (data, e) => {
     e?.preventDefault()
     toggleCityDialogOpenState(true)
