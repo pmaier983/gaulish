@@ -23,11 +23,10 @@ export const useSpritesheet = () => {
   useEffect(() => {
     const loadPixiData = async () => {
       // Load the Spritesheet
+      // TODO: How to prevent duplicate loading of spritesheet? useEffect runs 2x in dev mode?
       const loadedSpritesheet = await PIXI.Assets.load<Spritesheet>(
         "/assets/spritesheet.json",
       )
-
-      console.log(loadedSpritesheet)
 
       // Once everything is loaded, set isSpritesheetLoaded to true
       setSpritesheet({

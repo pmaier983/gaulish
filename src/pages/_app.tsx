@@ -18,7 +18,11 @@ import { ABLY_CLIENT_ID } from "~/utils"
 import { useSpritesheet } from "~/hooks/useSpritesheet"
 
 // This is a variable font https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_fonts/Variable_fonts_guide
-const Font = Alegreya({ subsets: ["latin"], variable: "--default-font" })
+const Font = Alegreya({
+  subsets: ["latin"],
+  variable: "--default-font",
+  preload: true,
+})
 
 // See: https://github1s.com/vercel/next.js/blob/canary/examples/with-ably
 

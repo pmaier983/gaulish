@@ -268,7 +268,7 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           Submit Map Topping Action
         </button>
       </div>
-      <div className="flex flex-row gap-10">
+      <div className="flex flex-row flex-wrap gap-10">
         {/* form to start submitting the npc stuff */}
         <form
           onSubmit={createNpcForm.handleSubmit(onStartNPC)}
@@ -277,7 +277,6 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           {/* Random Div to avoid flex messing with Select Styling */}
           <div className="rounded border border-black p-1">
             <Select
-              {...createNpcForm.register("npcShipType")}
               // TODO: setup validation to ensure 100% of the time this is ShipType
               onValueChange={(value: ShipType) =>
                 createNpcForm.setValue("npcShipType", value, {
