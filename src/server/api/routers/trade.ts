@@ -1,13 +1,10 @@
 import { createId } from "@paralleldrive/cuid2"
 import { eq } from "drizzle-orm"
-import { cargo, city, log, ship } from "schema"
+import { CARGO_TYPES_LIST, cargo, city, log, ship } from "schema"
 import { createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
 
-import {
-  CARGO_TYPES_LIST,
-  SHIP_TYPE_TO_SHIP_PROPERTIES,
-} from "~/components/constants"
+import { SHIP_TYPE_TO_SHIP_PROPERTIES } from "~/components/constants"
 import { getSpotPrice } from "~/hooks/useGetPrice"
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { getCargoSum } from "~/utils"

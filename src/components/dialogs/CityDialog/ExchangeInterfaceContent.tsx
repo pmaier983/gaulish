@@ -1,10 +1,9 @@
 import { produce } from "immer"
 import React, { useState, type ComponentPropsWithRef } from "react"
-import { type CargoTypes } from "schema"
+import { CARGO_TYPES_LIST, type CargoTypes } from "schema"
 
 import { FormatNumberChange } from "~/components/FormatNumberChange"
 import { CargoCount } from "~/components/ImageIconCount"
-import { CARGO_TYPES_LIST } from "~/components/constants"
 import { ExchangeInterfaceRow } from "~/components/dialogs/CityDialog/ExchangeInterfaceRow"
 import { type ShipComposite } from "~/state/gamestateStore"
 import { api } from "~/utils/api"

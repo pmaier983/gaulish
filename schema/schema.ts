@@ -263,12 +263,12 @@ export const logRelations = relations(log, ({ one }) => ({
 export const cargo = mysqlTable("cargo", {
   id: varchar("id", { length: 191 }).primaryKey().notNull(),
   gold: int("gold").default(0).notNull(),
-  /** ITTT: Also Update CARGO_TYPES_LIST in constants */
+  /** ITTT: Also Update CARGO_TYPES_LIST */
   WHEAT: int("wheat").default(0).notNull(),
   WOOL: int("wool").default(0).notNull(),
   STONE: int("stone").default(0).notNull(),
   WOOD: int("wood").default(0).notNull(),
-  /** ITTT: Also Update CARGO_TYPES_LIST in constants */
+  /** ITTT: Also Update CARGO_TYPES_LIST */
 })
 export type Cargo = InferSelectModel<typeof cargo>
 export const cargoRelations = relations(cargo, ({ one }) => ({
@@ -279,6 +279,15 @@ export const cargoRelations = relations(cargo, ({ one }) => ({
 }))
 
 export type CargoTypes = Uppercase<Exclude<keyof Cargo, "id" | "gold">>
+
+// TODO: find a better way to keep this in sync with CargoTypes?
+export const CARGO_TYPES_LIST = [
+  "WHEAT",
+  "STONE",
+  "WOOD",
+  "WOOL",
+] as const satisfies CargoTypes[]
+
 export type CityCargo = {
   type: CargoTypes
   amplitude: number

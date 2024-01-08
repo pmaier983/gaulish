@@ -157,9 +157,6 @@ export const SHIP_TYPE_TO_SHIP_PROPERTIES: {
   },
 }
 
-// TODO: find a better way to keep this in sync with cargo?
-export const CARGO_TYPES_LIST = ["WHEAT", "STONE", "WOOD", "WOOL"] as const
-
 export const CARDINAL_DIRECTIONS_ARRAY = [
   [0, 1], // north
   [0, -1], // south
