@@ -5,7 +5,7 @@ import { api } from "~/utils/api"
 
 // TODO: why is this component constantly re-rendering?
 export const ShipList = () => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { data: ships, isSuccess } = api.ships.getUsersShips.useQuery(
     undefined,

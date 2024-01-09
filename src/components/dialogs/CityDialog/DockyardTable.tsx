@@ -33,7 +33,7 @@ export const DockyardTable = ({
   const { setCityDialogInterface } = useCityDialogStore((state) => ({
     setCityDialogInterface: state.setCityDialogInterface,
   }))
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { mutate: buyNewShip, isLoading } = api.ships.buyShip.useMutation({
     onSuccess: (newShips) => {

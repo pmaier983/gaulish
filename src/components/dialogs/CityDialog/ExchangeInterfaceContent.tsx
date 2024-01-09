@@ -23,7 +23,7 @@ export const ExchangeInterfaceContent = ({
   selectedExchangeShipRight,
   className = "",
 }: ExchangeInterfaceContentProps) => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { mutate: exchange } = api.trade.exchangeCargo.useMutation({
     onMutate: (exchangeInputs) => {

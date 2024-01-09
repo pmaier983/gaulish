@@ -82,4 +82,4 @@ export type RouterInputs = inferRouterInputs<AppRouter>
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>
 
-export type QueryClient = ReturnType<(typeof api)["useContext"]>
+export type QueryClient = ReturnType<(typeof api)["useUtils"]>

@@ -13,7 +13,7 @@ export const DockyardInterface = ({ selectedCity }: DockyardInterfaceProps) => {
   const { toggleSelectedCityId } = useCityDialogStore((state) => ({
     toggleSelectedCityId: state.toggleSelectedCityId,
   }))
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,

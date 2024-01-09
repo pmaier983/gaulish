@@ -10,7 +10,7 @@ interface ShipHeaderProps extends ComponentPropsWithRef<"div"> {
 }
 
 export const ShipHeader = ({ shipId, className }: ShipHeaderProps) => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { sailingShips, cityObject } = useGamestateStore((state) => ({
     sailingShips: state.sailingShips,

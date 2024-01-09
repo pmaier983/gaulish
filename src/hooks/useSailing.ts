@@ -8,7 +8,7 @@ import { useAtom } from "jotai"
 import { haveLogsUpdatedAtom } from "~/state/atoms"
 
 export const useSailing = () => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
   const [, setHaveLogsUpdatedState] = useAtom(haveLogsUpdatedAtom)
   const {
     selectedShip,

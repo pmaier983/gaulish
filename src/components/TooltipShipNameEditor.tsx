@@ -13,7 +13,7 @@ export const TooltipShipNameEditor = ({
   shipId,
   text,
 }: TooltipEditTextProps) => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { mutate } = api.ships.updateShipName.useMutation({
     onSuccess: (newShipData) => {

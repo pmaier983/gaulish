@@ -27,7 +27,7 @@ export const TradeInterface = ({
   selectedCity,
   className,
 }: TradeInterfaceProps) => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
   const { getPrice } = useGetPrice()
 
   const { toggleSelectedCityId, toggleSelectedTradeShipId, shipTradeClick } =

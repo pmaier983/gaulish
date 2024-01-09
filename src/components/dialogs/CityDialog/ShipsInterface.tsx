@@ -11,7 +11,7 @@ export const ShipsInterface = ({
   selectedCity,
   className,
 }: ShipsInterfaceProps) => {
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { data: ships } = api.ships.getUsersShips.useQuery(undefined, {
     staleTime: Infinity,

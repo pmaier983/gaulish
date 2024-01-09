@@ -38,7 +38,7 @@ export const CityDialog = () => {
     setCityDialogInterface: state.setCityDialogInterface,
   }))
 
-  const queryClient = api.useContext()
+  const queryClient = api.useUtils()
 
   const { data: cities } = api.map.getCities.useQuery(undefined, {
     staleTime: Infinity,
@@ -188,7 +188,7 @@ const CityDialogCommonContent = ({
               ),
             )}
           </div>
-          <Dialog.Close className="focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none">
+          <Dialog.Close className="rounded-sm opacity-70 ring-offset-black transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
             <Icon icon="x" />
             <span className="sr-only">Close</span>
           </Dialog.Close>
