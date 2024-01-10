@@ -1,6 +1,9 @@
 import { type NextRouter } from "next/router"
 
-export const AUTH_FREE_PAGES: NextRouter["pathname"][] = ["/"]
+export const AUTH_FREE_PAGES: NextRouter["pathname"][] = [
+  "/",
+  "/app/map-creation",
+]
 
 export const TILE_SIZE = 32
 
