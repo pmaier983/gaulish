@@ -1,11 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import React from "react"
+import { produce } from "immer"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import { CARGO_TYPES_LIST, type CargoTypes } from "schema"
 import * as z from "zod"
 
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
+import { Checkbox } from "~/components/ui/checkbox"
+import { ImageIcon } from "~/components/ImageIcon"
 
 const cityCreationFormSchema = z.object({
   name: z.string().min(3),
+  cargoArray: z.array(
+    z.object({
+      type: z.enum(CARGO_TYPES_LIST),
+      midline: z.number().min(1),
+      amplitude: z.number().min(1),
+    }),
+  ),
 })
 
 export const CityCreationDialog = () => {
@@ -24,16 +36,93 @@ export const CityCreationDialog = () => {
     // TODO: adjust localStorage & state on city creation
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const toggleCargoType = ({}: { cargoType: CargoTypes }) => {
+    // const currentCargoArray = cityCreationForm.getValues().cargoArray
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const updateCargoValue = ({}: {
+    cargoType: CargoTypes
+    label: "midline" | "amplitude"
+    value: number
+  }) => {
+    // const currentCargoArray = cityCreationForm.getValues().cargoArray
+    // const futureCargo =
+  }
+
   return (
     <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] p-3">
       <div className="flex max-w-full flex-1 flex-row justify-between gap-2 max-sm:flex-col">
-        <form onSubmit={cityCreationForm.handleSubmit(onCityCreation)}>
-          <label htmlFor="name">City Name:</label>
-          <input
-            {...cityCreationForm.register("name")}
-            className="w-12 border-2 border-black p-1"
-          />
+        <form
+          onSubmit={cityCreationForm.handleSubmit(onCityCreation)}
+          className="flex flex-col"
+        >
+          <div className="flex items-center gap-2">
+            <label htmlFor="name">City Name:</label>
+            <input
+              {...cityCreationForm.register("name")}
+              className="w-12 border-2 border-black p-1"
+            />
+          </div>
+          <div className="flex flex-row items-center gap-3 pb-2 pt-2">
+            {CARGO_TYPES_LIST.map((cargoType) => {
+              const currentCargoArray = cityCreationForm.watch("cargoArray")
 
+              const isEnabled =
+                currentCargoArray.findIndex((val) => val.type === cargoType) >=
+                0
+
+              return (
+                <div
+                  key={cargoType}
+                  className="flex flex-row items-center gap-2"
+                >
+                  <Checkbox
+                    checked={isEnabled}
+                    onCheckedChange={() => {
+                      const newCargoArray = produce(
+                        currentCargoArray,
+                        (draftCargoArray) => draftCargoArray,
+                      ) // TODO
+                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                    }}
+                  />
+                  <ImageIcon icon={cargoType} />
+                  <label htmlFor={`${cargoType}-midline`}>Midline</label>
+                  <input
+                    onChange={() => {
+                      // const newMidline = e.target.value
+
+                      const newCargoArray = produce(
+                        currentCargoArray,
+                        (draftCargoArray) => draftCargoArray,
+                      ) // TODO
+
+                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                    }}
+                    type="number"
+                    className="w-12 border-2 border-black p-1"
+                  />
+                  <label htmlFor={`${cargoType}-Amplitude`}>Amplitude</label>
+                  <input
+                    onChange={() => {
+                      // const newAmplitude = e.target.value
+
+                      const newCargoArray = produce(
+                        currentCargoArray,
+                        (draftCargoArray) => draftCargoArray,
+                      ) // TODO
+
+                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                    }}
+                    type="number"
+                    className="w-12 border-2 border-black p-1"
+                  />
+                </div>
+              )
+            })}
+          </div>
           <input
             type="submit"
             className="rounded border-2 border-red-900 bg-red-400 p-1 text-black hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
