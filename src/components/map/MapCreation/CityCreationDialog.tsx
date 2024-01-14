@@ -27,6 +27,9 @@ export const CityCreationDialog = () => {
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
     mode: "onChange",
+    defaultValues: {
+      cargoArray: [],
+    },
   })
 
   const onCityCreation: SubmitHandler<

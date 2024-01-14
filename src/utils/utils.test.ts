@@ -9,7 +9,7 @@ const fakeNpc: Npc = {
   pathId: null,
   shipType: SHIP_TYPES.PLANK,
   name: "Test Ship",
-  speed: SHIP_TYPE_TO_SHIP_PROPERTIES[SHIP_TYPES.PLANK]!.speed,
+  speed: 1 / 1000,
 }
 
 const fakeNpcPath: Omit<Path, "pathArray"> = {
