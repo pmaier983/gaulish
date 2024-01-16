@@ -39,19 +39,56 @@ export const CityCreationDialog = () => {
     // TODO: adjust localStorage & state on city creation
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const toggleCargoType = ({}: { cargoType: CargoTypes }) => {
-    // const currentCargoArray = cityCreationForm.getValues().cargoArray
+  const toggleCargoType = ({ cargoType }: { cargoType: CargoTypes }) => {
+    console.log("eh")
+    const currentCargoArray = cityCreationForm.getValues().cargoArray
+
+    const hasCargoType =
+      currentCargoArray.findIndex((cargo) => cargo.type === cargoType) >= 0
+
+    if (hasCargoType) {
+      const newCargoArray = currentCargoArray.filter(
+        (cargo) => cargo.type !== cargoType,
+      )
+
+      cityCreationForm.setValue("cargoArray", newCargoArray)
+    } else {
+      const newCargoArray = [
+        ...currentCargoArray,
+        {
+          type: cargoType,
+          midline: 1,
+          amplitude: 1,
+        },
+      ]
+
+      cityCreationForm.setValue("cargoArray", newCargoArray)
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const updateCargoValue = ({}: {
+  const updateCargoType = (newCargo: {
     cargoType: CargoTypes
     label: "midline" | "amplitude"
     value: number
   }) => {
-    // const currentCargoArray = cityCreationForm.getValues().cargoArray
-    // const futureCargo =
+    const currentCargoArray = cityCreationForm.getValues().cargoArray
+
+    const newCargoArray = produce(currentCargoArray, (draftCargoArray) => {
+      const cargoTypeIndex = draftCargoArray.findIndex(
+        (cargo) => cargo.type === newCargo.cargoType,
+      )
+
+      const currentCargo = draftCargoArray[cargoTypeIndex]
+
+      if (!currentCargo) throw Error("Cargo type not found!")
+
+      draftCargoArray[cargoTypeIndex] = {
+        ...currentCargo,
+        [newCargo.label]: newCargo.value,
+      }
+    })
+
+    cityCreationForm.setValue("cargoArray", newCargoArray)
   }
 
   return (
@@ -84,40 +121,34 @@ export const CityCreationDialog = () => {
                   <Checkbox
                     checked={isEnabled}
                     onCheckedChange={() => {
-                      const newCargoArray = produce(
-                        currentCargoArray,
-                        (draftCargoArray) => draftCargoArray,
-                      ) // TODO
-                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                      toggleCargoType({ cargoType })
                     }}
                   />
                   <ImageIcon icon={cargoType} />
                   <label htmlFor={`${cargoType}-midline`}>Midline</label>
                   <input
-                    onChange={() => {
-                      // const newMidline = e.target.value
+                    onChange={(e) => {
+                      const newMidline = e.target.value
 
-                      const newCargoArray = produce(
-                        currentCargoArray,
-                        (draftCargoArray) => draftCargoArray,
-                      ) // TODO
-
-                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                      updateCargoType({
+                        cargoType,
+                        label: "midline",
+                        value: parseInt(newMidline),
+                      })
                     }}
                     type="number"
                     className="w-12 border-2 border-black p-1"
                   />
                   <label htmlFor={`${cargoType}-Amplitude`}>Amplitude</label>
                   <input
-                    onChange={() => {
-                      // const newAmplitude = e.target.value
+                    onChange={(e) => {
+                      const newAmplitude = e.target.value
 
-                      const newCargoArray = produce(
-                        currentCargoArray,
-                        (draftCargoArray) => draftCargoArray,
-                      ) // TODO
-
-                      cityCreationForm.setValue("cargoArray", newCargoArray)
+                      updateCargoType({
+                        cargoType,
+                        label: "amplitude",
+                        value: parseInt(newAmplitude),
+                      })
                     }}
                     type="number"
                     className="w-12 border-2 border-black p-1"
