@@ -9,6 +9,10 @@ import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { Checkbox } from "~/components/ui/checkbox"
 import { ImageIcon } from "~/components/ImageIcon"
 
+const DEFAULT_MIDLINE = 100
+
+const DEFAULT_AMPLITUDE = 10
+
 const cityCreationFormSchema = z.object({
   name: z.string().min(3),
   cargoArray: z.array(
@@ -40,7 +44,6 @@ export const CityCreationDialog = () => {
   }
 
   const toggleCargoType = ({ cargoType }: { cargoType: CargoTypes }) => {
-    console.log("eh")
     const currentCargoArray = cityCreationForm.getValues().cargoArray
 
     const hasCargoType =
@@ -57,8 +60,8 @@ export const CityCreationDialog = () => {
         ...currentCargoArray,
         {
           type: cargoType,
-          midline: 1,
-          amplitude: 1,
+          midline: DEFAULT_MIDLINE,
+          amplitude: DEFAULT_AMPLITUDE,
         },
       ]
 
@@ -102,10 +105,10 @@ export const CityCreationDialog = () => {
             <label htmlFor="name">City Name:</label>
             <input
               {...cityCreationForm.register("name")}
-              className="w-12 border-2 border-black p-1"
+              className="rounded border-2 border-black p-1"
             />
           </div>
-          <div className="flex flex-row items-center gap-3 pb-2 pt-2">
+          <div className="flex flex-row flex-wrap items-center gap-2 pb-2 pt-2">
             {CARGO_TYPES_LIST.map((cargoType) => {
               const currentCargoArray = cityCreationForm.watch("cargoArray")
 
@@ -116,15 +119,19 @@ export const CityCreationDialog = () => {
               return (
                 <div
                   key={cargoType}
-                  className="flex flex-row items-center gap-2"
+                  className="flex flex-row items-center gap-2 border-r-2 border-black p-3"
                 >
                   <Checkbox
                     checked={isEnabled}
                     onCheckedChange={() => {
                       toggleCargoType({ cargoType })
                     }}
+                    className="h-6 w-6"
                   />
-                  <ImageIcon icon={cargoType} />
+                  <ImageIcon
+                    icon={cargoType}
+                    className={isEnabled ? "" : "brightness-75 grayscale"}
+                  />
                   <label htmlFor={`${cargoType}-midline`}>Midline</label>
                   <input
                     onChange={(e) => {
@@ -137,7 +144,9 @@ export const CityCreationDialog = () => {
                       })
                     }}
                     type="number"
-                    className="w-12 border-2 border-black p-1"
+                    disabled={!isEnabled}
+                    defaultValue={DEFAULT_MIDLINE}
+                    className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                   <label htmlFor={`${cargoType}-Amplitude`}>Amplitude</label>
                   <input
@@ -151,7 +160,9 @@ export const CityCreationDialog = () => {
                       })
                     }}
                     type="number"
-                    className="w-12 border-2 border-black p-1"
+                    disabled={!isEnabled}
+                    defaultValue={DEFAULT_AMPLITUDE}
+                    className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                 </div>
               )
