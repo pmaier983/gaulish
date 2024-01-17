@@ -4,14 +4,26 @@ import { produce } from "immer"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { CARGO_TYPES_LIST, type CargoTypes } from "schema"
 import * as z from "zod"
+import * as Dialog from "@radix-ui/react-dialog"
 
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { Checkbox } from "~/components/ui/checkbox"
 import { ImageIcon } from "~/components/ImageIcon"
+import { useMapCreationStore } from "~/state/mapCreationStore"
 
-const DEFAULT_MIDLINE = 100
+const DEFAULT_CARGO_MIDLINES: { [key in CargoTypes]: number } = {
+  STONE: 50,
+  WHEAT: 30,
+  WOOD: 20,
+  WOOL: 10,
+}
 
-const DEFAULT_AMPLITUDE = 10
+const DEFAULT_CARGO_AMPLITUDES: { [key in CargoTypes]: number } = {
+  STONE: 25,
+  WHEAT: 15,
+  WOOD: 8,
+  WOOL: 5,
+}
 
 const cityCreationFormSchema = z.object({
   name: z.string().min(3),
@@ -28,7 +40,15 @@ const cityCreationFormSchema = z.object({
     .min(1),
 })
 
-export const CityCreationDialog = () => {
+export const CityCreationDialog = ({
+  toggleCityDialogOpenState,
+}: {
+  toggleCityDialogOpenState: () => void
+}) => {
+  const { addCity } = useMapCreationStore((state) => ({
+    addCity: state.addCity,
+  }))
+
   const cityCreationForm = useForm<z.infer<typeof cityCreationFormSchema>>({
     resolver: zodResolver(cityCreationFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
@@ -44,6 +64,16 @@ export const CityCreationDialog = () => {
     z.infer<typeof cityCreationFormSchema>
   > = (data, e) => {
     e?.preventDefault()
+    addCity({
+      name: data.name,
+      xyTileId: `${data.x}:${data.y}`,
+      cityCargo: data.cargoArray.map((cargo) => ({
+        ...cargo,
+        isSelling: true,
+      })),
+    })
+    // Close the dialog
+    toggleCityDialogOpenState()
   }
 
   const toggleCargoType = ({ cargoType }: { cargoType: CargoTypes }) => {
@@ -65,8 +95,8 @@ export const CityCreationDialog = () => {
         ...currentCargoArray,
         {
           type: cargoType,
-          midline: DEFAULT_MIDLINE,
-          amplitude: DEFAULT_AMPLITUDE,
+          midline: DEFAULT_CARGO_MIDLINES[cargoType],
+          amplitude: DEFAULT_CARGO_AMPLITUDES[cargoType],
         },
       ]
 
@@ -172,7 +202,7 @@ export const CityCreationDialog = () => {
                     }}
                     type="number"
                     disabled={!isEnabled}
-                    defaultValue={DEFAULT_MIDLINE}
+                    defaultValue={DEFAULT_CARGO_MIDLINES[cargoType]}
                     className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                   <label htmlFor={`${cargoType}-Amplitude`}>Amplitude</label>
@@ -188,7 +218,7 @@ export const CityCreationDialog = () => {
                     }}
                     type="number"
                     disabled={!isEnabled}
-                    defaultValue={DEFAULT_AMPLITUDE}
+                    defaultValue={DEFAULT_CARGO_AMPLITUDES[cargoType]}
                     className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                 </div>

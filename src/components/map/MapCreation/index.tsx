@@ -16,16 +16,10 @@ import { useMapCreationStore } from "~/state/mapCreationStore"
   const MapCreation = dynamic(() => import("somewhere"), {ssr: false})
 */
 const MapCreationWrapper = () => {
-  const { mapCreationMode, mapArray, setMapArray, setMapCreationMode } =
-    useMapCreationStore((state) => ({
-      mapCreationMode: state.mapCreationMode,
-      mapWidth: state.mapWidth,
-      mapHeight: state.mapHeight,
-      mapArray: state.mapArray,
+  const mapCreationState = useMapCreationStore((state) => state)
 
-      setMapArray: state.setMapArray,
-      setMapCreationMode: state.setMapCreationMode,
-    }))
+  const { mapCreationMode, mapArray, setMapArray, setMapCreationMode } =
+    mapCreationState
 
   const mapObject = mapArray.reduce<{ [xyTileId: string]: Tile }>(
     (acc, tile) => {
@@ -38,7 +32,7 @@ const MapCreationWrapper = () => {
   const renderMapCreationToolbar = () => {
     return (
       <>
-        <div className="self-center pt-10">
+        <div className="flex gap-2 self-center pt-10">
           <button
             className="rounded bg-blue-500 p-2 text-white hover:bg-blue-700"
             onClick={() => {
@@ -47,6 +41,14 @@ const MapCreationWrapper = () => {
             }}
           >
             Clear Map
+          </button>
+          <button
+            onClick={() => {
+              console.log(mapCreationState)
+            }}
+            className="rounded bg-orange-500 p-2 text-white hover:bg-orange-700"
+          >
+            Console Map Creation State
           </button>
         </div>
       </>

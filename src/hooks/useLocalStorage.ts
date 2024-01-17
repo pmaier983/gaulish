@@ -3,7 +3,8 @@ import { useState } from "react"
 // Type the inputs that correspond to these keys
 export const LOCAL_STORAGE_KEYS = {
   STORED_MAP_ARRAY: "STORED_MAP_ARRAY",
-  STORED_MAP_NPC: "STORED_MAP_NPC",
+  STORED_MAP_NPCS: "STORED_MAP_NPCS",
+  STORED_MAP_CITIES: "STORED_MAP_CITIES",
 } as const
 
 export type LocalStorageKey = keyof typeof LOCAL_STORAGE_KEYS

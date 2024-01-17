@@ -21,6 +21,7 @@ import { SHIP_TYPES, type ShipType } from "~/components/constants"
 import { Select, SelectItem } from "~/components/ui/Select"
 import { DumbPixiNpcPath } from "~/components/pixi/DumbPixiNpcPath"
 import { CityCreationDialog } from "~/components/map/MapCreation/CityCreationDialog"
+import { DumbPixiCity } from "~/components/pixi/DumbPixiCity"
 
 const MapWrapper = dynamic(
   () =>
@@ -39,6 +40,10 @@ const npcCreationFormSchema = z.object({
 })
 
 const npcRemovalFormSchema = z.object({
+  id: z.number().min(0),
+})
+
+const cityRemovalFormSchema = z.object({
   id: z.number().min(0),
 })
 
@@ -62,31 +67,21 @@ interface MapToppingsProps {
 }
 
 export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
+  const mapCreationState = useMapCreationStore((state) => state)
   const {
     mapArray,
     mapToppingAction,
     npcPathArray,
     npcs,
+    cities,
     startAddNpcToppingAction,
     cancelToppingAction,
     removeFromNpcPath,
     addToNpcPath,
     removeNpc,
+    removeCity,
     submitAddNpcToppingAction,
-  } = useMapCreationStore((state) => ({
-    mapWidth: state.mapWidth,
-    mapHeight: state.mapHeight,
-    mapArray: state.mapArray,
-    mapToppingAction: state.mapToppingAction,
-    npcPathArray: state.npcPathArray,
-    npcs: state.npcs,
-    startAddNpcToppingAction: state.startAddNpcToppingAction,
-    cancelToppingAction: state.cancelToppingAction,
-    removeFromNpcPath: state.removeFromNpcPath,
-    addToNpcPath: state.addToNpcPath,
-    removeNpc: state.removeNpc,
-    submitAddNpcToppingAction: state.submitAddNpcToppingAction,
-  }))
+  } = mapCreationState
 
   const createNpcForm = useForm<z.infer<typeof npcCreationFormSchema>>({
     resolver: zodResolver(npcCreationFormSchema),
@@ -98,6 +93,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
 
   const removeNpcForm = useForm<z.infer<typeof npcRemovalFormSchema>>({
     resolver: zodResolver(npcRemovalFormSchema),
+    // For formState.isValid to work, we need to set mode to onChange
+    // And also avoid using easy register methods like (min, max, required) etc.
+    // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
+    mode: "onChange",
+  })
+
+  const cityRemovalForm = useForm<z.infer<typeof cityRemovalFormSchema>>({
+    resolver: zodResolver(cityRemovalFormSchema),
     // For formState.isValid to work, we need to set mode to onChange
     // And also avoid using easy register methods like (min, max, required) etc.
     // Also we need to convert all numbers to actual numbers and not strings (setValueAs seen below)
@@ -132,6 +135,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
   ) => {
     e?.preventDefault()
     removeNpc(data.id)
+  }
+
+  const onRemoveCity: SubmitHandler<z.infer<typeof cityRemovalFormSchema>> = (
+    data,
+    e,
+  ) => {
+    e?.preventDefault()
+    removeCity(data.id)
   }
 
   const isMapFocused = mapToppingAction === "ADD_NPC"
@@ -219,6 +230,9 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             <DumbPixiShipPath shipPath={npcPathArray} />
             {npcs.map((npc) => (
               <DumbPixiNpcPath npc={npc} key={npc.id} />
+            ))}
+            {cities.map((city) => (
+              <DumbPixiCity city={city} key={city.id} />
             ))}
           </>
         </MapWrapper>
@@ -320,6 +334,24 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             disabled={!removeNpcForm.formState.isValid}
           />
         </form>
+        <form
+          onSubmit={cityRemovalForm.handleSubmit(onRemoveCity)}
+          className="z isolate flex items-center gap-2"
+        >
+          <label htmlFor="id">City To Remove:</label>
+          <input
+            {...cityRemovalForm.register("id", {
+              setValueAs: (value: string) => parseInt(value),
+            })}
+            type="number"
+            className="w-12 border-2 border-black p-1"
+          />
+          <input
+            type="submit"
+            className="rounded border-2 border-red-900 bg-red-400 p-1 text-black hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!cityRemovalForm.formState.isValid}
+          />
+        </form>
         <Dialog.Root
           open={isCityDialogOpen}
           onOpenChange={toggleCityDialogOpenState}
@@ -327,7 +359,9 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
           <Dialog.Trigger className="rounded border-2 border-green-900 bg-green-400 p-1 text-black disabled:cursor-not-allowed disabled:opacity-50">
             Create City
           </Dialog.Trigger>
-          <CityCreationDialog />
+          <CityCreationDialog
+            toggleCityDialogOpenState={toggleCityDialogOpenState}
+          />
         </Dialog.Root>
       </div>
     </div>

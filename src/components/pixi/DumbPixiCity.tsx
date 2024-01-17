@@ -2,15 +2,15 @@ import { Graphics, Text } from "@pixi/react"
 import type * as PIXI from "pixi.js"
 import { useCallback } from "react"
 
-import { type City, type Tile } from "schema"
+import { type City } from "schema"
 import { FONT_PERCENT_SIZE, TILE_SIZE } from "~/components/constants"
+import { getXYFromXYTileId } from "~/utils"
 
 interface DumbPixiCityProps {
   city: City
-  tile: Tile
 }
 
-export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
+export const DumbPixiCity = ({ city }: DumbPixiCityProps) => {
   const citySquareSize = 0.5
   const fill = "#d89a6c"
 
@@ -18,8 +18,10 @@ export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
 
   const citySize = TILE_SIZE * citySquareSize
 
-  const tileXPosition = tile.x * TILE_SIZE
-  const tileYPosition = tile.y * TILE_SIZE
+  const { x, y } = getXYFromXYTileId(city.xyTileId)
+
+  const tileXPosition = x * TILE_SIZE
+  const tileYPosition = y * TILE_SIZE
 
   const cityXPosition = tileXPosition + citySize / 2
   const cityYPosition = tileYPosition + citySize / 2
@@ -45,6 +47,8 @@ export const DumbPixiCity = ({ tile, city }: DumbPixiCityProps) => {
         y={tileYPosition + TILE_SIZE * 0.5 - fontSize / 2}
         width={TILE_SIZE}
         height={fontSize}
+        interactive
+        onclick={() => console.log("City ID: ", city.id)}
       />
     </>
   )

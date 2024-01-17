@@ -3,7 +3,7 @@ import { createWithEqualityFn } from "zustand/traditional"
 import { devtools } from "zustand/middleware"
 
 import type { MapCreationMode } from "~/components/map/MapCreation/constants"
-import { type Path, type Tile, type Npc } from "schema"
+import { type Path, type Tile, type Npc, type City } from "schema"
 import {
   getLocalStorageValue,
   setLocalStorageValue,
@@ -13,6 +13,7 @@ import {
   SHIP_TYPE_TO_SHIP_PROPERTIES,
   type ShipType,
 } from "~/components/constants"
+import { uniqueBy } from "~/utils"
 
 export const MAP_TOPPING_ACTIONS = {
   ADD_NPC: "ADD_NPC",
@@ -35,6 +36,7 @@ export interface MapCreationStoreState {
   npcPathArray: Path["pathArray"]
   currentNpcShipType?: ShipType
   npcs: StoredNpc[]
+  cities: City[]
 }
 
 interface MapCreationStoreActions {
@@ -53,6 +55,10 @@ interface MapCreationStoreActions {
   }) => void
   addToNpcPath: (newXYTileId: string) => void
   removeFromNpcPath: () => void
+
+  addCity: (city: Omit<City, "id">) => void
+  removeCity: (cityId: number) => void
+
   cancelToppingAction: () => void
 
   submitAddNpcToppingAction: () => void
@@ -73,7 +79,8 @@ const initialMapCreationState: MapCreationStoreState = {
 
   npcPathArray: [],
   currentNpcShipType: undefined,
-  npcs: getLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", []),
+  npcs: getLocalStorageValue<StoredNpc[]>("STORED_MAP_NPCS", []),
+  cities: getLocalStorageValue<City[]>("STORED_MAP_CITIES", []),
 }
 
 export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
@@ -137,7 +144,7 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
 
       const newNpcs = [...currentNpcs, newNpc]
 
-      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", newNpcs)
+      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPCS", newNpcs)
 
       set({
         mapToppingAction: undefined,
@@ -147,12 +154,35 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       })
     },
 
+    addCity: (city) => {
+      const cities = get().cities
+
+      const newCities = uniqueBy(
+        [...cities, { ...city, id: cities.length + 1 }],
+        "xyTileId",
+      )
+
+      setLocalStorageValue<City[]>("STORED_MAP_CITIES", newCities)
+
+      set({ cities: newCities })
+    },
+
+    removeCity: (cityId) => {
+      const cities = get().cities
+
+      const newCities = cities.filter((city) => city.id !== cityId)
+
+      setLocalStorageValue<City[]>("STORED_MAP_CITIES", newCities)
+
+      set({ cities: newCities })
+    },
+
     removeNpc: (npcId) => {
       const npcs = get().npcs
 
       const newNpcs = npcs.filter((npc) => npc.id !== npcId)
 
-      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPC", newNpcs)
+      setLocalStorageValue<StoredNpc[]>("STORED_MAP_NPCS", newNpcs)
 
       set({ npcs: newNpcs })
     },
