@@ -15,13 +15,17 @@ const DEFAULT_AMPLITUDE = 10
 
 const cityCreationFormSchema = z.object({
   name: z.string().min(3),
-  cargoArray: z.array(
-    z.object({
-      type: z.enum(CARGO_TYPES_LIST),
-      midline: z.number().min(1),
-      amplitude: z.number().min(1),
-    }),
-  ),
+  x: z.number().min(0),
+  y: z.number().min(0),
+  cargoArray: z
+    .array(
+      z.object({
+        type: z.enum(CARGO_TYPES_LIST),
+        midline: z.number().min(1),
+        amplitude: z.number().min(1),
+      }),
+    )
+    .min(1),
 })
 
 export const CityCreationDialog = () => {
@@ -40,7 +44,6 @@ export const CityCreationDialog = () => {
     z.infer<typeof cityCreationFormSchema>
   > = (data, e) => {
     e?.preventDefault()
-    // TODO: adjust localStorage & state on city creation
   }
 
   const toggleCargoType = ({ cargoType }: { cargoType: CargoTypes }) => {
@@ -54,7 +57,9 @@ export const CityCreationDialog = () => {
         (cargo) => cargo.type !== cargoType,
       )
 
-      cityCreationForm.setValue("cargoArray", newCargoArray)
+      cityCreationForm.setValue("cargoArray", newCargoArray, {
+        shouldValidate: true,
+      })
     } else {
       const newCargoArray = [
         ...currentCargoArray,
@@ -65,7 +70,9 @@ export const CityCreationDialog = () => {
         },
       ]
 
-      cityCreationForm.setValue("cargoArray", newCargoArray)
+      cityCreationForm.setValue("cargoArray", newCargoArray, {
+        shouldValidate: true,
+      })
     }
   }
 
@@ -91,7 +98,9 @@ export const CityCreationDialog = () => {
       }
     })
 
-    cityCreationForm.setValue("cargoArray", newCargoArray)
+    cityCreationForm.setValue("cargoArray", newCargoArray, {
+      shouldValidate: true,
+    })
   }
 
   return (
@@ -99,13 +108,31 @@ export const CityCreationDialog = () => {
       <div className="flex max-w-full flex-1 flex-row justify-between gap-2 max-sm:flex-col">
         <form
           onSubmit={cityCreationForm.handleSubmit(onCityCreation)}
-          className="flex flex-col"
+          className="flex flex-col gap-2"
         >
           <div className="flex items-center gap-2">
             <label htmlFor="name">City Name:</label>
             <input
               {...cityCreationForm.register("name")}
               className="rounded border-2 border-black p-1"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label htmlFor="x">X:</label>
+            <input
+              {...cityCreationForm.register("x", {
+                setValueAs: (value: string) => parseInt(value),
+              })}
+              type="number"
+              className="w-12 border-2 border-black p-1"
+            />
+            <label htmlFor="y">Y:</label>
+            <input
+              {...cityCreationForm.register("y", {
+                setValueAs: (value: string) => parseInt(value),
+              })}
+              type="number"
+              className="w-12 border-2 border-black p-1"
             />
           </div>
           <div className="flex flex-row flex-wrap items-center gap-2 pb-2 pt-2">
