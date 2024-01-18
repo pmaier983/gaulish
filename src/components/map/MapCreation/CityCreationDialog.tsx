@@ -4,7 +4,6 @@ import { produce } from "immer"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { CARGO_TYPES_LIST, type CargoTypes } from "schema"
 import * as z from "zod"
-import * as Dialog from "@radix-ui/react-dialog"
 
 import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { Checkbox } from "~/components/ui/checkbox"
@@ -135,6 +134,8 @@ export const CityCreationDialog = ({
     })
   }
 
+  const cargoArray = cityCreationForm.watch("cargoArray")
+
   return (
     <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] flex-col gap-2 p-3">
       <div className="flex flex-row gap-2">
@@ -197,6 +198,10 @@ export const CityCreationDialog = ({
                 currentCargoArray.findIndex((val) => val.type === cargoType) >=
                 0
 
+              const currentCargo = cargoArray.find(
+                (cargo) => cargo.type === cargoType,
+              )
+
               return (
                 <div
                   key={cargoType}
@@ -226,7 +231,9 @@ export const CityCreationDialog = ({
                     }}
                     type="number"
                     disabled={!isEnabled}
-                    defaultValue={DEFAULT_CARGO_MIDLINES[cargoType]}
+                    value={
+                      currentCargo?.midline ?? DEFAULT_CARGO_MIDLINES[cargoType]
+                    }
                     className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                   <label htmlFor={`${cargoType}-Amplitude`}>Amplitude</label>
@@ -242,7 +249,10 @@ export const CityCreationDialog = ({
                     }}
                     type="number"
                     disabled={!isEnabled}
-                    defaultValue={DEFAULT_CARGO_AMPLITUDES[cargoType]}
+                    value={
+                      currentCargo?.amplitude ??
+                      DEFAULT_CARGO_AMPLITUDES[cargoType]
+                    }
                     className="w-16 border-2 border-black pl-2 pr-2 disabled:cursor-not-allowed disabled:brightness-50 disabled:grayscale"
                   />
                 </div>
