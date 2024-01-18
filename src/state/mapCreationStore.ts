@@ -154,13 +154,21 @@ export const useMapCreationStore = createWithEqualityFn<MapCreationStore>()(
       })
     },
 
-    addCity: (city) => {
-      const cities = get().cities
+    addCity: (newCity) => {
+      const newCities = [...get().cities]
 
-      const newCities = uniqueBy(
-        [...cities, { ...city, id: cities.length + 1 }],
-        "xyTileId",
+      const possibleCurrentCityIndex = newCities.findIndex(
+        (city) => newCity.xyTileId === city.xyTileId,
       )
+
+      if (possibleCurrentCityIndex >= 0) {
+        newCities[possibleCurrentCityIndex] = {
+          ...newCity,
+          id: newCities[possibleCurrentCityIndex]!.id,
+        }
+      } else {
+        newCities.push({ ...newCity, id: newCities.length + 1 })
+      }
 
       setLocalStorageValue<City[]>("STORED_MAP_CITIES", newCities)
 

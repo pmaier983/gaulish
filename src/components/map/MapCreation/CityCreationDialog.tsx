@@ -10,6 +10,7 @@ import { DialogWrapper } from "~/components/dialogs/DialogWrapper"
 import { Checkbox } from "~/components/ui/checkbox"
 import { ImageIcon } from "~/components/ImageIcon"
 import { useMapCreationStore } from "~/state/mapCreationStore"
+import { getXYFromXYTileId } from "~/utils"
 
 const DEFAULT_CARGO_MIDLINES: { [key in CargoTypes]: number } = {
   STONE: 50,
@@ -45,8 +46,9 @@ export const CityCreationDialog = ({
 }: {
   toggleCityDialogOpenState: () => void
 }) => {
-  const { addCity } = useMapCreationStore((state) => ({
+  const { addCity, cities } = useMapCreationStore((state) => ({
     addCity: state.addCity,
+    cities: state.cities,
   }))
 
   const cityCreationForm = useForm<z.infer<typeof cityCreationFormSchema>>({
@@ -134,7 +136,29 @@ export const CityCreationDialog = ({
   }
 
   return (
-    <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] p-3">
+    <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] flex-col gap-2 p-3">
+      <div className="flex flex-row gap-2">
+        {cities.map((city) => {
+          const { x, y } = getXYFromXYTileId(city.xyTileId)
+          return (
+            <button
+              className="rounded border-2 border-black p-2"
+              onClick={() => {
+                cityCreationForm.setValue("name", city.name, {
+                  shouldValidate: true,
+                })
+                cityCreationForm.setValue("x", x, { shouldValidate: true })
+                cityCreationForm.setValue("y", y, { shouldValidate: true })
+                cityCreationForm.setValue("cargoArray", city.cityCargo, {
+                  shouldValidate: true,
+                })
+              }}
+            >
+              {city.name}
+            </button>
+          )
+        })}
+      </div>
       <div className="flex max-w-full flex-1 flex-row justify-between gap-2 max-sm:flex-col">
         <form
           onSubmit={cityCreationForm.handleSubmit(onCityCreation)}
@@ -227,6 +251,7 @@ export const CityCreationDialog = ({
           </div>
           <input
             type="submit"
+            value="Create/Update City"
             className="rounded border-2 border-red-900 bg-red-400 p-1 text-black hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
             disabled={!cityCreationForm.formState.isValid}
           />
