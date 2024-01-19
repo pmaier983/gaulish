@@ -64,3 +64,8 @@ _NOTE_ We can probably do bigger then this art wise and scale down
 
 - [ ] Map Creator
 - [ ] Initial User Setup
+- [ ] Fix Bugs
+  - [ ] Setup a reliable spawn and new player system (Map Visibility and Cities Choice)
+  - [ ] Setup Ship <-> Ship interaction
+  - [ ] Setup a way to get cash
+  - [ ] Fix the begging functionality
