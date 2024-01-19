@@ -376,6 +376,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             toggleCityDialogOpenState={toggleCityDialogOpenState}
           />
         </Dialog.Root>
+        <button
+          onClick={() => {
+            console.log(JSON.stringify({ mapObject, npcs, cities }))
+          }}
+          className="rounded border-2 border-lime-900 bg-lime-400 p-1 text-black"
+        >
+          Print MapState
+        </button>
       </div>
     </div>
   )
