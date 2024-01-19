@@ -9373,7 +9373,7 @@
         { "type": "WOOL", "midline": 10, "amplitude": 5, "isSelling": true },
         { "type": "STONE", "midline": 50, "amplitude": 25, "isSelling": true }
       ],
-      "id": 10
+      "id": 8
     },
     {
       "name": "Zanarkand",

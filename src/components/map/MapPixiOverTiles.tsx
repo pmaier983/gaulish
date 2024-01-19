@@ -13,12 +13,14 @@ export const MapPixiOverTiles = memo(() => {
     cityObject,
     selectedShipPathArray,
     knownTilesObject,
+    visibleTilesObject,
   } = useGamestateStore((state) => ({
     mapArray: state.mapArray,
     mapObject: state.mapObject,
     cityObject: state.cityObject,
     selectedShipPathArray: state.selectedShipPathArray,
     knownTilesObject: state.knownTilesObject,
+    visibleTilesObject: state.visibleTilesObject,
   }))
 
   // TODO: Simplify the store so we don't need to do this!
@@ -34,16 +36,19 @@ export const MapPixiOverTiles = memo(() => {
       // If the tile is unknown, don't render anything below
       if (!knownTilesObject.hasOwnProperty(tile.xyTileId)) return acc
 
+      if (cityObject[tile.xyTileId]) {
+        acc["cityTiles"] = [...acc["cityTiles"], tile]
+      }
+
+      // If the tile is not currently visible don't show the ship or npcs
+      if (!visibleTilesObject.hasOwnProperty(tile.xyTileId)) return acc
+
       if (mapTile?.npc) {
         acc["npcTiles"] = [...acc["npcTiles"], tile]
       }
 
       if (mapTile?.ship) {
         acc["shipTiles"] = [...acc["shipTiles"], tile]
-      }
-
-      if (cityObject[tile.xyTileId]) {
-        acc["cityTiles"] = [...acc["cityTiles"], tile]
       }
 
       return acc
@@ -86,9 +91,7 @@ export const MapPixiOverTiles = memo(() => {
       {cityTiles.map((tile) => {
         const city = cityObject[tile.xyTileId]
         if (!city) throw Error("mapArray has a tile that cityObject does not!")
-        return (
-          <DumbPixiCity key={`city-${tile.xyTileId}`} tile={tile} city={city} />
-        )
+        return <DumbPixiCity key={`city-${tile.xyTileId}`} city={city} />
       })}
       <DumbPixiShipPath shipPath={selectedShipPathArray} />
     </>
