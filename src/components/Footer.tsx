@@ -1,5 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
+import { Beg } from "~/components/Beg"
 import { Chat } from "~/components/Chat"
 import { LineLog } from "~/components/LineLog"
 import { haveLogsUpdatedAtom } from "~/state/atoms"
@@ -7,6 +8,7 @@ import { haveLogsUpdatedAtom } from "~/state/atoms"
 const FOOTER_TYPES = {
   CHAT: "CHAT",
   LOG: "LOG",
+  BEG: "BEG",
 } as const
 
 export type FooterType = keyof typeof FOOTER_TYPES
@@ -40,6 +42,16 @@ export const Footer = () => {
         >
           Log
         </button>
+        <button
+          className={`flex justify-center rounded p-1 outline outline-1 ${
+            footerType === FOOTER_TYPES.BEG && "bg-blue-400 font-bold"
+          }`}
+          onClick={() => {
+            setFooterType(FOOTER_TYPES.BEG)
+          }}
+        >
+          Beg
+        </button>
       </div>
       <FooterContent footerType={footerType} />
     </div>
@@ -58,6 +70,9 @@ const FooterContent = ({
     }
     case FOOTER_TYPES.LOG: {
       return <LineLog {...props} />
+    }
+    case FOOTER_TYPES.BEG: {
+      return <Beg {...props} />
     }
     default: {
       console.error(

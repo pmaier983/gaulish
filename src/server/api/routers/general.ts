@@ -1,5 +1,5 @@
 import { and, eq, inArray } from "drizzle-orm"
-import { users, ship } from "schema"
+import { users, ship, cargo } from "schema"
 import { z } from "zod"
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
@@ -9,6 +9,35 @@ import { ADMINS } from "~/server/auth"
 export const generalRouter = createTRPCRouter({
   isUserAdmin: protectedProcedure.query(({ ctx }) => {
     return ADMINS.includes(ctx.session.user.email ?? "")
+  }),
+  beg: protectedProcedure.mutation(async ({ ctx }) => {
+    const userShips = await ctx.db.query.ship.findMany({
+      where: and(eq(ship.userId, ctx.session.user.id), eq(ship.isSunk, false)),
+      columns: {
+        id: true,
+        cargoId: true,
+      },
+      with: {
+        cargo: {
+          columns: {
+            gold: true,
+          },
+        },
+      },
+    })
+
+    const poorShips = userShips.filter((ship) => ship.cargo.gold < 20)
+
+    // bump all poor ships up to gold level 25
+    await ctx.db
+      .update(cargo)
+      .set({ gold: 25 })
+      .where(
+        inArray(
+          cargo.id,
+          poorShips.map((ship) => ship.cargoId),
+        ),
+      )
   }),
   /**
    * Given a list of emails, return a sorted leaderboard of {usernames, gold}
