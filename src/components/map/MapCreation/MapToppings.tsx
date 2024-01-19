@@ -67,6 +67,7 @@ interface MapToppingsProps {
 }
 
 export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
+  const [isNpcsPathsVisible, setNpcsPathsVisibility] = useState(false)
   const mapCreationState = useMapCreationStore((state) => state)
   const {
     mapArray,
@@ -229,7 +230,11 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             <MapGroupedPixiTileBase mapArray={mapArray} />
             <DumbPixiShipPath shipPath={npcPathArray} />
             {npcs.map((npc) => (
-              <DumbPixiNpcPath npc={npc} key={npc.id} />
+              <DumbPixiNpcPath
+                npc={npc}
+                key={npc.id}
+                isPathVisible={isNpcsPathsVisible}
+              />
             ))}
             {cities.map((city) => (
               <DumbPixiCity city={city} key={city.id} />
@@ -316,6 +321,14 @@ export const MapToppings = ({ className, mapObject }: MapToppingsProps) => {
             disabled={!createNpcForm.formState.isValid}
           />
         </form>
+        <button
+          onClick={() => {
+            setNpcsPathsVisibility(!isNpcsPathsVisible)
+          }}
+          className="rounded border-2 border-yellow-900 bg-yellow-400 p-1 text-black"
+        >
+          Toggle NPCs Paths
+        </button>
         <form
           onSubmit={removeNpcForm.handleSubmit(onRemoveNPC)}
           className="z isolate flex items-center gap-2"

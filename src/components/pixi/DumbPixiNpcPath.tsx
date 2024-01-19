@@ -9,9 +9,13 @@ import { DumbPixiShipPath } from "~/components/pixi/DumbPixiShipPath"
 
 interface DumbPixiNpcPathProps {
   npc: StoredNpc
+  isPathVisible?: boolean
 }
 
-export const DumbPixiNpcPath = ({ npc }: DumbPixiNpcPathProps) => {
+export const DumbPixiNpcPath = ({
+  npc,
+  isPathVisible,
+}: DumbPixiNpcPathProps) => {
   const [isNpcPathVisible, setIsNpcPathVisible] = useState(false)
   const shipSquareSize = 0.5
   const fill = "#fff"
@@ -47,7 +51,9 @@ export const DumbPixiNpcPath = ({ npc }: DumbPixiNpcPathProps) => {
 
   return (
     <>
-      {isNpcPathVisible && <DumbPixiShipPath shipPath={npc.pathArray} />}
+      {(isPathVisible || isNpcPathVisible) && (
+        <DumbPixiShipPath shipPath={npc.pathArray} />
+      )}
       <Graphics
         draw={draw}
         mousedown={() => {

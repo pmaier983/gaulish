@@ -137,8 +137,8 @@ export const CityCreationDialog = ({
   const cargoArray = cityCreationForm.watch("cargoArray")
 
   return (
-    <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] flex-col gap-2 p-3">
-      <div className="flex flex-row gap-2">
+    <DialogWrapper className="flex h-full max-h-[500px] min-h-[300px] w-full min-w-[330px] max-w-[85%] flex-col gap-6 p-3">
+      <div className="flex flex-row flex-wrap gap-2">
         {cities.map((city) => {
           const { x, y } = getXYFromXYTileId(city.xyTileId)
           return (
