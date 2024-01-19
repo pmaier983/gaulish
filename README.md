@@ -2,6 +2,8 @@
 
 one day it will be a great IO game with users!
 
+PUT on HIATUS starting Jan 19th 2024
+
 ## ----------- Environments -----------
 
 ### Dev
@@ -69,3 +71,4 @@ _NOTE_ We can probably do bigger then this art wise and scale down
   - [ ] Setup Ship <-> Ship interaction
   - [ ] Setup a way to get cash
   - [ ] Fix the begging functionality
+  - [ ] Multiple Ships now gaining visible land at the same time
