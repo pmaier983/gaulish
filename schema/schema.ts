@@ -4,8 +4,8 @@ import {
   index,
   int,
   float,
-  mysqlTable,
   text,
+  mysqlTableCreator,
   uniqueIndex,
   timestamp,
   varchar,
@@ -19,6 +19,8 @@ import {
   type ShipType,
   type TileType,
 } from "../src/components/constants"
+
+const mysqlTable = mysqlTableCreator((name) => `gaulish_${name}`)
 
 /* ******************** START - DEFAULT STUFF FROM NEXTAUTH ******************** */
 export const accounts = mysqlTable(
