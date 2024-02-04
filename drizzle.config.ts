@@ -11,4 +11,5 @@ export default {
   dbCredentials: {
     uri: process.env.DATABASE_URL ?? "",
   },
+  tablesFilter: ["gaulish_*"],
 } satisfies Config
